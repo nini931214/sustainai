@@ -107,31 +107,35 @@ export default function HomePage() {
 export default function Home() {
   return (
     <main style={{ padding: 40, fontFamily: "system-ui" }}>
-      <h1>SustainAI 🌱</h1>
-      <p>循環經濟與 ESG 驗證平台</p>
+      <h1>🌱 SustainAI</h1>
+      <p>ESG Supply Chain Verification Platform</p>
 
-      <ul style={{ marginTop: 20, lineHeight: 2 }}>
-        <li>
-          🔍 驗證報告：
-          <a href="/verify?reportId=RPT-BATCH-2026-004">
-            /verify
-          </a>
-        </li>
+      <div style={{ marginTop: 30 }}>
+        <h3>功能入口</h3>
 
-        <li>
-          📊 系統健康：
-          <a href="/health">
-            /health
-          </a>
-        </li>
+        <ul style={{ lineHeight: 2 }}>
+          <li>
+            🔍 驗證報告：
+            <a href="/verify?reportId=RPT-BATCH-2026-004">
+              /verify
+            </a>
+          </li>
 
-        <li>
-          🧾 稽核管理：
-          <a href="/admin/auditor">
-            /admin/auditor
-          </a>
-        </li>
-      </ul>
+          <li>
+            📊 系統健康：
+            <a href="/health">
+              /health
+            </a>
+          </li>
+
+          <li>
+            🧾 稽核管理：
+            <a href="/admin/auditor">
+              /admin/auditor
+            </a>
+          </li>
+        </ul>
+      </div>
     </main>
   );
 }
