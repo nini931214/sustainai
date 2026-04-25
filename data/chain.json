@@ -1,0 +1,472 @@
+[
+  {
+    "id": "BATCH-2025-001",
+    "material": "PET 再生塑膠",
+    "kg": 20,
+    "recycler": {
+      "id": "recycler-a",
+      "name": "GreenCycle 回收商 A"
+    },
+    "processor": {
+      "id": "processor-eco",
+      "name": "EcoFactory 處理廠",
+      "energy_kwh": 30,
+      "input_kg": 20,
+      "output_kg": 18
+    },
+    "manufacturer": {
+      "id": "manufacturer-renew",
+      "name": "RenewTech 製造商",
+      "product_sku": "RB-200",
+      "product_lot": "L20251028"
+    },
+    "transport": {
+      "distance_km": 50,
+      "mode": "truck"
+    },
+    "audit": {
+      "status": "approved",
+      "by": "ESG Auditor",
+      "note": "很棒",
+      "ts": "2026-04-25T07:24:13.666Z"
+    },
+    "created_at": "2025-10-01T10:00:00Z",
+    "ts": "2025-10-01T10:00:00Z",
+    "batchId": "BATCH-2025-001"
+  },
+  {
+    "id": "BATCH-2025-002",
+    "material": "ABS 再生塑膠",
+    "kg": 15,
+    "recycler": {
+      "id": "recycler-b",
+      "name": "GreenBack 回收商 B"
+    },
+    "processor": {
+      "id": "processor-eco",
+      "name": "Processor Plant A",
+      "ts": 1769692348329,
+      "input_kg": 1000,
+      "output_kg": 9000,
+      "waste_kg": 9000,
+      "energy_kwh": 50000,
+      "water_l": 500000
+    },
+    "manufacturer": {
+      "id": "manufacturer-renew",
+      "name": "Eco Device Co.",
+      "ts": 1769692363282,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 9000
+    },
+    "transport": {
+      "distance_km": 80,
+      "mode": "truck"
+    },
+    "audit": {
+      "status": "approved",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-01-29T13:59:23.295Z",
+      "by": "ESG Auditor"
+    },
+    "created_at": "2025-10-02T09:30:00Z",
+    "ts": "2025-10-02T09:30:00Z"
+  },
+  {
+    "id": "BATCH-2025-003",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1764410828554
+    },
+    "ts": 1764410828554,
+    "audit": {
+      "status": "rejected",
+      "by": "ESG Auditor",
+      "ts": 1769696341457
+    }
+  },
+  {
+    "id": "BATCH-2025-004",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1764411788343
+    },
+    "ts": 1764411788343,
+    "audit": {
+      "by": "ESG Auditor",
+      "status": "rejected",
+      "ts": 1768833624321
+    }
+  },
+  {
+    "id": "BATCH-2025-005",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1765596703078
+    },
+    "ts": 1765596703078,
+    "audit": {
+      "by": "ESG Auditor",
+      "status": "rejected",
+      "ts": 1768833619354
+    }
+  },
+  {
+    "id": "BATCH-2025-006",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1765596855642
+    },
+    "ts": 1765596855642,
+    "audit": {
+      "status": "pending",
+      "by": "ESG Auditor",
+      "ts": 1773813576068
+    }
+  },
+  {
+    "id": "BATCH-2026-001",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1768833531114
+    },
+    "ts": 1768833531114,
+    "audit": {
+      "by": "ESG Auditor",
+      "status": "rejected",
+      "ts": 1768833614562
+    }
+  },
+  {
+    "id": "BATCH-2026-002",
+    "material": "PET",
+    "kg": 90,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1768833539721
+    },
+    "ts": 1768833539721,
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1768833582911,
+      "input_kg": 90,
+      "output_kg": 80,
+      "waste_kg": 80,
+      "energy_kwh": 100,
+      "water_l": 1500
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1768833601478,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 100
+    },
+    "audit": {
+      "status": "approved",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-01-30T16:05:42.654Z",
+      "by": "ESG Auditor"
+    }
+  },
+  {
+    "id": "BATCH-2026-003",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1768833798725
+    },
+    "ts": 1768833798725,
+    "audit": {
+      "by": "ESG Auditor",
+      "status": "rejected",
+      "ts": 1768834495542,
+      "note": "缺少"
+    }
+  },
+  {
+    "id": "BATCH-2026-004",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1768834432928
+    },
+    "ts": 1768834432928,
+    "audit": {
+      "status": "approved",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-02-02T14:53:32.182Z",
+      "by": "ESG Auditor"
+    },
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1770043951321,
+      "input_kg": 100,
+      "output_kg": 90,
+      "waste_kg": 90,
+      "energy_kwh": 90000,
+      "water_l": 900000
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1770043969165,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 90
+    }
+  },
+  {
+    "id": "BATCH-2026-005",
+    "material": "PET",
+    "kg": 70,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1768842025647
+    },
+    "ts": 1768842025647,
+    "audit": {
+      "status": "rejected",
+      "by": "ESG Auditor",
+      "ts": 1769696334707
+    }
+  },
+  {
+    "id": "BATCH-2026-006",
+    "material": "PET",
+    "kg": 60,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1769092575358
+    },
+    "ts": 1769092575358,
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1769092620136,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 60
+    },
+    "audit": {
+      "status": "pending",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-03-21T08:06:41.584Z",
+      "by": "ESG Auditor"
+    },
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1769095019309,
+      "input_kg": 60,
+      "output_kg": 50,
+      "waste_kg": 50,
+      "energy_kwh": 600,
+      "water_l": 1600
+    }
+  },
+  {
+    "id": "BATCH-2026-007",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1769264885300
+    },
+    "ts": 1769264885300,
+    "audit": {
+      "status": "approved",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-01-29T14:19:13.389Z",
+      "by": "ESG Auditor"
+    },
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1769265003273,
+      "input_kg": 20,
+      "output_kg": 20,
+      "waste_kg": 20,
+      "energy_kwh": 200,
+      "water_l": 1200
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1769265020762,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 20
+    }
+  },
+  {
+    "id": "BATCH-2026-008",
+    "material": "PET",
+    "kg": 10000,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1769692321925
+    },
+    "ts": 1769692321925,
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1769692440559,
+      "input_kg": 10000,
+      "output_kg": 9000,
+      "waste_kg": 9000,
+      "energy_kwh": 50000,
+      "water_l": 500000
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1769692455672,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 9000
+    },
+    "audit": {
+      "status": "approved",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-01-29T13:59:24.767Z",
+      "by": "ESG Auditor"
+    }
+  },
+  {
+    "id": "BATCH-2026-009",
+    "material": "PET",
+    "kg": 20,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1773813496087
+    },
+    "ts": 1773813496087,
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1773813528523,
+      "input_kg": 60,
+      "output_kg": 60,
+      "waste_kg": 6000,
+      "energy_kwh": 600000,
+      "water_l": 6000
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1773813542515,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 60
+    },
+    "audit": {
+      "status": "approved",
+      "by": "ESG Auditor",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-03-21T09:01:55.779Z"
+    },
+    "batchId": "BATCH-2026-009"
+  },
+  {
+    "id": "BATCH-2026-010",
+    "material": "PET",
+    "kg": 3333333,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1777101777738
+    },
+    "ts": 1777101777738,
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1777101809203,
+      "input_kg": 33333333,
+      "output_kg": 33333333,
+      "waste_kg": 33333333,
+      "energy_kwh": 3333333,
+      "water_l": 33333333
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1777101822682,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 333
+    },
+    "batchId": "BATCH-2026-010",
+    "audit": {
+      "status": "approved",
+      "by": "Auto Auditor",
+      "note": "系統自動審核通過並建立可信版本。",
+      "ts": "2026-04-25T07:46:44.980Z"
+    }
+  },
+  {
+    "id": "BATCH-2026-011",
+    "material": "PET",
+    "kg": 999999999,
+    "recycler": {
+      "id": "R1",
+      "name": "GreenCycle Station",
+      "ts": 1777103534562
+    },
+    "ts": 1777103534562,
+    "processor": {
+      "id": "P1",
+      "name": "Processor Plant A",
+      "ts": 1777103556644,
+      "input_kg": 99999,
+      "output_kg": 99999,
+      "waste_kg": 9999,
+      "energy_kwh": 99999,
+      "water_l": 999999
+    },
+    "manufacturer": {
+      "id": "M1",
+      "name": "Eco Device Co.",
+      "ts": 1777103572175,
+      "product_name": "Recycled Shell Device",
+      "sku": "EC-001",
+      "qty": 99
+    },
+    "batchId": "BATCH-2026-011",
+    "audit": {
+      "status": "approved",
+      "by": "ESG Auditor",
+      "note": "樣本資料：審計方已覆核此批次。",
+      "ts": "2026-04-25T07:55:30.309Z"
+    }
+  }
+]

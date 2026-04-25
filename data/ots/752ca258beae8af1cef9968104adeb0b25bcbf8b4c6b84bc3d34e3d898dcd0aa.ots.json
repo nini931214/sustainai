@@ -1,0 +1,13 @@
+{
+  "schema": "demo-ots-v1",
+  "anchoredAt": "2026-01-30T14:34:30.294Z",
+  "chain": "DEMO",
+  "txid": "3b98338fc15d48b0ac725bc5bded7b34d72d5e2996ccaa990d8bb440a73e81d6",
+  "subject": {
+    "type": "batchVersionHash",
+    "hash": "752ca258beae8af1cef9968104adeb0b25bcbf8b4c6b84bc3d34e3d898dcd0aa",
+    "batchId": "BATCH-2025-002",
+    "batchVersionId": "BATCH-2025-002@2026-01-29T13:59:23.295Z"
+  },
+  "note": "Demo receipt. Replace with real OpenTimestamps later."
+}

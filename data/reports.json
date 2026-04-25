@@ -1,0 +1,527 @@
+{
+  "reports": [
+    {
+      "id": "RPT-2025-001",
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "report_payload": {
+        "summary": "AI 永續報告 demo（精簡）",
+        "companyName": "SustainAI 示範企業",
+        "reportYear": "2025",
+        "scope": "循環經濟／回收再製示範批次",
+        "material": "PET 再生塑膠",
+        "kg": 20,
+        "partners": {
+          "recycler": {
+            "id": "recycler-a",
+            "name": "GreenCycle 回收商 A"
+          },
+          "processor": {
+            "id": "processor-eco",
+            "name": "EcoFactory 處理廠",
+            "energy_kwh": 30,
+            "input_kg": 20,
+            "output_kg": 18
+          },
+          "manufacturer": {
+            "id": "manufacturer-renew",
+            "name": "RenewTech 製造商",
+            "product_sku": "RB-200",
+            "product_lot": "L20251028"
+          }
+        },
+        "audit": {
+          "status": "approved"
+        }
+      },
+      "report_payload_hash": "3c6a2c7450d513196f67b2f0b0257f489db0de5a97534c1fc040d12a53546e93",
+      "updated_at": "2026-01-23T16:21:58.493Z",
+      "reportPayload": {
+        "summary": "AI 永續報告 demo（精簡）",
+        "companyName": "SustainAI 示範企業",
+        "reportYear": "2025",
+        "scope": "循環經濟／回收再製示範批次",
+        "material": "PET 再生塑膠",
+        "kg": 20,
+        "partners": {
+          "recycler": {
+            "id": "recycler-a",
+            "name": "GreenCycle 回收商 A"
+          },
+          "processor": {
+            "id": "processor-eco",
+            "name": "EcoFactory 處理廠",
+            "energy_kwh": 30,
+            "input_kg": 20,
+            "output_kg": 18
+          },
+          "manufacturer": {
+            "id": "manufacturer-renew",
+            "name": "RenewTech 製造商",
+            "product_sku": "RB-200",
+            "product_lot": "L20251028"
+          }
+        },
+        "audit": {
+          "status": "approved"
+        }
+      },
+      "payload": {
+        "summary": "AI 永續報告 demo（精簡）",
+        "companyName": "SustainAI 示範企業",
+        "reportYear": "2025",
+        "scope": "循環經濟／回收再製示範批次",
+        "material": "PET 再生塑膠",
+        "kg": 20,
+        "partners": {
+          "recycler": {
+            "id": "recycler-a",
+            "name": "GreenCycle 回收商 A"
+          },
+          "processor": {
+            "id": "processor-eco",
+            "name": "EcoFactory 處理廠",
+            "energy_kwh": 30,
+            "input_kg": 20,
+            "output_kg": 18
+          },
+          "manufacturer": {
+            "id": "manufacturer-renew",
+            "name": "RenewTech 製造商",
+            "product_sku": "RB-200",
+            "product_lot": "L20251028"
+          }
+        },
+        "audit": {
+          "status": "approved"
+        }
+      },
+      "reportPayloadJson": {
+        "summary": "AI 永續報告 demo（精簡）",
+        "companyName": "SustainAI 示範企業",
+        "reportYear": "2025",
+        "scope": "循環經濟／回收再製示範批次",
+        "material": "PET 再生塑膠",
+        "kg": 20,
+        "partners": {
+          "recycler": {
+            "id": "recycler-a",
+            "name": "GreenCycle 回收商 A"
+          },
+          "processor": {
+            "id": "processor-eco",
+            "name": "EcoFactory 處理廠",
+            "energy_kwh": 30,
+            "input_kg": 20,
+            "output_kg": 18
+          },
+          "manufacturer": {
+            "id": "manufacturer-renew",
+            "name": "RenewTech 製造商",
+            "product_sku": "RB-200",
+            "product_lot": "L20251028"
+          }
+        },
+        "audit": {
+          "status": "approved"
+        }
+      }
+    },
+    {
+      "id": "RPT-2026-002",
+      "batchId": "BATCH-2026-002",
+      "batchVersionId": "BATCH-2026-002@ts:1768833612480",
+      "report_payload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved",
+        "__tamper_demo__": {
+          "note": "demo tamper",
+          "nonce": "993ba99e51ca5",
+          "at": "2026-01-28T15:51:03.070Z"
+        }
+      },
+      "report_payload_hash": "3f0f32bec9e08482b53d9b502dff1404287451cf7e0256e1897cd08749646716",
+      "updated_at": "2026-01-22T17:07:09.385Z",
+      "reportPayload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved",
+        "__tamper_demo__": {
+          "note": "demo tamper",
+          "nonce": "993ba99e51ca5",
+          "at": "2026-01-28T15:51:03.070Z"
+        }
+      },
+      "payload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved",
+        "__tamper_demo__": {
+          "note": "demo tamper",
+          "nonce": "993ba99e51ca5",
+          "at": "2026-01-28T15:51:03.070Z"
+        }
+      },
+      "reportPayloadJson": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved",
+        "__tamper_demo__": {
+          "note": "demo tamper",
+          "nonce": "993ba99e51ca5",
+          "at": "2026-01-28T15:51:03.070Z"
+        }
+      }
+    },
+    {
+      "id": "RPT-001",
+      "batchId": "BATCH-2026-002",
+      "batchVersionId": "BATCH-2026-002@ts:1768833612480",
+      "report_payload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved"
+      },
+      "report_payload_hash": "PLACEHOLDER",
+      "reportPayload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved"
+      },
+      "payload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved"
+      },
+      "reportPayloadJson": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved"
+      }
+    },
+    {
+      "id": "RPT-BATCH-2025-002",
+      "reportId": "RPT-BATCH-2025-002",
+      "batchId": "BATCH-2025-002",
+      "audit_time_iso": "2026-01-29T13:59:23.295Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2025-002",
+        "material": "ABS 再生塑膠",
+        "kg": 15,
+        "recycler": {
+          "id": "recycler-b",
+          "name": "GreenBack 回收商 B"
+        },
+        "processor": {
+          "id": "processor-eco",
+          "name": "Processor Plant A",
+          "ts": 1769692348329,
+          "input_kg": 1000,
+          "output_kg": 9000,
+          "waste_kg": 9000,
+          "energy_kwh": 50000,
+          "water_l": 500000
+        },
+        "manufacturer": {
+          "id": "manufacturer-renew",
+          "name": "Eco Device Co.",
+          "ts": 1769692363282,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 9000
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-29T13:59:23.295Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "e3159418ab44c9e435d569d716ff716d969866279f7683af1d0473b866782c6f",
+      "batchVersionId": "BATCH-2025-002@2026-01-29T13:59:23.295Z",
+      "batchVersionHash": "752ca258beae8af1cef9968104adeb0b25bcbf8b4c6b84bc3d34e3d898dcd0aa"
+    },
+    {
+      "id": "RPT-BATCH-2026-008",
+      "reportId": "RPT-BATCH-2026-008",
+      "batchId": "BATCH-2026-008",
+      "audit_time_iso": "2026-01-29T13:59:24.767Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2026-008",
+        "material": "PET",
+        "kg": 10000,
+        "recycler": {
+          "id": "R1",
+          "name": "GreenCycle Station",
+          "ts": 1769692321925
+        },
+        "processor": {
+          "id": "P1",
+          "name": "Processor Plant A",
+          "ts": 1769692440559,
+          "input_kg": 10000,
+          "output_kg": 9000,
+          "waste_kg": 9000,
+          "energy_kwh": 50000,
+          "water_l": 500000
+        },
+        "manufacturer": {
+          "id": "M1",
+          "name": "Eco Device Co.",
+          "ts": 1769692455672,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 9000
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-29T13:59:24.767Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "e50794db43f9228cbb34eb64c85bd51203a9c676c34258345500d113c11b5bcb",
+      "batchVersionId": "BATCH-2026-008@2026-01-29T13:59:24.767Z",
+      "batchVersionHash": "7a48e52f472aa23ae26a76dff11f14c028688c2d8b4a46b75a9575c4ffa7abba"
+    },
+    {
+      "id": "RPT-BATCH-2026-007",
+      "reportId": "RPT-BATCH-2026-007",
+      "batchId": "BATCH-2026-007",
+      "audit_time_iso": "2026-01-29T14:19:13.389Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2026-007",
+        "material": "PET",
+        "kg": 20,
+        "recycler": {
+          "id": "R1",
+          "name": "GreenCycle Station",
+          "ts": 1769264885300
+        },
+        "processor": {
+          "id": "P1",
+          "name": "Processor Plant A",
+          "ts": 1769265003273,
+          "input_kg": 20,
+          "output_kg": 20,
+          "waste_kg": 20,
+          "energy_kwh": 200,
+          "water_l": 1200
+        },
+        "manufacturer": {
+          "id": "M1",
+          "name": "Eco Device Co.",
+          "ts": 1769265020762,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 20
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-29T14:19:13.389Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "6fbfcdc2d3ab607465898079dfdab9f446a43719970ec682ed00c35c82d8756f",
+      "batchVersionId": "BATCH-2026-007@2026-01-29T14:19:13.389Z",
+      "batchVersionHash": "9f746167b53d8b196b4673877ea8fbec3d564ecb529854fef0e5db45a71681e5"
+    },
+    {
+      "id": "RPT-BATCH-2025-001",
+      "reportId": "RPT-BATCH-2025-001",
+      "batchId": "BATCH-2025-001",
+      "audit_time_iso": "2026-01-29T14:52:19.801Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2025-001",
+        "material": "PET 再生塑膠",
+        "kg": 20,
+        "recycler": {
+          "id": "recycler-a",
+          "name": "GreenCycle 回收商 A"
+        },
+        "processor": {
+          "id": "processor-eco",
+          "name": "EcoFactory 處理廠",
+          "energy_kwh": 30,
+          "input_kg": 20,
+          "output_kg": 18
+        },
+        "manufacturer": {
+          "id": "manufacturer-renew",
+          "name": "RenewTech 製造商",
+          "product_sku": "RB-200",
+          "product_lot": "L20251028"
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-29T14:52:19.801Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "d47a39b0260eb0cc02cfc97300fac68b36b810b0f448500392d5f94fe0372d01",
+      "batchVersionId": "BATCH-2025-001@2026-01-29T14:52:19.801Z",
+      "batchVersionHash": "759bf75a7e060f7a9a89f3e4deba9fa1849ed3a33263eb5f6280894b1caf8798"
+    },
+    {
+      "id": "RPT-BATCH-2026-006",
+      "reportId": "RPT-BATCH-2026-006",
+      "batchId": "BATCH-2026-006",
+      "audit_time_iso": "2026-01-29T14:53:01.971Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2026-006",
+        "material": "PET",
+        "kg": 60,
+        "recycler": {
+          "id": "R1",
+          "name": "GreenCycle Station",
+          "ts": 1769092575358
+        },
+        "processor": {
+          "id": "P1",
+          "name": "Processor Plant A",
+          "ts": 1769095019309,
+          "input_kg": 60,
+          "output_kg": 50,
+          "waste_kg": 50,
+          "energy_kwh": 600,
+          "water_l": 1600
+        },
+        "manufacturer": {
+          "id": "M1",
+          "name": "Eco Device Co.",
+          "ts": 1769092620136,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 60
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-29T14:53:01.971Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "4c1b37fe64dc5f4bdaeba7c5a30f40c23b4812711d78e52716ade366a9306834",
+      "batchVersionId": "BATCH-2026-006@2026-01-29T14:53:01.971Z",
+      "batchVersionHash": "5767c6e8338502e0f94b0dde4c1760a1f4a12bf7ea023efc19daa8ee5c91fcd1"
+    },
+    {
+      "id": "RPT-BATCH-2026-002",
+      "reportId": "RPT-BATCH-2026-002",
+      "batchId": "BATCH-2026-002",
+      "audit_time_iso": "2026-01-30T16:05:42.654Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2026-002",
+        "material": "PET",
+        "kg": 90,
+        "recycler": {
+          "id": "R1",
+          "name": "GreenCycle Station",
+          "ts": 1768833539721
+        },
+        "processor": {
+          "id": "P1",
+          "name": "Processor Plant A",
+          "ts": 1768833582911,
+          "input_kg": 90,
+          "output_kg": 80,
+          "waste_kg": 80,
+          "energy_kwh": 100,
+          "water_l": 1500
+        },
+        "manufacturer": {
+          "id": "M1",
+          "name": "Eco Device Co.",
+          "ts": 1768833601478,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 100
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-30T16:05:42.654Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "f7affe5f237410cd99251957f8577c5920ba2a72ba56585c6ee320262cd3c4bb",
+      "batchVersionId": "BATCH-2026-002@2026-01-30T16:05:42.654Z",
+      "batchVersionHash": "47b06703df0e4aba1853b89a8add1347449f8f857bc949d67a034f457c9c8336"
+    },
+    {
+      "id": "RPT-BATCH-2026-004",
+      "reportId": "RPT-BATCH-2026-004",
+      "batchId": "BATCH-2026-004",
+      "audit_time_iso": "2026-02-02T14:53:32.182Z",
+      "time_source": "auditor/update",
+      "report_payload": {
+        "batchId": "BATCH-2026-004",
+        "material": "PET",
+        "kg": 20,
+        "recycler": {
+          "id": "R1",
+          "name": "GreenCycle Station",
+          "ts": 1768834432928
+        },
+        "processor": {
+          "id": "P1",
+          "name": "Processor Plant A",
+          "ts": 1770043951321,
+          "input_kg": 100,
+          "output_kg": 90,
+          "waste_kg": 90,
+          "energy_kwh": 90000,
+          "water_l": 900000
+        },
+        "manufacturer": {
+          "id": "M1",
+          "name": "Eco Device Co.",
+          "ts": 1770043969165,
+          "product_name": "Recycled Shell Device",
+          "sku": "EC-001",
+          "qty": 90
+        },
+        "audit": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-02-02T14:53:32.182Z",
+          "by": "ESG Auditor"
+        },
+        "generatedBy": "auditor/update",
+        "schemaVersion": 1
+      },
+      "report_payload_hash": "d91f9d9c121f540b84395564f77b29526cef1c75c7e148037d7101cc99480380",
+      "batchVersionId": "BATCH-2026-004@2026-02-02T14:53:32.182Z",
+      "batchVersionHash": "b3e2af8dc4e08a9a31f0d99e22c9c0a9de959f8c016686944a84b194f31e6060"
+    }
+  ]
+}

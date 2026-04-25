@@ -1,0 +1,13 @@
+{
+  "backups": {
+    "RPT-2026-002": {
+      "savedAt": "2026-01-28T15:51:03.070Z",
+      "payload": {
+        "summary": "Sample sustainability report",
+        "material": "PET",
+        "kg": 90,
+        "status": "approved"
+      }
+    }
+  }
+}

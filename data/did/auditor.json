@@ -1,0 +1,15 @@
+{
+  "id": "did:web:esg-auditor.example.com",
+  "controller": "did:web:esg-auditor.example.com",
+  "verificationMethod": [
+    {
+      "id": "did:web:esg-auditor.example.com#key-1",
+      "type": "JsonWebKey2020",
+      "controller": "did:web:esg-auditor.example.com",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkq...\n-----END PUBLIC KEY-----"
+    }
+  ],
+  "assertionMethod": [
+    "did:web:esg-auditor.example.com#key-1"
+  ]
+}

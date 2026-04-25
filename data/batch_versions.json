@@ -1,0 +1,1609 @@
+{
+  "records": [
+    {
+      "batchId": "BATCH-2026-002",
+      "batchVersionId": "BATCH-2026-002@ts:1768833612480",
+      "payloadHash": "73b38afdcc4b84bfbd06c60166a87217542275887a9358d0c29a8d1cfd82aca3",
+      "prevHash": null,
+      "hash": "93be05c81176b39e81cf1b0392b00457eb5b8f6dd27bcc819a1c314aef58e50d",
+      "ts": 1769101628536,
+      "signature": null,
+      "signer": null,
+      "events": [
+        {
+          "type": "admin.audit.set_status",
+          "actorRole": "auditor-admin",
+          "actorName": "ESG Auditor",
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-30T16:05:36.876Z"
+        }
+      ]
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": null,
+      "hash": "75372711dcae3f6e8f821ec15c834cf5d5325c93b4fd85accbdf8324afe28584",
+      "ts": 1769104162032,
+      "signature": "fT1WCZPu9gqs+Manefe9Ddyi8AmPMODhVKs1d/w8WUaSL1v2PVCIysoxZDc0ubnWab9OZNp9otSxdvtM5ZJV6zXT5FfgpXAG1oNx7FVLeVgn78IEnAgMop6Hy9jTvx/2cteSQNFSO7xDHBUY6wARWt5VvjXyDkP4NhiaO7zlDWWnjzC4lz3eCCOcv3XAoukSOisX5Um5PNlfRJtB5oUm7d2DkDYGzjeASujRb+z2Iqk+f/E5ofpp4RdVf1+87MM4gCKxG25GiBAubDUeQah5PyiDImaftFM7DZs9BaChJTVKLFO/zHoQoCEVmRJk7U0JOt6YoX+E4jE+Z2G11bGMag==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "75372711dcae3f6e8f821ec15c834cf5d5325c93b4fd85accbdf8324afe28584",
+      "hash": "7ae08e428c78f96b78ed08ec093621358797377d50f97b317e0c81bfaf0dd054",
+      "ts": 1769104162935,
+      "signature": "QI3bVIRBO3MqDEC0H51B3F8/L2T0WR1B1lFOtESPGsv/9ck5Ia/64/Imp5e0T5aLE62aZhGRN1Mmb+UQZ1pS0p06U9fmQdvC24j2/3cdAuuPQHZyQo4xz+k/lg4o4kgmgtwwRvC270mpRLthMTZaS+lzxhBgvj+DWdcu4qnd2pR5TPsZ+ahvqplkvFIHCAgkzO2n6SRaDV3nEYM9GW4wiN1EVGSYbm3HKUH5QDT05Vn+IODVzz1nh4nT6ek/IeZPNzTTghKSYPsSprnODeFe0tWTohD+TDGja+5pTbzZD/z5jTv4zFwZ0JyRlmaQp1GlI+WFJ904/awor0eivAFb9w==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "7ae08e428c78f96b78ed08ec093621358797377d50f97b317e0c81bfaf0dd054",
+      "hash": "78a02cf3d45a9fcc2598016f2243db68a99f69a347faff141df49b23b9b548b3",
+      "ts": 1769104649849,
+      "signature": "VSvDeD5/tVWL3KD+TjJWlc+96OBkpWucvIAgR4kZG2LcyPZHaFdMQBzEcZVy/VKHiK4qBrJ2S2rYkA4yLFmqwBsb69javADkA7GiSWc4Xj2pHCI6IoTdMIpLgIBePMYw0qLKe2S6s+N4BV4Jw7WAnMfieQVR57vCv5PNlTdWV0+DOms/3Rhovaa/viW6YW6Io9qKeRIuZthg8u5ObglPHel28gEpEuVYzf/Uc31mJf326SDN+N6ZChQ3jy5e9ED12wgwpvS9qQaGBdHuziTBn9h+cgW9pV6wVUf3clgSAXqTFNpRkgayh3yT3vXsVfm1CuMV2x7+x96NoiTx5pp0Gg==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "78a02cf3d45a9fcc2598016f2243db68a99f69a347faff141df49b23b9b548b3",
+      "hash": "22e1886c89ecc47f1a8a318e88d7661c3d4b5b634ff96f4a206bf026dbf29275",
+      "ts": 1769104650909,
+      "signature": "T4ZJpwPppnVaavR1GBDXBe8RAiID6rd+vUQiqQ9ZNalTT6eoSOjJxAmlrXVE6vI8yrHVbqjzWTbQO0VSEVWnOrpN6T6Rfuuge8M3XmFYcbCcxFIdvPshlbu4cZnmSlMoqMyoU1QV9dAgZSdy4i6i6PYdqnay54dpsdK+7W28Jya+ay1P2PZt0K3/fCl/24D2ByPNEXqc3FQxsfJdzZdZAF0pr7AyPLK8VZ9NUrKRr55WhvFUJ0kiyut1he9JJW5dX6ptZD73oCdHUih98JmnIxJoZHX5PQx+W4fHDm0Za+bWg4Ho+M+23Ew2aktvPIl1Ku11z0sLqpovcpyKAIDfOA==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "22e1886c89ecc47f1a8a318e88d7661c3d4b5b634ff96f4a206bf026dbf29275",
+      "hash": "808121ab838501db9b7bf2856036b9ab0b61db411500859ed351e7e73726f6ea",
+      "ts": 1769105027805,
+      "signature": "IBa0fWZKWjWuFp4n5yNNls+dC+7GPcSHYtP9E/pu/pCLL3JvHkBsajwwO25FcjmPQdbn1Ap8y6cZILmkl0BDDJa84lQnZRju6YNnin12MRm+b4Kp4p5aSMCgFtDP21d+VVu387VWY7WtfECahyd3o6kOD15PrqM804TIqPwG+ACm1tqh1SQTszgKbaom4nhbh8o5x2ikRGwAw+VYH386inW4LxeeonI++tkTa1mpHrfKHr5po+QxHbwAMefIV+s2sH9qd+XZCoZ59qjKnxKwiY/x462jM6+N75hj84PhmVLhN+XHIuJwdx+UzyOENdNSpjbO546zlw6ZGQiieZoGxA==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "808121ab838501db9b7bf2856036b9ab0b61db411500859ed351e7e73726f6ea",
+      "hash": "22a4044b4a761d215ef779bb393e8520f64fd2fcef394cbbc2853a83287539fc",
+      "ts": 1769105057824,
+      "signature": "suHNKBneaQNkAwngFodZz3OkroM1OgW+/t+W1wlav3S5rjIMX6KIL2MP1o7iauhqvCP4e0iQO4mdvrDkGBI35eCd7GhaVrsWFAsnpG8aUkSbeu11qDbnOnIKldcekO3Dks04kmapqrZ6348oYiTgENfaI2vj9Dc0uYdDBPF7cANufeCp52QYmzhFtwl/Xc/aWVLDTl3u17MaI0XwaK0eboVmFi/huEr02rLdxkEb10milX9qBkAf5OTydcS3oVlEO/c+p8/7W3/3MWZN8BjH8GXngitkxXbgF1osXsnbwY7BS8YkLSAUi8Ujr67ehUoLJakwyg/Y5mDLXmgcZcXgNg==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "22a4044b4a761d215ef779bb393e8520f64fd2fcef394cbbc2853a83287539fc",
+      "hash": "5901a0501d642271c55f1066cac82fdcb2d57c377137f1bd0eaca16337765300",
+      "ts": 1769105339562,
+      "signature": "bxOvOH/OiXB091rWvcFv9UL/srlw8+sOlPXHWAwGLZgh6zaR6jyGkWC/vTkxX8NaTqyslazMMDapPqbcfyY4tiRDcS6ZwhXc7AFAOLOor5RM2IqBsTjlsw0NHP0vg8XBKxYsyVtyalQvOs6FWxSTjy04xxxpiBzBiKUw56reNwC2nGMvrmbNp0YBBbX2/CVfGe7ZJzmn7DC5n6H2kfbel0RW5z69fJ52nAWDgVcHOD4Rrt/x/3F9/Me7Iq93rqdvYtIYDhmmt3rs/5AIil2LgPEkz72xfJU324Oxbhr8agMNWSxLkdhicfknAKs7IkXEqzjKFq12kEEbSNqr2J4pSA==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "5901a0501d642271c55f1066cac82fdcb2d57c377137f1bd0eaca16337765300",
+      "hash": "f1bf14469587c92a4e12a9a0df8e26d57d690ef6a7ec0309eb458c987c9503b3",
+      "ts": 1769106247834,
+      "signature": "U9+moFXWeqN+86koPigTSGgD9nF0OeoaPp65W/+xgpoTJpI1oA6mCIxaHvPR1ihutbyYRudMBPDCXrR/bpt5IdHEB+Iq73+4JdKS/nTQ8SFfrF+uxhtHWWUVBgTnbTJwbHNn4x30hhA6GWrI70ZtmMJoC9EHSs8PMmSns53qeyue+Qk4PfwNFeQbGHlUignp/EjumyAOkBAQdR4BcVyIP0IH7VKB/y9RCVwdSzojNVAW8UCrWmkB+JoZws8QuSusN7uLaknoFSMuQGrEazPDE6Unh0g1MFr8rykipvRPRLBRtBy3QT0CRFJ+kLe8R4/sggTqdoYusKgyzUAhfiJxKw==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "f1bf14469587c92a4e12a9a0df8e26d57d690ef6a7ec0309eb458c987c9503b3",
+      "hash": "1aec585e86e2c6719a6ce9c8a0d6931edac2b1039df7cc77cbf249cf46347655",
+      "ts": 1769106490253,
+      "signature": "HS6aZuLDb4knHTq3zdR5NDx1gWhuK9Fbwf53vzToGJApqAcH8xMZxVSrBYfLSw/ZpOoyqGCSzlMaOpqTZU7Stc8WM76hiVJYWFbGfOwRTqwMoQXljpKBWVbyj8c2foxphAkW/yteeR06VovT1zX3NX/kQxutB6G4VA/K7twK9TtQd98FFixZlhUqk4pJbjzQJgp6VtPLHZWjNhtXaZ1Qw3pxnwrg5Z7pQhV4a5GoaMPaZOggfXr3hrYNZgVSoj+GA6HHOUMcPP4A2xBEia+jHwElGElF21VfCMDYgJpq/VLsyBv9PNeacGEBX4DfwJVb/9+gmtJOD1nDYb2QWqngIQ==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "1aec585e86e2c6719a6ce9c8a0d6931edac2b1039df7cc77cbf249cf46347655",
+      "hash": "bb4ba1d19a3605015327e4e7a2c22275aa40ead39d48bba24aea2249e2cf16ef",
+      "ts": 1769175674813,
+      "signature": "dhHI97YRxyaWL8A7aQtYSyU/ae08nqUS3EtXRTcWCZFfCGVbB1ZaHiE+OlCerWelpxHo4uWeuFy4KXgCiy8H0G2ur04Dqb7ZkM8E+F2rCj8alXpHemix07vee82VDw18bpde45+7kaUfG52QYQUer3zdv1Hz3/LVlFmRaqCWA5CAmLiMAqvQddT/c5gucYjXB+nFxxxJ2jOlAaFAqnfGgN+ztIFUsZh2fCgeYHhMCsmf3Y/pwvkgoSZX6rvL++scqD5HItr1jhDO1H9DgiC/sfkOpismAewJaEY4xAc8vAqoNzQ94FniXSlWIZtiODZ62ZVf8kZtuKkhw1zjkC3m2g==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:NaN",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "bb4ba1d19a3605015327e4e7a2c22275aa40ead39d48bba24aea2249e2cf16ef",
+      "hash": "855f601c2068de30f4d01ce7e6b2c193c01ca862ab35e684fe422d5cf39e3e99",
+      "ts": 1769176784216,
+      "signature": "Dh7IsczKH/igfMCMYIVb1iJden/LUjnhQxTgzsEYn3vzL3kvElof5y0CaHcPlzVXQI9G7qtNbzt3I3u1ZDS0MxHFJyB7K22yim+9hW9lzVSOlNx2ff/plYwEnQGYcZ9hShtpMb11K43L/dYFNj5gfBMXeuGPFKDO//JvlAnIl4O+CL4pHPIfCs0zSQOzDgmIlpfoEpSDaNHvpCdi2Q1vciW8oLaMcimpA4dnk+TQzkCOQiMG0BI7cA15fsmTs2fIdurqBHb2U4vj7e0PDNBEDgeTxk3jdMwkbixjcYUXqCDs2dTQAHOjPq79lx6CKmavGOAdD9CjV5lsGq68CSKR8A==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:1759312800000",
+      "payloadHash": "77c357fdc2134d9751d436cee6ccbcf51821b15a6e904545494ec20e06efc943",
+      "prevHash": "855f601c2068de30f4d01ce7e6b2c193c01ca862ab35e684fe422d5cf39e3e99",
+      "hash": "dfae9878f38d102795dfcab859a1dbeb22dfdc7114d7aa32d176c11ffe0cf8fe",
+      "ts": 1769179204518,
+      "auditTimeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.ts",
+      "signature": "ki5PsXpt4ZG606QJNOZPIPfJOz79xfiEkM6ET1aMGvxlbPK7BDN2unpnsPlk7vfMcy1pIpKoUjplcTDx8uqpsUx0kywJ4lXq0+fJK5IQyofyCEMe4h69rj5X6pn/hEO1HRyksJHeo2/08lUZTE7QY3F032OCCIUflY/+W7ACZdz2RU3vLtVJKM04lpKWoA2VdBUa5I7bVbf6za3mxIsRYWko7x3oR0H/Bx3ZtVyioSPaUraXvak71OEi3EWvD57p6i+eLKo5k/whlau0kVEBuwySnD5GlYRznUjRnvwOPAhXjWhev0tDEovtQ+pcwfgpiDzuSiPRCTgk1ogEUpThNQ==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:1759312800000",
+      "payloadHash": "77c357fdc2134d9751d436cee6ccbcf51821b15a6e904545494ec20e06efc943",
+      "prevHash": "dfae9878f38d102795dfcab859a1dbeb22dfdc7114d7aa32d176c11ffe0cf8fe",
+      "hash": "4c1f4e15558f47ff6cc47da4ef6a61336ab0b0e29799c7a39eeb5e9bf2f8fdcd",
+      "ts": 1769179268650,
+      "auditTimeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.ts",
+      "signature": "CN6qAYsjTZ7m30P0FUB5QlD2oGFeD5/H4eMF4VMpHulzCg1eryaLUUd58S7LsWtwSb7Y85Rp9JxQm8C+K9FDzaVes3DTts9dDEVwSjs6gmahcCDblxyYn5BECRhhbHtrNJ0InhifWhvQQLTRV9En5havJmwbXM+Xh03/snO4ntaQbABpmNEj08npCS6ZIAfXzAYA4sd98sKPBg8HItCXHQQNk+ifyrkRp7Eu23BxT41oHa5LNn+98K8FtJp8lyxXjyo/6CXCtX36RnNCQzVeaK6KYXGBUEijvMq25FbJT8HZuUdRF9DKGen7AFeOarxDPfX1j9sjqnSb8Cez6ziRhg==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:1759312800000",
+      "payloadHash": "77c357fdc2134d9751d436cee6ccbcf51821b15a6e904545494ec20e06efc943",
+      "prevHash": "4c1f4e15558f47ff6cc47da4ef6a61336ab0b0e29799c7a39eeb5e9bf2f8fdcd",
+      "hash": "50243a973654a56cb95a2d5338a278297c0dd56c97b83a068ef67f07acdb7ec8",
+      "ts": 1769179961557,
+      "auditTimeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.ts",
+      "signature": "YoZbBZgzK1C88whLm9VzF7VZOHKYDrjh1xyhoWFrQG9swDEIN6VaVnEEgnH/t+sdCLBXynFEIdK2xDYBTGUR9SzHTItcXOYufgdSQ5Jo6u4NjGsgcsII+MiqLY3JrsrpZ0o7TZpil/DThKmH4Nsim5TXdpVH7gy0W/NpnG0Ztqdn0Vb+JzekoK0o316d/JSbVlwhcBd8c4vP+40IjxUOFIy5hwn8GKWPtdVs5dqi4ri78t9YhrYl4/t3EwoBr30drbEyZ064F7vbj2nThokCT16YIvBymwpfXFSNkkrM8cdJRzEAPjYp9RpSOin4NyAI69Chxv0TucPBlaKddDNd+w==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:1769181867127",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "50243a973654a56cb95a2d5338a278297c0dd56c97b83a068ef67f07acdb7ec8",
+      "hash": "1b6901096e39bad96664d787651d0e1afc9c20698a3dfa313e11af57800da4e0",
+      "ts_iso": "2026-01-23T15:24:27.127Z",
+      "ts_source": "server:Date.now",
+      "signature": "Ips/eqq3lFhm9jRTyOiAf7FQFMyaS2qi2OV7cCyx/HTFhxhCgzcbpzc4MkV4bnDMSgY4PCZHKyl8W6QniKOOZ36qzCJYgmGUZXWCzfbj/oaWDetxiQWRQLod9c4pwTg3L0Qx4TtmTS+9LD/144BcrT9W2ZYq0+g2G+9vDaCYtbCJznImR1xsR2gpNyoeRgJfv/EAjiJ0nFmlpR6OOitWBCM6bQwt7hhar3T21rGrMzlgLjlxZpxwbcjlrPuwNVHoEqHpSAcomtKnIcfdi8/mLAJE6rmtIbzz4aCqL3GUkVIASgKgCa/u0rfYRC+asRbF6MmrYgxwxI1HgAjJIgcKdg==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@ts:1759312800000",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "payloadPlusTimeHash": "9e2457efd2b13026a8a42dca1f781c87085d219e56bcf7b4750351b45194e867",
+      "prevHash": "1b6901096e39bad96664d787651d0e1afc9c20698a3dfa313e11af57800da4e0",
+      "hash": "87113c2fddbd32932f98b3cda3aad7cdf1c7725124663ba10a2b3fc38fec5525",
+      "ts": 1759312800000,
+      "tsIso": "2025-10-01T10:00:00.000Z",
+      "tsSource": "batch.ts",
+      "signature": "pIcYMzLzUoPQ5ZtuFMnPz4QfXSjonFC2xaSohNuTLzsQvEi8bLBWMscYxUD0QTajNBk+YnB1szYJ8UumG4Mn7Jgur5W0WN3jNaMHUDNczLRphn2N8RNGolE2CiwhE06/aQ//byyiVahG7TuCiNtezbGjqTzVVmbvMImruYmXuBck5ks09Y0BaUC7B3VpCSi8n1hbV67KuJAvOByQZhkGSIlmFKl1oxCSi4hqOjHBskKqYdtMh9vezRusCYNNvlGIyAK79w622qbGjTWxzW4lzD6krrnwAasaw5aloAx5KqGZjjWaBV1jd40aDClkZpcUd6S6/JrAZNqBfR1XA04ylQ==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "87113c2fddbd32932f98b3cda3aad7cdf1c7725124663ba10a2b3fc38fec5525",
+      "hash": "2a7ecb8592b45208d2d9c6a68495b07b95945595f5ade6b12e9adcf00c37404c",
+      "ts": 1769183868071,
+      "timeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.created_at",
+      "signature": "I0hKoQYkeB6fdHrKy/tJYX3hr/bHb+4kWTVaDq/IjrRBlyjF9BwTeEVvObj71gh8luZzJXhiJ2OOEcP9CKORW/NNl5Pf3cJk7fPQTDgSfEbHhDe3D1L4uloacldZ1RtfGuJK8BciUIEbUxKN1UQ4DJhMDyx+/DM1M+VrJiiXac1uwnX78C4kGiRBqigi+jOm4+iYQ7AfLn9sYL4vFdWpV8Xtn8+mcafp6eeOHoXhI7f0LbI7soG5t3qLhQuK09ohVAvHNMT9v5AtH2VKtuhap370BBavMGR/nv9+WSgHSgfaRkMU1XYRq6VHoBWtkYVBtd6UxdxoFbBL8d/HgUg8Iw==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "2a7ecb8592b45208d2d9c6a68495b07b95945595f5ade6b12e9adcf00c37404c",
+      "hash": "901ea968afcc3f029ce645a36dce25aac7bc58f9a6911ac655a429af358bb433",
+      "ts": 1769183874505,
+      "timeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.created_at",
+      "signature": "Ef1aLthyiiuhLv23B83ilpjr0rulkIX/W9myCbmkZD7iyxdLZ+lskmBWnW/cFDu3y/8x7AQ5s7hUkd3p3F0+lwvsC2a1bzhgD3exydPqaB3LSBqApBX5dtfh0sFW9cS3bKqJzkn2fIT62ZKS9uFdsOzYD+GI9UccQDzk7bAyXYHBJ4Sh4YP4OnqHWcIP3G0wlX/uzuhrSoh4ar0l+6FPM8L2bHL5z+svSmeRsGhtxjR8jwByjZykXDVgS36IaLlDdz2lrDJngUBqfqDic10HH12XwPTGA0DWDf1Ys7oCknS3k+zPubpMpPeeMepfWZpqZXxokM93MO0FKfw8624G/w==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "901ea968afcc3f029ce645a36dce25aac7bc58f9a6911ac655a429af358bb433",
+      "hash": "2047ad3a8e997bdca4f65b69a893c7d57cc665bbf53189a5515f89181df4b458",
+      "ts": 1769184711272,
+      "timeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.created_at",
+      "signature": "uAKgO6kEJh53XyGaFIr5lFV7xAveZkHgOXLlf58FNoMPV0fTgf83vPj/jnm8q91VTCHJxIFVRv5bx1otCu01EdvE4P39mkrsU89v+TCut3wswBdEb50Ex+AteDl9O1fPgMLQ9oldSb601yhXnvs6YiB+YjsMSvS0AQbK65KHRz/49W7P1TzVNw4+5ZH/3sVf0wTRoQhM+zujIx5Uff/udjqxr+8pmDr40Qr4ZRH8zA5WiYvAKZEBuHW+MhuTxx15GV6idi/qKvjUfdCwuwKPIJKkHCO/5hg0CNT4NtzxKvSm+MxbVh8q6Mau7fXQVH7PVO1E3CCr8vDQp0HXd6df+w==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "2047ad3a8e997bdca4f65b69a893c7d57cc665bbf53189a5515f89181df4b458",
+      "hash": "f31b7730609dfddf2f547b2f9f820d3272cc39ecfd712751988dc3690c306e60",
+      "ts": 1769184978978,
+      "timeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.created_at",
+      "signature": "j+8lyaZeTHnB9CFJ/97/7RRw2OuuQJZi0XtJZ1Vgm4KhOMyCTruwDdaHNIUgU/dPN7rY8NTWlHyE3kWiEBL6VBfdDElPJufFS9emQgWs9/1G/0u92uCrI1V4BzFm/5Y7E4UQf+7nMsaIg9Wnveisu2dQ5Z6fKzYEBVV3eZ6JhFV6pJC/AcrCy/8HvonPi1pH1ZtQkqBJIyD5O4zmO7ECTWOcXZYpzihNR9sSbpt0FqQV5TiAFMumzwR3nJ/4lJsws1zZoYwQ/D3FKtW3jMusrET+bINk4qSif4AD5hX8V4zwdPeDj6IrBBCbMZe9/tCixahImo9/f2Ro3GBzhKoHRA==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2025-10-01T10:00:00.000Z",
+      "payloadHash": "60c9911a766cb343866679786e28426c03cd55e1794ca9c4c978521a72e1d377",
+      "prevHash": "f31b7730609dfddf2f547b2f9f820d3272cc39ecfd712751988dc3690c306e60",
+      "hash": "5cc0bf0689ac13f87c17042a54f378b508bd86f63b52c3adb788469810b69856",
+      "ts": 1769185318500,
+      "timeIso": "2025-10-01T10:00:00.000Z",
+      "timeSource": "batch.created_at",
+      "signature": "Q5MmMZ42HrvOZxYykIFPP9G0FRMtTS1HC3HN2plkau3iweLIwrXH4tm08BrvdOGUumQfWEyKRTomkJeT7PHpAGNIbN6GstPmGhUR39X53XjU7UyqwwOaDCqeKYtyuu+XMxSdk7otHojPUFt2Qg5170EGjAArTouqvJHfPZSWRjKDR5+UNpopufAAr7LrxMOcW2IJmHjN99Q6WowZqHabOI11rFjNH3SSLmVDfPGMpXI4wZ47VC0EoQWrluHJHvbC8TE6Kxz5Yeryks+JzgkKCRH7EF8VKM5MSBcK8Xj8k/eI3ptpO4Sttgu62pUD+MUv2W7m6oqxaFOEgSLBDLUypQ==",
+      "signer": "auditor-v1",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256"
+    },
+    {
+      "batchId": "BATCH-2025-002",
+      "batchVersionId": "BATCH-2025-002@2026-01-29T13:59:23.295Z",
+      "ts": "2026-01-29T13:59:23.295Z",
+      "prevHash": null,
+      "payloadHash": "11a2680eefa6859f19c506e6c38b789c21befc96366430fbbea009c774a4d6d3",
+      "hash": "752ca258beae8af1cef9968104adeb0b25bcbf8b4c6b84bc3d34e3d898dcd0aa",
+      "signature": "QHmecGQQ2hDZHK0RlGezPv7XhBZKS1m8UiqsiGwnxw346LpIvYS3c22Wk5sxxFJutRXbOkAcR+BHJJwgnGojrqd9Qa5vgV/kGF3MEfKawVawWR2P57D7k2+PQaafI7NrunMU3hLILPwauYRKsDJIP3gNgfhdf+X5wCX2SjqidO6xudFDHA7hlUwATIGo1tMOirMtRg7110gPDaH1tuxNv9EBEGY9o0CtH5D0Eimmbl7Jx5qX0P56eP9wmRpWW1HQaHCy8XKKvWsb9NU7uhrqX8pXHGaB5y6Y5wdUnVxuLc3Hzx9EoIxpZp59LfB8XvpnP2Wi2BWxxI+RoUoipQdJlA==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-03-11T05:54:02.521Z",
+        "hashPath": "data/ots/BATCH-2025-002/BATCH-2025-002@2026-01-29T13:59:23.295Z/BATCH-2025-002@2026-01-29T13:59:23.295Z.hash",
+        "otsPath": "data/ots/BATCH-2025-002/BATCH-2025-002@2026-01-29T13:59:23.295Z/BATCH-2025-002@2026-01-29T13:59:23.295Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2025-002&batchVersionHash=752ca258beae8af1cef9968104adeb0b25bcbf8b4c6b84bc3d34e3d898dcd0aa",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2025-002&batchVersionHash=752ca258beae8af1cef9968104adeb0b25bcbf8b4c6b84bc3d34e3d898dcd0aa"
+      },
+      "onChain": null
+    },
+    {
+      "batchId": "BATCH-2026-008",
+      "batchVersionId": "BATCH-2026-008@2026-01-29T13:59:24.767Z",
+      "ts": "2026-01-29T13:59:24.767Z",
+      "prevHash": null,
+      "payloadHash": "3fd875dbde3046e3290d697bdfbe710604a8baca5c3e1c290d0ea36aa08a5bb1",
+      "hash": "7a48e52f472aa23ae26a76dff11f14c028688c2d8b4a46b75a9575c4ffa7abba",
+      "signature": "b6J2kwIZe2db6eLUB8BqzXyGb6kUjJlW9qogBDbSt690AptU4SKodgxmqWpUK2GBpxAC1t6bk9wimIp6qe3fp+FV9dRhc2RwqTX4WxcGgINwUTXudQBabjGlA8cXs/G0UNWI7shtuutwh5qink8oI2pbo9rtw1pPwnPJEoyiYIhUUHlbzu4bvEktKdN8QWvjZX7foOVO5U8CnaCB+iv3fKXCZVw8eMNOvPCnCVRuZnrwR1kJmz39dSisY0708YpgjW/P51n0psP2KHtp73s6PTkqMkh1cD+hOcd7maX/HsPjsU2FiVswkRAwbrNt88zMrR440V3DCTUrUJSxSAVaMg==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null
+    },
+    {
+      "batchId": "BATCH-2026-007",
+      "batchVersionId": "BATCH-2026-007@2026-01-29T14:19:13.389Z",
+      "ts": "2026-01-29T14:19:13.389Z",
+      "prevHash": null,
+      "payloadHash": "eb69e130913fae99ccdb50463ac4d23970070249a77a2aaaa5f651d15dc0a01b",
+      "hash": "9f746167b53d8b196b4673877ea8fbec3d564ecb529854fef0e5db45a71681e5",
+      "signature": "AvJH/bomDtFxKFbcm5ZmryNAsMmumtV5AaC/AsIJmCYFCD6SW0bl0sLQPVUc2tDFG07YLFBAUl/ntkkY+Ih3Sv7FYS51zFNcEh3+SY2ogCSiJOHezwJ5Ii3BXjSWsfAuRrpy/2Z/vMePdnf7tvnvpmzr1036voUb/d2EVBILqmRN6FpgzS8OTdDOdx6yZeYevPJmTFxGdS6EVfjmfG0Gf4GhIWWahm+Yqu6yubRkkooNu+7DOeRp6Odh94sT0pbrDXYKS8lC2VW1DTznXV05ZnSPFHKHy6UeSNNlP9XdkMxQPbr7ZxIlS6qnvyJtFTe2Rq03ILy+Gb4irraP2h85Zw==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2026-01-29T14:52:17.012Z",
+      "ts": "2026-01-29T14:52:17.012Z",
+      "prevHash": "5cc0bf0689ac13f87c17042a54f378b508bd86f63b52c3adb788469810b69856",
+      "payloadHash": "e462b8eda955baec3256dcd533312097cd9a0a8fb6f1d004feb1ef24b47f4847",
+      "hash": "aaab84ed95d15064b1cae3f80b5308a625c9fb1bbbe2360200e854ea56ee36a1",
+      "signature": "gB+d8m2Cm8xqf9FJWIjozL2y+CifqQOaR4ynsC1Aan6qGWt41uypYP3BliPU4IN5Nx1gB62W7bFQwCJTaTZX+737ZOiJvzXZ7t8z177cOVjVYVtWrqC1vdNlzLgVgyvQvK9NOOjvWvwp18ffLxfCHMKwnTK0YtwS3gpc97W5hFL7TMJIGSey7tfxWWTA7CdaQ+rSX5WfJLtnFtkesQK8z7Ypt1cPirjMys7uONakddPU+x/jlN+m9igO2PDR3EJczqkjsqK0mbIX/yQS5aa0NC0gQ1RNBboudsXMtt8X/zsvEPfmEuDRuYZOBXQwRLrYOwA0wYSXPLmyXRXqmuCaHQ==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "batchVersionId": "BATCH-2025-001@2026-01-29T14:52:19.801Z",
+      "ts": "2026-01-29T14:52:19.801Z",
+      "prevHash": "aaab84ed95d15064b1cae3f80b5308a625c9fb1bbbe2360200e854ea56ee36a1",
+      "payloadHash": "88693779129f96fa8ff11e65c166717fb2c63f48b9b3b5f7a5fc8f8ce77ff03f",
+      "hash": "759bf75a7e060f7a9a89f3e4deba9fa1849ed3a33263eb5f6280894b1caf8798",
+      "signature": "kbPUBMRvB99T5iVEn5BzbhEri4Jvkr7J1V3Fqdzsv/f7ZZPhhjs95aUEi9WrMzwql3T0YjacXEWLHlGIQ4A9ivjoAtQCQkRT49TBCzkvsnwu2KBc/b6D+GP+FfnP3FDYIGozjqzC4xaRxH8cJV5n0WokibPI8eH+ThM2Rr0Nt/83gusezUT3iunZ8a7bPqX/89W2uQ9pGGrdp6nGrm+xW9vCHyDC6U20GBa13qJJjAAfZ5D/D5PkulvLZb5pCEjHmRPjEp1aHulNHF4TUaD2Hi/uCf2LqUpzNG04bZLhWGxd0+6RCvE4UjQUZhlJo7SnVM1/HPDhgQF+bVw9MENimA==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null
+    },
+    {
+      "batchId": "BATCH-2026-006",
+      "batchVersionId": "BATCH-2026-006@2026-01-29T14:53:01.971Z",
+      "ts": "2026-01-29T14:53:01.971Z",
+      "prevHash": null,
+      "payloadHash": "eccccf005c5e9c0df7093c4fd07c428613ac433da8d652f1b904ed888b31f32d",
+      "hash": "5767c6e8338502e0f94b0dde4c1760a1f4a12bf7ea023efc19daa8ee5c91fcd1",
+      "signature": "P9SxPeSbtJ03/j+5WSxvqb44l65RkZOh5r+jtEgvD+6h+y4JW19ujUf6+65if+cQgqiZ386epv4wQXr/HWfKsLag4EC4xoY9cMQlDAuUwvrOP02daKyEnCyFjDkNlm3vpGccT8YGs6j520huU4BrHtGkbduaM+aXbqPZGT0ri4G0NNjZuNwJt9CloVmba98v9F1PdP5GqJe6UessA5iRWhHcjL8YvMn97V/lelVDPUXYsJjGFjfFnhmyfSTF2KH8POqTYFkUpoiZfuZXTwCJeDB3jHP6+N8t6plD9lfiDCtSng9j6mTQtzse5XjjdfPn0qsmchSaAgg7k9G5gk/4MQ==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null
+    },
+    {
+      "batchId": "BATCH-2026-002",
+      "batchVersionId": "BATCH-2026-002@2026-01-30T16:05:36.876Z",
+      "ts": "2026-01-30T16:05:36.876Z",
+      "prevHash": "93be05c81176b39e81cf1b0392b00457eb5b8f6dd27bcc819a1c314aef58e50d",
+      "payloadHash": "6af73d48014dd25c80abb1ed038d1d87e1d8c6c9851862c7640b37ec861038b0",
+      "hash": "21086a7ea67d026dc51e4be8a57a1202abfd484797dcfa1d228495703db95f92",
+      "signature": "OJGT2tm8NKboZ/hck4f3S7OzjItyTNYYsNTId8KophXlKjSG7w+055SFgrrJqkEVPgnI+rzQ9JesuRKxBRIJq4Vjwv6aW8U2sto5BUdqPrH7FVlJ5adQGHNW9rMxi9F3r+p0dVrPdlh1SsgAoKH1nNrNsq8tKCY+x63bHDbRrJasCDln7r/njojQ9MWVk0irdAHNAK7AMNLy3Zr26Pl0+6to8W8oeQ3G1s1wsWqU5zSta3//3xYZsZZ8ZaMgHxc/QYogTIqAElbXUhMaCebVsRwG0/unJ23ox/cfw1/xkmEvTGHfVlPQcttiUmvAJDc5OLc/swxY6hIUa0U6UPSo/g==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null,
+      "signatures": [],
+      "events": [
+        {
+          "type": "admin.audit.approve_and_version",
+          "actorRole": "auditor-admin",
+          "actorName": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-30T16:05:36.876Z"
+        },
+        {
+          "type": "admin.audit.set_status",
+          "actorRole": "auditor-admin",
+          "actorName": "ESG Auditor",
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-30T16:05:42.654Z"
+        }
+      ]
+    },
+    {
+      "batchId": "BATCH-2026-002",
+      "batchVersionId": "BATCH-2026-002@2026-01-30T16:05:42.654Z",
+      "ts": "2026-01-30T16:05:42.654Z",
+      "prevHash": "21086a7ea67d026dc51e4be8a57a1202abfd484797dcfa1d228495703db95f92",
+      "payloadHash": "61096b68ea107032dbb3fb357c1eb1fc62b86f615c0ccd851c65c280483463ea",
+      "hash": "47b06703df0e4aba1853b89a8add1347449f8f857bc949d67a034f457c9c8336",
+      "signature": "nJxF+NY1+zRaM1wriJb7ZoaKsRyu9FGOK6WbxLIF9UofgZCPoUljUfaHHcJolNYbSuFqwjc/qMaBnlil7WoL6EvdQeFluMdyfXFZ2CD0b3BGyOUNB1+xxSeGS8wSkIgzB7s8fIepCLiGBUStio61RecBM20UKBOVIygM2RGh7wpcC4ZvuEHMis3/RGt0Z8ifZSTaraiPUO7p/5RuNvIlUvYIxOqgQv+lQoggf9DxF1MH1Gs/IM632kWSlcLv3UDkYDeWUgOSu61ajNEOt021adU5qpDLfH9DTPRpw5UgxIOU0i+VM3r8oCjtmqe4Mch7NLi4Us2y7Nk2IjiyEv1c3w==",
+      "alg": "RSA-SHA256",
+      "signer": "esg-auditor",
+      "signerName": "ESG Auditor",
+      "ots": null,
+      "signatures": [],
+      "events": [
+        {
+          "type": "admin.audit.approve_and_version",
+          "actorRole": "auditor-admin",
+          "actorName": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "ts": "2026-01-30T16:05:42.654Z"
+        }
+      ]
+    },
+    {
+      "batchId": "BATCH-2026-004",
+      "batchVersionId": "BATCH-2026-004@2026-02-02T14:52:59.811Z",
+      "ts": "2026-02-02T14:52:59.811Z",
+      "prevHash": null,
+      "payloadHash": "a169ea9116884a6fb348c1f5dd9718fd2a5271d5064c0e69066197bf3a797d90",
+      "hash": "813a313741cd76f3921e659595dc0babe2c9920ed1e80a50c96b18ac51cec304",
+      "signatures": [
+        {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "signature": "Q+nVJjsSUmye1ncGZxrVjjZiGP7xCFmiUf7YhtHW+3yRTgAOjyCqyjweYqXhU48QyJf7BATTtuSylhe/Co6xbpVy9mnnQO9ipfYttLtCA5Iz/EoWVjY7p+5f3QRB3QrlwE6w3A9kdtFhuFhyQM7+N8M6JzasgsrxmF6cNIlRliwdiydzol0Gd8AdDTnR6xG/dP8PnT+w8Oh7xxaE6XkrRkIreJnCd6PZkrerbHctZLTTNtf15B7vAOI+ow3yBlx/QpWo9mECNRjrlIAFfCrwLq8xU4970yggcKe4vBoKGh1PBUZHes4iNMPbIkMZquCTzlmIbI6CyHvLOMlexUooHw==",
+          "alg": "RSA-SHA256",
+          "signedAt": "2026-02-02T14:52:59.811Z"
+        }
+      ],
+      "signature": "Q+nVJjsSUmye1ncGZxrVjjZiGP7xCFmiUf7YhtHW+3yRTgAOjyCqyjweYqXhU48QyJf7BATTtuSylhe/Co6xbpVy9mnnQO9ipfYttLtCA5Iz/EoWVjY7p+5f3QRB3QrlwE6w3A9kdtFhuFhyQM7+N8M6JzasgsrxmF6cNIlRliwdiydzol0Gd8AdDTnR6xG/dP8PnT+w8Oh7xxaE6XkrRkIreJnCd6PZkrerbHctZLTTNtf15B7vAOI+ow3yBlx/QpWo9mECNRjrlIAFfCrwLq8xU4970yggcKe4vBoKGh1PBUZHes4iNMPbIkMZquCTzlmIbI6CyHvLOMlexUooHw==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "ots": null,
+      "onChain": null,
+      "event": {
+        "type": "AUDIT_STATUS_SET",
+        "actor": {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "name": "ESG Auditor"
+        },
+        "action": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。"
+        }
+      }
+    },
+    {
+      "batchId": "BATCH-2026-004",
+      "batchVersionId": "BATCH-2026-004@2026-02-02T14:53:28.675Z",
+      "ts": "2026-02-02T14:53:28.675Z",
+      "prevHash": "813a313741cd76f3921e659595dc0babe2c9920ed1e80a50c96b18ac51cec304",
+      "payloadHash": "908bb2351a37df5737dfa4fb223f5de6c6cc979ab1e3ca1c5acfe9f175d58838",
+      "hash": "f62c15f1a3377fc202da314b68bc3f2bfff9ee2490cbce15e4a468376ab544d5",
+      "signatures": [
+        {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "signature": "A9r6/kEXS/BOl2+h1b/WVITLdBWUZ+GfB2OwEkXLOMDtGOsi78/QbzYUOtXYjvqYQkvjP4ioETM/lbfwPWuxf5iKRiFdvZkfKJIG+LsQ25v5wWDpb8FARPZEPL9+ihlaHU0+Wx5+cAacQCavUXpI13JcaJpavuSLGns85JDRvOhaaO23W5g0JbF+F6XmD6psFxFLiSP97h4SmvWQoPEE4npzZuMXnfK9+09WbwN41IWNZ5E1YtkTMGANnAeW1rWiF6sjnbXsNB/uH69e1veVGlOFzmYAq8/QE0zoSjle7wWeu28FIT8ElhCe2S1AOQnuxSwtoC63HyUL/XbGgFCggQ==",
+          "alg": "RSA-SHA256",
+          "signedAt": "2026-02-02T14:53:28.675Z"
+        }
+      ],
+      "signature": "A9r6/kEXS/BOl2+h1b/WVITLdBWUZ+GfB2OwEkXLOMDtGOsi78/QbzYUOtXYjvqYQkvjP4ioETM/lbfwPWuxf5iKRiFdvZkfKJIG+LsQ25v5wWDpb8FARPZEPL9+ihlaHU0+Wx5+cAacQCavUXpI13JcaJpavuSLGns85JDRvOhaaO23W5g0JbF+F6XmD6psFxFLiSP97h4SmvWQoPEE4npzZuMXnfK9+09WbwN41IWNZ5E1YtkTMGANnAeW1rWiF6sjnbXsNB/uH69e1veVGlOFzmYAq8/QE0zoSjle7wWeu28FIT8ElhCe2S1AOQnuxSwtoC63HyUL/XbGgFCggQ==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "ots": null,
+      "onChain": null,
+      "event": {
+        "type": "AUDIT_STATUS_SET",
+        "actor": {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "name": "ESG Auditor"
+        },
+        "action": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。"
+        }
+      }
+    },
+    {
+      "batchId": "BATCH-2026-004",
+      "batchVersionId": "BATCH-2026-004@2026-02-02T14:53:32.182Z",
+      "ts": "2026-02-02T14:53:32.182Z",
+      "prevHash": "f62c15f1a3377fc202da314b68bc3f2bfff9ee2490cbce15e4a468376ab544d5",
+      "payloadHash": "1b31097ff39b87d50dbd75b612d672e1d149a34c6d09536392f3514fbe29355b",
+      "hash": "b3e2af8dc4e08a9a31f0d99e22c9c0a9de959f8c016686944a84b194f31e6060",
+      "signatures": [
+        {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "signature": "DAP4O6c7Z6G7HppLTUJB4H0+JvagfSrjnr28Vcm6XAnhUR/45ofmbKhBduSO+1MHRClDw0PUU+7VXFJrHplqelGPYcWKD3anqgDw3sTSF2Fu1RCqPTpEhtZRBSek8bhNLP3LD8XHQzzU5bDUbPR4cNTYHqC9HZEswDIaQEn6DB0TtsoSAW6fAAf4kFShxJyeustjiSSGQgQGkYmlYkBUiRdUQ8FoCKQDM/pimAOA66IHf3Y4gAifx8jOwlssrvcGn3RrD7hNveT6EUI4T3TQJmcUVVeLumHl0r8Dqby6ze0Ft05Q5HIj6ih0CxvbHI+mabGtHQrm+fmjAC+bg70S+Q==",
+          "alg": "RSA-SHA256",
+          "signedAt": "2026-02-02T14:53:32.182Z"
+        }
+      ],
+      "signature": "DAP4O6c7Z6G7HppLTUJB4H0+JvagfSrjnr28Vcm6XAnhUR/45ofmbKhBduSO+1MHRClDw0PUU+7VXFJrHplqelGPYcWKD3anqgDw3sTSF2Fu1RCqPTpEhtZRBSek8bhNLP3LD8XHQzzU5bDUbPR4cNTYHqC9HZEswDIaQEn6DB0TtsoSAW6fAAf4kFShxJyeustjiSSGQgQGkYmlYkBUiRdUQ8FoCKQDM/pimAOA66IHf3Y4gAifx8jOwlssrvcGn3RrD7hNveT6EUI4T3TQJmcUVVeLumHl0r8Dqby6ze0Ft05Q5HIj6ih0CxvbHI+mabGtHQrm+fmjAC+bg70S+Q==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "ots": null,
+      "onChain": null,
+      "event": {
+        "type": "AUDIT_STATUS_SET",
+        "actor": {
+          "role": "auditor",
+          "did": "did:web:auditor.local",
+          "name": "ESG Auditor"
+        },
+        "action": {
+          "status": "approved",
+          "note": "樣本資料：審計方已覆核此批次。"
+        }
+      }
+    },
+    {
+      "batchId": "BATCH-2026-009",
+      "batchVersionId": "AUTO-1774080287165",
+      "hash": "acaafaad6bd9718515c9c15cd8bc7ebb3a61674e6ba78bce8cba02e49b7ca060",
+      "ts": "2026-03-21T08:04:47.153Z",
+      "signer": "auditor",
+      "signerName": "ESG Auditor"
+    },
+    {
+      "batchId": "BATCH-2026-009",
+      "id": "BATCH-2026-009",
+      "audit": {
+        "status": "approved",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-03-21T09:01:55.779Z"
+      },
+      "batchVersionId": "BATCH-2026-009@2026-03-21T09:01:55.779Z",
+      "ts": "2026-03-21T09:01:55.779Z",
+      "prevHash": "acaafaad6bd9718515c9c15cd8bc7ebb3a61674e6ba78bce8cba02e49b7ca060",
+      "payloadHash": "ea4f77e47a588de25f58a2eab0cdc36c2482ee8313ebc913f346f003429be2b2",
+      "hash": "f2ef1a0f427c05afdfc2d543096978d2051a38944d8dbb8fb95b671af5549f82",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-03-21T09:01:55.779Z",
+          "signature": "iJ/zTkjvzQItf+0U4x9byMCfvUNC0vxJaXT6UMStAGiV/FGTlk830jAcy6FwAI3WusqNYq7El2RwAmsefbcoLILeVRUQHqv8PGlXE4+kZgJHkDtB3w8mx2kQf1kPdMw7xGy41ku4o+vjpLUlHLqEkHkKokO+KfYABUxVgx4zFKosCmpecE7y0VKa4vpuRv8UbasrPg/W8FtYr0qhyNHbsHy43dctHYiALIHMLSEOlSxYAh0/EKV8pWugZGxB5JZm0FzI4vaSlasCWsaEZuLVDBQtz3N1L88YanI62pGM+J/R9zsIzUuNNIZod955HO35mOaVSnN62IgKFaqDUB9jrw=="
+        }
+      ],
+      "signature": "iJ/zTkjvzQItf+0U4x9byMCfvUNC0vxJaXT6UMStAGiV/FGTlk830jAcy6FwAI3WusqNYq7El2RwAmsefbcoLILeVRUQHqv8PGlXE4+kZgJHkDtB3w8mx2kQf1kPdMw7xGy41ku4o+vjpLUlHLqEkHkKokO+KfYABUxVgx4zFKosCmpecE7y0VKa4vpuRv8UbasrPg/W8FtYr0qhyNHbsHy43dctHYiALIHMLSEOlSxYAh0/EKV8pWugZGxB5JZm0FzI4vaSlasCWsaEZuLVDBQtz3N1L88YanI62pGM+J/R9zsIzUuNNIZod955HO35mOaVSnN62IgKFaqDUB9jrw==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-03-21T09:01:55.779Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-03-21T09:01:55.779Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "pending",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-03-21T09:03:54.419Z",
+        "hashPath": "data/ots/BATCH-2026-009/BATCH-2026-009@2026-03-21T09:01:55.779Z/BATCH-2026-009@2026-03-21T09:01:55.779Z.hash",
+        "otsPath": "data/ots/BATCH-2026-009/BATCH-2026-009@2026-03-21T09:01:55.779Z/BATCH-2026-009@2026-03-21T09:01:55.779Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2026-009&batchVersionHash=f2ef1a0f427c05afdfc2d543096978d2051a38944d8dbb8fb95b671af5549f82",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2026-009&batchVersionHash=f2ef1a0f427c05afdfc2d543096978d2051a38944d8dbb8fb95b671af5549f82"
+      },
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0xa780051dd80e363ce6466726cb6deefe3e147fd54c993063082422164953150b",
+        "blockNumber": 1777099539,
+        "anchoredAt": "2026-04-25T06:45:39.160Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0xa780051dd80e363ce6466726cb6deefe3e147fd54c993063082422164953150b"
+      }
+    },
+    {
+      "id": "BATCH-2026-010",
+      "material": "PET",
+      "kg": 3333333,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777101777738
+      },
+      "ts": "2026-04-25T07:23:51.763Z",
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777101809203,
+        "input_kg": 33333333,
+        "output_kg": 33333333,
+        "waste_kg": 33333333,
+        "energy_kwh": 3333333,
+        "water_l": 33333333
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777101822682,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 333
+      },
+      "batchId": "BATCH-2026-010",
+      "audit": {
+        "status": "approved",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-04-25T07:23:51.763Z"
+      },
+      "batchVersionId": "BATCH-2026-010@2026-04-25T07:23:51.763Z",
+      "prevHash": null,
+      "payloadHash": "a30b7de7c7db07791e970c7bf9d30dd234bb6ac4d63d1e8f5b7f448bca08a312",
+      "hash": "a6f6e24de381d54f66c0b39cd8aa7b47455d5d6267aa824302787521da39de51",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "signature": "ACp0CvzNAWcKswz8GgXMXDCemcDWkaYbBHTXAIrHtlvxIxM0By3HiyrjRgfuN/X/T6sDCYj3JyjKmhuEuoWcmyv4tzathhWlPXXzUGerRqC+Fpx0mwnBujIJIsF2f6GG/7dEW7nFw10qpdLFMb7lKSBCCxvpY2wafo1UII8gaDx5jfhBScH5cBo3fGSoxkPWM/auv3gmqaGs20LT57Di1bzzplCiZFE4M7mIBYziYEJKaf66bOy3MulbSgJIXfu3YRbTYyRH1kz8YCHzDMqFCksQg1gNvSs6dYT+8T6jsGpp0jLGsG6vGzTT4OMsvpEpvChJXzAJwdMww8AagDP94A=="
+        }
+      ],
+      "signature": "ACp0CvzNAWcKswz8GgXMXDCemcDWkaYbBHTXAIrHtlvxIxM0By3HiyrjRgfuN/X/T6sDCYj3JyjKmhuEuoWcmyv4tzathhWlPXXzUGerRqC+Fpx0mwnBujIJIsF2f6GG/7dEW7nFw10qpdLFMb7lKSBCCxvpY2wafo1UII8gaDx5jfhBScH5cBo3fGSoxkPWM/auv3gmqaGs20LT57Di1bzzplCiZFE4M7mIBYziYEJKaf66bOy3MulbSgJIXfu3YRbTYyRH1kz8YCHzDMqFCksQg1gNvSs6dYT+8T6jsGpp0jLGsG6vGzTT4OMsvpEpvChJXzAJwdMww8AagDP94A==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:23:51.763Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "null",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": null,
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0xd176da64bd2d00d7cab7d840a2f4d82217dfa5868fe9a1cb80c3d121f6638a56",
+        "blockNumber": 1777101831,
+        "anchoredAt": "2026-04-25T07:23:51.947Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0xd176da64bd2d00d7cab7d840a2f4d82217dfa5868fe9a1cb80c3d121f6638a56"
+      }
+    },
+    {
+      "batchId": "BATCH-2025-001",
+      "id": "BATCH-2025-001",
+      "audit": {
+        "status": "approved",
+        "by": "ESG Auditor",
+        "note": "很棒",
+        "ts": "2026-04-25T07:24:13.666Z"
+      },
+      "batchVersionId": "BATCH-2025-001@2026-04-25T07:24:13.666Z",
+      "ts": "2026-04-25T07:24:13.666Z",
+      "prevHash": "759bf75a7e060f7a9a89f3e4deba9fa1849ed3a33263eb5f6280894b1caf8798",
+      "payloadHash": "7ebbd77ea80476b6ac4f945be560e6663faabddaa073ab70872def1a11fdbcc5",
+      "hash": "a8b4eafa83e614f289a55625886dcbc0ce1a8b4435416bbc67a255ff05068464",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:24:13.666Z",
+          "signature": "IqlHpXNvDn7pxJa9mLdCHJgqfpYkLtH8jizkxnFBZ6xzR3WhkZB0VE7eYkWvRUwPUF1wS5esI67bUIRDWLHDEOGFS2oEAuQpu38sHJb+pBgP2oEUbDjuqqvZP6HK74MmdqQTTuqLm2aEg8KIulIIa6/UJ8qgGinlZ7xNtgZjOWK8+PX2fKux4ncpuTMih//VxVl6YtasKflb0eEnei6SMl8mQeVVHPPDoTbxQBejo++NuUJMPGuxG0jyedxzCuueVZgAUAow2RxmTN9k7PFfRQcNHctwuqhXDV+GS7EoEXgWFP3l3DpFt4I9hplh4cvBmlSniEBWUkdFyaD9qs9Zjw=="
+        }
+      ],
+      "signature": "IqlHpXNvDn7pxJa9mLdCHJgqfpYkLtH8jizkxnFBZ6xzR3WhkZB0VE7eYkWvRUwPUF1wS5esI67bUIRDWLHDEOGFS2oEAuQpu38sHJb+pBgP2oEUbDjuqqvZP6HK74MmdqQTTuqLm2aEg8KIulIIa6/UJ8qgGinlZ7xNtgZjOWK8+PX2fKux4ncpuTMih//VxVl6YtasKflb0eEnei6SMl8mQeVVHPPDoTbxQBejo++NuUJMPGuxG0jyedxzCuueVZgAUAow2RxmTN9k7PFfRQcNHctwuqhXDV+GS7EoEXgWFP3l3DpFt4I9hplh4cvBmlSniEBWUkdFyaD9qs9Zjw==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:24:13.666Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "很棒",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:24:13.666Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "很棒",
+        "data": {
+          "prevStatus": "approved",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": null,
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0x8866b2d7177886ba312e65ae0dfdb00e11d2c6b429cd24da34dc373bd33ae68d",
+        "blockNumber": 1777101853,
+        "anchoredAt": "2026-04-25T07:24:13.720Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0x8866b2d7177886ba312e65ae0dfdb00e11d2c6b429cd24da34dc373bd33ae68d"
+      }
+    },
+    {
+      "id": "BATCH-2026-010",
+      "material": "PET",
+      "kg": 3333333,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777101777738
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777101809203,
+        "input_kg": 33333333,
+        "output_kg": 33333333,
+        "waste_kg": 33333333,
+        "energy_kwh": 3333333,
+        "water_l": 33333333
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777101822682,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 333
+      },
+      "batchId": "BATCH-2026-010",
+      "audit": {
+        "status": "pending",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-04-25T07:24:57.387Z"
+      },
+      "batchVersionId": "BATCH-2026-010@2026-04-25T07:24:57.387Z",
+      "ts": "2026-04-25T07:24:57.387Z",
+      "prevHash": "a6f6e24de381d54f66c0b39cd8aa7b47455d5d6267aa824302787521da39de51",
+      "payloadHash": "d8f94d8bfa09453bbc5d688465f252746bb6ebd91ec85aa307a3caed11fab5dc",
+      "hash": "209d4444cc9a03288e0ed8867ce1381fb9cfe42e9f2e98f2e2355a3a86e26c10",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:24:57.387Z",
+          "signature": "uPSU2wAQZkbtllGdP5elMlnsGfXmqjZvySj39mQqTBBdSPdwYu2o2xXfwUUwOdO4LCexTZGyKEva5p6mKQmc/QYTbIwqrUmulR4GpRAbYycgiZT9aWBWfWw64tnGhJYVnFsmIcFU/curf8lHD6F+o77tZnTYZGBmdvzoqkqSgDWGDwkixTgb4kJ9DT2P8dbxWtbAK5WyIBPBMtlCL6Ibek7p7dR+bemgjNjzjajuS5Z20KavW4drjKodpHpY4eQsVtWLhk29IUOBqa8jIEFcogcDVJIixBgJjmBhP4PEUN3IO+f/EldLu5JrCd3SapDOXNGKl/C2YpP1FZPOBFXAbg=="
+        }
+      ],
+      "signature": "uPSU2wAQZkbtllGdP5elMlnsGfXmqjZvySj39mQqTBBdSPdwYu2o2xXfwUUwOdO4LCexTZGyKEva5p6mKQmc/QYTbIwqrUmulR4GpRAbYycgiZT9aWBWfWw64tnGhJYVnFsmIcFU/curf8lHD6F+o77tZnTYZGBmdvzoqkqSgDWGDwkixTgb4kJ9DT2P8dbxWtbAK5WyIBPBMtlCL6Ibek7p7dR+bemgjNjzjajuS5Z20KavW4drjKodpHpY4eQsVtWLhk29IUOBqa8jIEFcogcDVJIixBgJjmBhP4PEUN3IO+f/EldLu5JrCd3SapDOXNGKl/C2YpP1FZPOBFXAbg==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:24:57.387Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:24:57.387Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "approved",
+          "nextStatus": "pending"
+        }
+      },
+      "ots": null,
+      "onChain": null
+    },
+    {
+      "id": "BATCH-2026-010",
+      "material": "PET",
+      "kg": 3333333,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777101777738
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777101809203,
+        "input_kg": 33333333,
+        "output_kg": 33333333,
+        "waste_kg": 33333333,
+        "energy_kwh": 3333333,
+        "water_l": 33333333
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777101822682,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 333
+      },
+      "batchId": "BATCH-2026-010",
+      "audit": {
+        "status": "pending",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-04-25T07:25:03.228Z"
+      },
+      "batchVersionId": "BATCH-2026-010@2026-04-25T07:25:03.228Z",
+      "ts": "2026-04-25T07:25:03.228Z",
+      "prevHash": "209d4444cc9a03288e0ed8867ce1381fb9cfe42e9f2e98f2e2355a3a86e26c10",
+      "payloadHash": "7ea610c26c7a5c6156ee70c61d87fbb70e5c1bf4f5cdb98ad239b45b1f8c2002",
+      "hash": "82e579e287b95715e899f410676d2eef95dc7979f854c1b36c2ba5a00d495acb",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:25:03.228Z",
+          "signature": "BxKi4Nge+EArPFqW28mKpOdPlAOb4cQEmJhPXGyTKK1XmH5CagjvGZ1NBPZVKeMtH4BJN4LFtI+1p/mws7ttjYTHzA9V8/H58ybfXcXy7p8U1y4gLl8BVl/YF3L6nYB1dn08VhvEmiz2l7m2Hfkxu72/GBsYU/V1lJNkcIO8aJiJzI6q1Zoxu1h0mYUAeyOXnuYrCklYMhd30GYjAaFiiB4MUfJXxjQnVkzeGtMfTi6hZOScuFcQJLYpcBlrouZpQrVRYHDeHluBXXiWtz+7fANwY4LYLB5cQXlm0QqtshqZwuGV/g2ayqhCMYN/6KxGmAG2QgSsrFYCg7/RcPJsQA=="
+        }
+      ],
+      "signature": "BxKi4Nge+EArPFqW28mKpOdPlAOb4cQEmJhPXGyTKK1XmH5CagjvGZ1NBPZVKeMtH4BJN4LFtI+1p/mws7ttjYTHzA9V8/H58ybfXcXy7p8U1y4gLl8BVl/YF3L6nYB1dn08VhvEmiz2l7m2Hfkxu72/GBsYU/V1lJNkcIO8aJiJzI6q1Zoxu1h0mYUAeyOXnuYrCklYMhd30GYjAaFiiB4MUfJXxjQnVkzeGtMfTi6hZOScuFcQJLYpcBlrouZpQrVRYHDeHluBXXiWtz+7fANwY4LYLB5cQXlm0QqtshqZwuGV/g2ayqhCMYN/6KxGmAG2QgSsrFYCg7/RcPJsQA==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:24:57.387Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:25:03.228Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "pending"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:25:03.228Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "pending",
+          "nextStatus": "pending"
+        }
+      },
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-04-25T07:28:17.948Z",
+        "hashPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:25:03.228Z/BATCH-2026-010@2026-04-25T07:25:03.228Z.hash",
+        "otsPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:25:03.228Z/BATCH-2026-010@2026-04-25T07:25:03.228Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=82e579e287b95715e899f410676d2eef95dc7979f854c1b36c2ba5a00d495acb",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=82e579e287b95715e899f410676d2eef95dc7979f854c1b36c2ba5a00d495acb"
+      },
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0xdbd5b0312e7855907fe8d651972817d5de70346d7e0aef0fa51fcab284f4167f",
+        "blockNumber": 1777102098,
+        "anchoredAt": "2026-04-25T07:28:18.314Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0xdbd5b0312e7855907fe8d651972817d5de70346d7e0aef0fa51fcab284f4167f"
+      }
+    },
+    {
+      "id": "BATCH-2026-010",
+      "material": "PET",
+      "kg": 3333333,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777101777738
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777101809203,
+        "input_kg": 33333333,
+        "output_kg": 33333333,
+        "waste_kg": 33333333,
+        "energy_kwh": 3333333,
+        "water_l": 33333333
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777101822682,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 333
+      },
+      "batchId": "BATCH-2026-010",
+      "audit": {
+        "status": "approved",
+        "by": "Auto Auditor",
+        "note": "系統自動審核通過並建立可信版本。",
+        "ts": "2026-04-25T07:46:31.412Z"
+      },
+      "batchVersionId": "BATCH-2026-010@2026-04-25T07:46:31.412Z",
+      "ts": "2026-04-25T07:46:31.412Z",
+      "prevHash": "82e579e287b95715e899f410676d2eef95dc7979f854c1b36c2ba5a00d495acb",
+      "payloadHash": "85dbc612d791aebccaac8deb4c2369a917d648cbbe3f31618e75bd0f44f57c22",
+      "hash": "30f70a6022f0cd3f7c1a7021a9144ac991197df96797fe84eefe5ed7102f09f6",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "Auto Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:46:31.412Z",
+          "signature": "hoCWPVvdGyHMXwnhAN7yZXM6O9HozHL6h3AKrFq/uPYdg/rkcWX5xCfXMJoQWYkw4MIQg+IdWqP51NWC1iePBdXQ8C16i+/V3rOYsqeBsfCp1nZBmvjiNAnlayG8PFEMtC12yAPxOaQxO26WtH+uHLccbCDRcQCtLmQKgZBiy8JRU1o855vmGzqs2/cG2SqDCc+Q1pAvQZexPn4MgErXjGKeTsgkVn1mWoqh15RRuyLYNYpOjxm8ZGda9hmE9x9SDbaZJQ022KPRpaEEDwDeLC1Cb7guP9pj8foITvTbeQgHF/fZzKq0R/8dJU/pFlc3UffphBDRRulsUZW/NN6WGQ=="
+        }
+      ],
+      "signature": "hoCWPVvdGyHMXwnhAN7yZXM6O9HozHL6h3AKrFq/uPYdg/rkcWX5xCfXMJoQWYkw4MIQg+IdWqP51NWC1iePBdXQ8C16i+/V3rOYsqeBsfCp1nZBmvjiNAnlayG8PFEMtC12yAPxOaQxO26WtH+uHLccbCDRcQCtLmQKgZBiy8JRU1o855vmGzqs2/cG2SqDCc+Q1pAvQZexPn4MgErXjGKeTsgkVn1mWoqh15RRuyLYNYpOjxm8ZGda9hmE9x9SDbaZJQ022KPRpaEEDwDeLC1Cb7guP9pj8foITvTbeQgHF/fZzKq0R/8dJU/pFlc3UffphBDRRulsUZW/NN6WGQ==",
+      "signer": "auditor",
+      "signerName": "Auto Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:24:57.387Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:25:03.228Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:46:31.412Z",
+          "role": "auditor",
+          "by": "Auto Auditor",
+          "note": "系統自動審核通過並建立可信版本。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:46:31.412Z",
+        "role": "auditor",
+        "by": "Auto Auditor",
+        "note": "系統自動審核通過並建立可信版本。",
+        "data": {
+          "prevStatus": "pending",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-04-25T07:46:32.350Z",
+        "hashPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:46:31.412Z/BATCH-2026-010@2026-04-25T07:46:31.412Z.hash",
+        "otsPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:46:31.412Z/BATCH-2026-010@2026-04-25T07:46:31.412Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=30f70a6022f0cd3f7c1a7021a9144ac991197df96797fe84eefe5ed7102f09f6",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=30f70a6022f0cd3f7c1a7021a9144ac991197df96797fe84eefe5ed7102f09f6"
+      },
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0xe7fa4d26b37ba81d9986fc6fbae4e3eee7f46b2a1ad32b3beb5051adc9cefd29",
+        "blockNumber": 1777103192,
+        "anchoredAt": "2026-04-25T07:46:32.389Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0xe7fa4d26b37ba81d9986fc6fbae4e3eee7f46b2a1ad32b3beb5051adc9cefd29"
+      }
+    },
+    {
+      "id": "BATCH-2026-010",
+      "material": "PET",
+      "kg": 3333333,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777101777738
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777101809203,
+        "input_kg": 33333333,
+        "output_kg": 33333333,
+        "waste_kg": 33333333,
+        "energy_kwh": 3333333,
+        "water_l": 33333333
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777101822682,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 333
+      },
+      "batchId": "BATCH-2026-010",
+      "audit": {
+        "status": "approved",
+        "by": "Auto Auditor",
+        "note": "系統自動審核通過並建立可信版本。",
+        "ts": "2026-04-25T07:46:44.980Z"
+      },
+      "batchVersionId": "BATCH-2026-010@2026-04-25T07:46:44.980Z",
+      "ts": "2026-04-25T07:46:44.980Z",
+      "prevHash": "30f70a6022f0cd3f7c1a7021a9144ac991197df96797fe84eefe5ed7102f09f6",
+      "payloadHash": "c4e6fa14d2af3a859beb0632d11e0b5ec5d3bdb19cd62c670882de45524900de",
+      "hash": "a74bc0751f8f15250f8ec05755c27c0558057c8508324b83de31178ae9454d7a",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "Auto Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:46:44.980Z",
+          "signature": "pUWdmWuutnA5ETQ5+mjZF8afKKmAWc1eeRSTZREwJhDqXKzyk+W+pUtbsNwb7kTnDvOfyoZukDFIZpvpPuHpB3f3aU5XwrtW+g2KzgZtCW2f5T0W0XobSXmKgmsA46rM/c1EKFpDWdGS8nonWXaPUBm8EqoFaqgcioZvlrEK5gJSjC9IOXgdc9fXRXcS6V3iuz2CFeA3xj6lmpOaJZGWabnrmcJCqWohtYb2Z0i03CEDeYYPINYSZi/YNxmeWEwGXdhvVMGleRrCgr6yyigbAQAP3ZClYdowCED7uw59sewPbbCybvSjV7/110i7JdhRNTdm9PD4FQojo+jbmsc+bg=="
+        }
+      ],
+      "signature": "pUWdmWuutnA5ETQ5+mjZF8afKKmAWc1eeRSTZREwJhDqXKzyk+W+pUtbsNwb7kTnDvOfyoZukDFIZpvpPuHpB3f3aU5XwrtW+g2KzgZtCW2f5T0W0XobSXmKgmsA46rM/c1EKFpDWdGS8nonWXaPUBm8EqoFaqgcioZvlrEK5gJSjC9IOXgdc9fXRXcS6V3iuz2CFeA3xj6lmpOaJZGWabnrmcJCqWohtYb2Z0i03CEDeYYPINYSZi/YNxmeWEwGXdhvVMGleRrCgr6yyigbAQAP3ZClYdowCED7uw59sewPbbCybvSjV7/110i7JdhRNTdm9PD4FQojo+jbmsc+bg==",
+      "signer": "auditor",
+      "signerName": "Auto Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:23:51.763Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:24:57.387Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:25:03.228Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:46:31.412Z",
+          "role": "auditor",
+          "by": "Auto Auditor",
+          "note": "系統自動審核通過並建立可信版本。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:46:44.980Z",
+          "role": "auditor",
+          "by": "Auto Auditor",
+          "note": "系統自動審核通過並建立可信版本。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:46:44.980Z",
+        "role": "auditor",
+        "by": "Auto Auditor",
+        "note": "系統自動審核通過並建立可信版本。",
+        "data": {
+          "prevStatus": "approved",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-04-25T07:46:45.776Z",
+        "hashPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:46:44.980Z/BATCH-2026-010@2026-04-25T07:46:44.980Z.hash",
+        "otsPath": "data/ots/BATCH-2026-010/BATCH-2026-010@2026-04-25T07:46:44.980Z/BATCH-2026-010@2026-04-25T07:46:44.980Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=a74bc0751f8f15250f8ec05755c27c0558057c8508324b83de31178ae9454d7a",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2026-010&batchVersionHash=a74bc0751f8f15250f8ec05755c27c0558057c8508324b83de31178ae9454d7a"
+      },
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0x41bee40c06b3cb82e3f363f24e58ccc9db9e0a2a57836ba08e88f55bd15e880f",
+        "blockNumber": 1777103205,
+        "anchoredAt": "2026-04-25T07:46:45.804Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0x41bee40c06b3cb82e3f363f24e58ccc9db9e0a2a57836ba08e88f55bd15e880f"
+      }
+    },
+    {
+      "id": "BATCH-2026-011",
+      "material": "PET",
+      "kg": 999999999,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777103534562
+      },
+      "ts": "2026-04-25T07:53:15.053Z",
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777103556644,
+        "input_kg": 99999,
+        "output_kg": 99999,
+        "waste_kg": 9999,
+        "energy_kwh": 99999,
+        "water_l": 999999
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777103572175,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 99
+      },
+      "batchId": "BATCH-2026-011",
+      "audit": {
+        "status": "approved",
+        "by": "ESG Auditor",
+        "note": "cl3",
+        "ts": "2026-04-25T07:53:15.053Z"
+      },
+      "batchVersionId": "BATCH-2026-011@2026-04-25T07:53:15.053Z",
+      "prevHash": null,
+      "payloadHash": "8212c5009cad300274dd481257c98c3f0a62e6c9b5d95a8bf0225b996ce24aeb",
+      "hash": "4e7bd11c17396880c1d4bc570e5f9d371d980fe9ffb3025032e6c7a7936726a9",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:53:15.053Z",
+          "signature": "jG40KguuyqegW8m4IxnVAupYYv97qm+/LhgwVTiwbU9/LXvZZh+WgfPFWswtfL13J7XbCQqP3hdHbsu0rRDE22sZd/mM2OX2oe+T+ZRhxXqVwy4JiBjkgPh5si/KFbtqsDN6aREeIxXBN3GQAXpc/FiBiEkH8BkrH5Egs/pQVbDVLebyL/7Px/B9A0W6wsJrDY6LMa0ULyUHjJKXcRf+Kmo1lFvgvfIwqZQ2Moofkg/CEHa9zWM7sRLhW0pcD0tRG2k8DC9HuMfD5YILzqJOGYVpJBdaUNjoY9FLzl16kW8TN4jm6pIZi7SRga4Nw00EJwGbPKBhPpqWWSmxWj0d7A=="
+        }
+      ],
+      "signature": "jG40KguuyqegW8m4IxnVAupYYv97qm+/LhgwVTiwbU9/LXvZZh+WgfPFWswtfL13J7XbCQqP3hdHbsu0rRDE22sZd/mM2OX2oe+T+ZRhxXqVwy4JiBjkgPh5si/KFbtqsDN6aREeIxXBN3GQAXpc/FiBiEkH8BkrH5Egs/pQVbDVLebyL/7Px/B9A0W6wsJrDY6LMa0ULyUHjJKXcRf+Kmo1lFvgvfIwqZQ2Moofkg/CEHa9zWM7sRLhW0pcD0tRG2k8DC9HuMfD5YILzqJOGYVpJBdaUNjoY9FLzl16kW8TN4jm6pIZi7SRga4Nw00EJwGbPKBhPpqWWSmxWj0d7A==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:53:15.053Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "cl3",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:53:15.053Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "cl3",
+        "data": {
+          "prevStatus": "null",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": null,
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0x12eee5a4969145793f795a36ce19ea5ee654611e7df258f21885df460044e993",
+        "blockNumber": 1777103595,
+        "anchoredAt": "2026-04-25T07:53:15.714Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0x12eee5a4969145793f795a36ce19ea5ee654611e7df258f21885df460044e993"
+      }
+    },
+    {
+      "id": "BATCH-2026-011",
+      "material": "PET",
+      "kg": 999999999,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777103534562
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777103556644,
+        "input_kg": 99999,
+        "output_kg": 99999,
+        "waste_kg": 9999,
+        "energy_kwh": 99999,
+        "water_l": 999999
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777103572175,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 99
+      },
+      "batchId": "BATCH-2026-011",
+      "audit": {
+        "status": "pending",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-04-25T07:55:03.062Z"
+      },
+      "batchVersionId": "BATCH-2026-011@2026-04-25T07:55:03.062Z",
+      "ts": "2026-04-25T07:55:03.062Z",
+      "prevHash": "4e7bd11c17396880c1d4bc570e5f9d371d980fe9ffb3025032e6c7a7936726a9",
+      "payloadHash": "dc945b52f60304c830096dcb85aa5d705bf9652b7fdb1df6bd014646c14e0fc7",
+      "hash": "f22ff27396c0066bfc889bfada5da4200fbe2dd9089c5bcd8ad8d709d041fc82",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:55:03.062Z",
+          "signature": "DnoKU4//+p8DlFPLac0ySuXcM9OQY+QEZ+8di+iBWji3+26325PRZpACzMr+Z3CNwA+UWhCYgit86gHf+QQl1u+dprNiHCqiVnUgSQJpqPJ2sSSu/l2N8uaoUF/WY2wosGjFAOLzArNTGecU8tHS38SCstMlRCj8/5Z8nGv+cDxhtq3hiy0P69+JuXL7YgpHsdxcQtiKvG+jY03kIDQNMOnIznO5Ao6T1Qh7XeychPO664YlX+IT5cfqwZAMmlF7fn8cX+E0Ro+vpZuORw0yiWa7QHPECTDt1zls7pBl1qVbeJ2BI6gtJyGHkshHMTqHm25Gv8bJjucznFnXjwpTpg=="
+        }
+      ],
+      "signature": "DnoKU4//+p8DlFPLac0ySuXcM9OQY+QEZ+8di+iBWji3+26325PRZpACzMr+Z3CNwA+UWhCYgit86gHf+QQl1u+dprNiHCqiVnUgSQJpqPJ2sSSu/l2N8uaoUF/WY2wosGjFAOLzArNTGecU8tHS38SCstMlRCj8/5Z8nGv+cDxhtq3hiy0P69+JuXL7YgpHsdxcQtiKvG+jY03kIDQNMOnIznO5Ao6T1Qh7XeychPO664YlX+IT5cfqwZAMmlF7fn8cX+E0Ro+vpZuORw0yiWa7QHPECTDt1zls7pBl1qVbeJ2BI6gtJyGHkshHMTqHm25Gv8bJjucznFnXjwpTpg==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:53:15.053Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "cl3",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:55:03.062Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:55:03.062Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "approved",
+          "nextStatus": "pending"
+        }
+      },
+      "ots": null,
+      "onChain": null
+    },
+    {
+      "id": "BATCH-2026-011",
+      "material": "PET",
+      "kg": 999999999,
+      "recycler": {
+        "id": "R1",
+        "name": "GreenCycle Station",
+        "ts": 1777103534562
+      },
+      "processor": {
+        "id": "P1",
+        "name": "Processor Plant A",
+        "ts": 1777103556644,
+        "input_kg": 99999,
+        "output_kg": 99999,
+        "waste_kg": 9999,
+        "energy_kwh": 99999,
+        "water_l": 999999
+      },
+      "manufacturer": {
+        "id": "M1",
+        "name": "Eco Device Co.",
+        "ts": 1777103572175,
+        "product_name": "Recycled Shell Device",
+        "sku": "EC-001",
+        "qty": 99
+      },
+      "batchId": "BATCH-2026-011",
+      "audit": {
+        "status": "approved",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "ts": "2026-04-25T07:55:30.309Z"
+      },
+      "batchVersionId": "BATCH-2026-011@2026-04-25T07:55:30.309Z",
+      "ts": "2026-04-25T07:55:30.309Z",
+      "prevHash": "f22ff27396c0066bfc889bfada5da4200fbe2dd9089c5bcd8ad8d709d041fc82",
+      "payloadHash": "90590f2318251eb40f35d7b13e9eff7838c16d6e05ae2e14c2a0e01bbe54e2d7",
+      "hash": "3da01a1710b309a992875b4d8ea5e7a5134cb65ff7de7e2ac478c289a4d35c21",
+      "signatures": [
+        {
+          "role": "auditor",
+          "signer": "did:web:auditor.local",
+          "signerName": "ESG Auditor",
+          "alg": "RSA-SHA256",
+          "kid": "auditor-key-1",
+          "ts": "2026-04-25T07:55:30.309Z",
+          "signature": "DrUbAwwxjzwBoB2ho7+j7Hy7v13A3+a4Nu0mCshD+mKsAB/wXxrTZHXHFLbidfYAt0i2CYMas8DmqqiKiaBWZE/uXBLEmEI0zC/Nv35WyIUrLyQYr0Z7lFI4/izLj0SHw2m3Nsh9MZjkpZ5EzCo1Y2am2n8eor5FQ6E0fB0Ji8JJz6QQClyYjLDtNTwTTDQEOcctR5maWLCReR4N6SS7qCUA5+JUFZy5LItRYrIpEyjBdO/QjgFPXoHoGoKZNpHnOmgJi7fvZiBVrquOfClVzPCp5s4qpRgafRZ3vy2uh4kgDRRnidKyeuPhsXOdyHRl0/uhWBpKo9mZEfhNY4ik+Q=="
+        }
+      ],
+      "signature": "DrUbAwwxjzwBoB2ho7+j7Hy7v13A3+a4Nu0mCshD+mKsAB/wXxrTZHXHFLbidfYAt0i2CYMas8DmqqiKiaBWZE/uXBLEmEI0zC/Nv35WyIUrLyQYr0Z7lFI4/izLj0SHw2m3Nsh9MZjkpZ5EzCo1Y2am2n8eor5FQ6E0fB0Ji8JJz6QQClyYjLDtNTwTTDQEOcctR5maWLCReR4N6SS7qCUA5+JUFZy5LItRYrIpEyjBdO/QjgFPXoHoGoKZNpHnOmgJi7fvZiBVrquOfClVzPCp5s4qpRgafRZ3vy2uh4kgDRRnidKyeuPhsXOdyHRl0/uhWBpKo9mZEfhNY4ik+Q==",
+      "signer": "auditor",
+      "signerName": "ESG Auditor",
+      "alg": "RSA-SHA256",
+      "events": [
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:53:15.053Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "cl3",
+          "data": {
+            "prevStatus": "null",
+            "nextStatus": "approved"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:55:03.062Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "approved",
+            "nextStatus": "pending"
+          }
+        },
+        {
+          "type": "admin.audit",
+          "action": "audit_status_changed",
+          "ts": "2026-04-25T07:55:30.309Z",
+          "role": "auditor",
+          "by": "ESG Auditor",
+          "note": "樣本資料：審計方已覆核此批次。",
+          "data": {
+            "prevStatus": "pending",
+            "nextStatus": "approved"
+          }
+        }
+      ],
+      "event": {
+        "type": "admin.audit",
+        "action": "audit_status_changed",
+        "ts": "2026-04-25T07:55:30.309Z",
+        "role": "auditor",
+        "by": "ESG Auditor",
+        "note": "樣本資料：審計方已覆核此批次。",
+        "data": {
+          "prevStatus": "pending",
+          "nextStatus": "approved"
+        }
+      },
+      "ots": {
+        "status": "pending",
+        "verifyError": "OTS_NOT_YET_CREATED",
+        "ts": "2026-04-25T07:57:12.162Z",
+        "hashPath": "data/ots/BATCH-2026-011/BATCH-2026-011@2026-04-25T07:55:30.309Z/BATCH-2026-011@2026-04-25T07:55:30.309Z.hash",
+        "otsPath": "data/ots/BATCH-2026-011/BATCH-2026-011@2026-04-25T07:55:30.309Z/BATCH-2026-011@2026-04-25T07:55:30.309Z.hash.ots",
+        "receiptUrl": "/api/ots/download?batchId=BATCH-2026-011&batchVersionHash=3da01a1710b309a992875b4d8ea5e7a5134cb65ff7de7e2ac478c289a4d35c21",
+        "downloadUrl": "/api/ots/download?batchId=BATCH-2026-011&batchVersionHash=3da01a1710b309a992875b4d8ea5e7a5134cb65ff7de7e2ac478c289a4d35c21"
+      },
+      "onChain": {
+        "status": "mined",
+        "mode": "mock",
+        "chainId": 80002,
+        "network": "Polygon Amoy Mock",
+        "contract": "0xMOCK_CONTRACT",
+        "txHash": "0xc9c66774172bb40804e8c70899c80a488b9f5bb336bb334ae74c4942778994cc",
+        "blockNumber": 1777103730,
+        "anchoredAt": "2026-04-25T07:55:30.818Z",
+        "explorerUrl": "https://amoy.polygonscan.com/tx/0xc9c66774172bb40804e8c70899c80a488b9f5bb336bb334ae74c4942778994cc"
+      }
+    }
+  ]
+}
