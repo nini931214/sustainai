@@ -52,3 +52,18 @@ export function listBatches(): BatchRecord[] {
 export function getBatchById(id: string): BatchRecord | undefined {
   return BATCHES.find((b) => b.id === id);
 }
+
+export async function addRecyclerBatch(data: any) {
+  console.log("addRecyclerBatch", data);
+  return { success: true };
+}
+
+export async function addProcessRecord(data: any) {
+  console.log("addProcessRecord", data);
+  return { success: true };
+}
+
+export async function addManufactureRecord(data: any) {
+  console.log("addManufactureRecord", data);
+  return { success: true };
+}
