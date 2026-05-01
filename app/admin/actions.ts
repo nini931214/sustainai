@@ -25,7 +25,11 @@ export async function createProcessRecord(formData: FormData) {
   const energy = Number(formData.get("energy") || 0);
   const yieldRate = Number(formData.get("yield") || 0);
 
-  await addProcessRecord(batchId, { energy_kwh: energy, yield: yieldRate });
+  await addProcessRecord({
+  batchId,
+  energy_kwh: energy,
+  yield: yieldRate,
+});
 }
 
 // 製造商：使用材料
