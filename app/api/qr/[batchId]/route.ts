@@ -19,10 +19,15 @@ export async function GET(
     errorCorrectionLevel: "M",
   });
 
-  return new NextResponse(pngBuffer, {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": "no-store",
-    },
-  });
+const arrayBuffer = pngBuffer.buffer.slice(
+  pngBuffer.byteOffset,
+  pngBuffer.byteOffset + pngBuffer.byteLength
+) as ArrayBuffer;
+
+return new Response(arrayBuffer, {
+  headers: {
+    "Content-Type": "image/png",
+    "Cache-Control": "no-store",
+  },
+});
 }

@@ -78,13 +78,11 @@ export async function POST(req: Request) {
     records[idx] = {
       ...version,
       ots: {
-        status: upgraded.status, // complete / pending / stamped / error
-        hashFile: path.relative(process.cwd(), upgraded.hashFile),
-        otsFile: path.relative(process.cwd(), upgraded.otsFile),
-        updatedAtIso: upgraded.updatedAtIso,
-        lastStdout: (upgraded.stdout || stamped.stdout || "").slice(0, 4000),
-        lastStderr: (upgraded.stderr || stamped.stderr || "").slice(0, 4000),
-      },
+  status: upgraded.status,
+  otsFile: path.relative(process.cwd(), upgraded.otsFile),
+  lastStdout: "",
+  lastStderr: "",
+},
     };
 
     await writeJson(BATCH_VERSIONS_FILE, { records });

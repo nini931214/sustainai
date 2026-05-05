@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { listBatches, getBatchById } from "@/lib/chain";
 import { buildReportDoc } from "@/lib/report/buildReportDoc";
-import type { ReportDoc } from "@/lib/report/schema";
 import { generateReportPdf } from "@/lib/report/pdf/generateReportPdf";
 
 export const runtime = "nodejs";
@@ -24,7 +23,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const doc: ReportDoc = buildReportDoc({
+const doc = buildReportDoc({
       batch,
       origin,
       generatedAt: new Date().toISOString().slice(0, 10),
@@ -38,7 +37,12 @@ export async function GET(req: Request) {
       sections: doc.sections,
     });
 
-    return new NextResponse(pdfBytes, {
+    const pdfArrayBuffer = pdfBytes.buffer.slice(
+  pdfBytes.byteOffset,
+  pdfBytes.byteOffset + pdfBytes.byteLength
+) as ArrayBuffer;
+
+return new NextResponse(pdfArrayBuffer, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",

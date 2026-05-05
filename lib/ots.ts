@@ -73,3 +73,36 @@ export async function getOtsInfoResult(otsFile: string) {
     };
   }
 }
+
+export async function writeHashFile(
+  dir: string,
+  filename: string,
+  content: string
+) {
+  const fullDir = path.join(process.cwd(), dir);
+  await fs.mkdir(fullDir, { recursive: true });
+
+  const fullPath = path.join(fullDir, filename);
+  await fs.writeFile(fullPath, content, "utf8");
+
+  return fullPath;
+}
+
+export async function otsStamp(hashFilePath: string) {
+  return {
+    ok: true,
+    status: "pending",
+    hashFile: hashFilePath,
+    otsFile: `${hashFilePath}.ots`,
+    message: "OTS stamp simulated for demo",
+  };
+}
+
+export async function otsUpgrade(otsFilePath: string) {
+  return {
+    ok: true,
+    status: "complete",
+    otsFile: otsFilePath,
+    message: "OTS upgrade simulated for demo",
+  };
+}

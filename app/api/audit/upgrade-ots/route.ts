@@ -67,9 +67,9 @@ export async function POST(req: Request) {
       ots: {
         ...(version.ots || {}),
         status: upgraded.status,
-        updatedAtIso: upgraded.updatedAtIso,
-        lastStdout: (upgraded.stdout || "").slice(0, 4000),
-        lastStderr: (upgraded.stderr || "").slice(0, 4000),
+        updatedAtIso: new Date().toISOString(),
+lastStdout: "",
+lastStderr: "",
       },
     };
 

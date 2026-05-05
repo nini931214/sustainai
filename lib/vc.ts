@@ -41,3 +41,24 @@ export function verifyVc(payload: any, expectedHash?: string) {
     expectedHash: expectedHash || null,
   };
 }
+
+export function buildEmbeddedVc(input: any) {
+  const vc = {
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
+    type: ["VerifiableCredential", "SustainAIVerificationCredential"],
+    issuer: input.issuerDid || input.issuer || "SustainAI",
+    issuanceDate: new Date().toISOString(),
+    credentialSubject: {
+      role: input.role,
+      batchId: input.batchId,
+      hash: input.hash,
+      signature: input.signature,
+      ...input,
+    },
+  };
+
+  return {
+    ...vc,
+    vcHash: sha256Hex(stableJson(vc)),
+  };
+}

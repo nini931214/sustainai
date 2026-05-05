@@ -691,9 +691,16 @@ export async function GET(req: Request) {
 
     const bytes = await pdfDoc.save();
 
-    return new NextResponse(bytes, {
-      headers: {
-        "Content-Type": "application/pdf",
+    
+
+const pdfBody = bytes.buffer.slice(
+  bytes.byteOffset,
+  bytes.byteOffset + bytes.byteLength
+) as ArrayBuffer;
+
+return new NextResponse(pdfBody, {
+  headers: {
+    "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename=${BRAND}-${batchId}${batchVersionId ? `-${batchVersionId}` : ""}.pdf`,
       },
     });

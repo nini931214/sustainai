@@ -22,6 +22,7 @@ export type BatchRecord = {
     energy_kwh?: number;
     input_kg?: number;
     output_kg?: number;
+    waste_kg?: number; // 
   };
   manufacturer?: ActorRef & {
     product_sku?: string;
@@ -66,4 +67,12 @@ export async function addProcessRecord(data: any) {
 export async function addManufactureRecord(data: any) {
   console.log("addManufactureRecord", data);
   return { success: true };
+}
+
+export async function saveBatch(batch: BatchRecord) {
+  console.log("saveBatch", batch);
+  return {
+    success: true,
+    batch,
+  };
 }
