@@ -1,13 +1,16 @@
 "use client";
 
 type Props = {
+  qrImageUrl: string;
   batchId: string;
 };
 
-export default function QrActions({ batchId }: Props) {
+export default function QrActions({
+  qrImageUrl,
+  batchId,
+}: Props) {
   return (
     <div className="flex flex-wrap gap-3">
-      {/* 只保留下載 QR PNG */}
       <a
         href={`/qr/${encodeURIComponent(batchId)}/image`}
         download={`QR-${batchId}.png`}

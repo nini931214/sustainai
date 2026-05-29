@@ -12,10 +12,15 @@ export async function GET(
     margin: 2,
   });
 
-  return new Response(png, {
-    headers: {
-      "Content-Type": "image/png",
-      "Cache-Control": "no-store",
-    },
-  });
+const pngBody = png.buffer.slice(
+  png.byteOffset,
+  png.byteOffset + png.byteLength
+) as ArrayBuffer;
+
+return new Response(new Blob([pngBody], { type: "image/png" }), {
+  headers: {
+    "Content-Type": "image/png",
+    "Cache-Control": "no-store",
+  },
+});
 }

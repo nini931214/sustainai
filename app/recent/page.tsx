@@ -72,7 +72,7 @@ export default function RecentPage() {
                   <td style={{ padding: "8px 12px" }}>{b.id}</td>
                   <td style={{ padding: "8px 12px" }}>{b.material}</td>
                   <td style={{ padding: "8px 12px" }}>{b.kg}</td>
-                  <td style={{ padding: "8px 12px" }}>{b.recycler.name}</td>
+                  <td style={{ padding: "8px 12px" }}>{b.recycler?.name ?? "未登錄"}</td>
                   <td style={{ padding: "8px 12px" }}>
                     {b.audit?.status ?? "pending"}
                   </td>

@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
+import { Buffer } from "buffer";
 import { PDFDocument, rgb } from "pdf-lib";
 import QRCode from "qrcode";
 
@@ -20,8 +21,6 @@ function wrapText(params: {
   maxWidth: number;
 }) {
   const { text, font, fontSize, maxWidth } = params;
-
-  // 兼容中英：先用空白切，若無空白（中文）則逐字切
   const hasSpace = /\s/.test(text);
   const units = hasSpace ? text.split(/\s+/) : [...text];
 
@@ -39,7 +38,6 @@ function wrapText(params: {
 
     if (line) lines.push(line);
 
-    // 單字/單字元過長，硬切
     let chunk = "";
     for (const ch of u) {
       const t = chunk + ch;
@@ -60,7 +58,7 @@ function drawWatermarkCenter(params: {
   page: any;
   logoImage: any;
   opacity: number;
-  maxWidthPercent: number; // 0~1
+  maxWidthPercent: number;
 }) {
   const { page, logoImage, opacity, maxWidthPercent } = params;
   const { width, height } = page.getSize();
@@ -70,17 +68,25 @@ function drawWatermarkCenter(params: {
   const w = logoImage.width * scale;
   const h = logoImage.height * scale;
 
-  const x = (width - w) / 2;
-  const y = (height - h) / 2;
-
-  page.drawImage(logoImage, { x, y, width: w, height: h, opacity });
+  page.drawImage(logoImage, {
+    x: (width - w) / 2,
+    y: (height - h) / 2,
+    width: w,
+    height: h,
+    opacity,
+  });
 }
 
-// 只把 CO2/CO2e 轉成 CO₂/CO₂e（避免 ISSB S2、年份、數值被亂轉下標）
 function normalizeCO2Subscript(s: string) {
-  return (s || "")
-    .replace(/CO2e/g, "CO₂e")
-    .replace(/CO2/g, "CO₂");
+  return (s || "").replace(/CO2e/g, "CO₂e").replace(/CO2/g, "CO₂");
+}
+
+function normalizeFooterText(value: unknown): string {
+  return String(value ?? "")
+    .replace(/\s+/g, " ")
+    .replace(/[^\x20-\x7E]/g, "")
+    .trim()
+    .slice(0, 100);
 }
 
 function drawFooter(params: {
@@ -101,7 +107,7 @@ function drawFooter(params: {
   const y1 = 16;
   const y2 = 30;
 
-  const leftTop = `SustainAI | Sustainability Statement`;
+  const leftTop = "SustainAI | Sustainability Statement";
   const rightTop = `Page ${pageNo} / ${totalPages}`;
 
   const cleanBatch = normalizeFooterText(batchId);
@@ -174,11 +180,10 @@ async function readFontBytesSafe(fileName: string) {
 }
 
 async function embedFontWithFallback(pdfDoc: PDFDocument) {
-  // ✅ fontkit 在 Next（app route）很常因 ESM/CJS 變動導致 undefined
-  // 所以用動態 import，且只取 default / namespace 中存在的那個
   const fkMod: any = await import("@pdf-lib/fontkit");
   const fontkit = fkMod?.default ?? fkMod;
   if (!fontkit) throw new Error("FONTKIT_IMPORT_FAILED");
+
   pdfDoc.registerFontkit(fontkit);
 
   const candidates = [
@@ -192,18 +197,13 @@ async function embedFontWithFallback(pdfDoc: PDFDocument) {
     try {
       const bytes = await readFontBytesSafe(name);
       const font = await pdfDoc.embedFont(bytes);
-      // ✅ 這裡如果 font 內部出事會直接 throw（unitsPerEm 類）
-      // 能走到這行代表它可用
       return { font, used: name };
     } catch (e: any) {
       lastErr = e;
-      // continue
     }
   }
 
-  throw new Error(
-    `EMBED_FONT_FAILED: ${lastErr?.message || String(lastErr)}`
-  );
+  throw new Error(`EMBED_FONT_FAILED: ${lastErr?.message || String(lastErr)}`);
 }
 
 async function embedLogoSafe(pdfDoc: PDFDocument) {
@@ -212,7 +212,10 @@ async function embedLogoSafe(pdfDoc: PDFDocument) {
   return pdfDoc.embedPng(logoBytes);
 }
 
-export type ReportSection = { title: string; paragraphs: { text: string }[] };
+export type ReportSection = {
+  title: string;
+  paragraphs: { text: string }[];
+};
 
 export async function generateReportPdf(params: {
   batchId: string;
@@ -224,28 +227,21 @@ export async function generateReportPdf(params: {
   const { batchId, material, traceUrl, title, sections } = params;
 
   const generatedAt = nowYMD();
-
   const pdfDoc = await PDFDocument.create();
 
-  // ✅ 字型 fallback（關鍵：避免 unitsPerEm）
   const { font } = await embedFontWithFallback(pdfDoc);
-
-  // ✅ logo watermark
   const logoImage = await embedLogoSafe(pdfDoc);
 
-  // ✅ QR
   const qrDataUrl = await QRCode.toDataURL(traceUrl, {
     errorCorrectionLevel: "M",
     margin: 1,
     width: 256,
   });
-  const qrBase64 = qrDataUrl.split(",")[1];
+
+  const qrBase64 = qrDataUrl.split(",")[1] || "";
   const qrBytes = Buffer.from(qrBase64, "base64");
   const qrImage = await pdfDoc.embedPng(qrBytes);
 
-  // -------------------------
-  // Cover
-  // -------------------------
   const cover = pdfDoc.addPage([595.28, 841.89]);
   const { width: cw, height: ch } = cover.getSize();
 
@@ -259,9 +255,8 @@ export async function generateReportPdf(params: {
   const titleSize = 24;
   const subtitleSize = 12;
 
-  const t = title;
-  const tW = font.widthOfTextAtSize(t, titleSize);
-  cover.drawText(t, {
+  const tW = font.widthOfTextAtSize(title, titleSize);
+  cover.drawText(title, {
     x: (cw - tW) / 2,
     y: ch - 180,
     size: titleSize,
@@ -269,7 +264,10 @@ export async function generateReportPdf(params: {
     color: rgb(0.05, 0.05, 0.05),
   });
 
-  const subtitle = `Batch: ${batchId}   |   Material: ${material || "-"}   |   Generated: ${generatedAt}`;
+  const subtitle = `Batch: ${batchId}   |   Material: ${
+    material || "-"
+  }   |   Generated: ${generatedAt}`;
+
   const subW = font.widthOfTextAtSize(subtitle, subtitleSize);
   cover.drawText(subtitle, {
     x: (cw - subW) / 2,
@@ -300,8 +298,9 @@ export async function generateReportPdf(params: {
 
   const coverNote =
     "This document is generated by SustainAI from batch-level data and is intended for ESG disclosure demonstration.";
+
   const coverLines = wrapText({
-    text: coverNote,
+    text: normalizeCO2Subscript(coverNote),
     font,
     fontSize: 11,
     maxWidth: cw - 96,
@@ -319,9 +318,6 @@ export async function generateReportPdf(params: {
     cy -= 16;
   }
 
-  // -------------------------
-  // Content
-  // -------------------------
   const PAGE_W = 595.28;
   const PAGE_H = 841.89;
 
@@ -331,17 +327,17 @@ export async function generateReportPdf(params: {
   const contentFontSize = 11.5;
   const lineHeight = 16;
   const sectionGap = 14;
-
-  // ✅ 底部安全區（避免 footer 打架）
   const SAFE_BOTTOM_Y = 140;
 
   let page = pdfDoc.addPage([PAGE_W, PAGE_H]);
+
   drawWatermarkCenter({
     page,
     logoImage,
     opacity: 0.07,
     maxWidthPercent: 0.7,
   });
+
   drawContentHeader({
     page,
     font,
@@ -354,12 +350,14 @@ export async function generateReportPdf(params: {
 
   const newContentPage = () => {
     page = pdfDoc.addPage([PAGE_W, PAGE_H]);
+
     drawWatermarkCenter({
       page,
       logoImage,
       opacity: 0.07,
       maxWidthPercent: 0.7,
     });
+
     drawContentHeader({
       page,
       font,
@@ -367,24 +365,26 @@ export async function generateReportPdf(params: {
       title,
       batchId,
     });
+
     y = 740;
   };
 
   for (const sec of sections) {
     if (y < SAFE_BOTTOM_Y + 80) newContentPage();
 
-    page.drawText(sec.title, {
+    page.drawText(normalizeCO2Subscript(sec.title), {
       x: margin,
       y,
       size: 13,
       font,
       color: rgb(0.1, 0.1, 0.1),
     });
+
     y -= 18;
 
     for (const p of sec.paragraphs) {
       const lines = wrapText({
-        text: p.text,
+        text: normalizeCO2Subscript(p.text),
         font,
         fontSize: contentFontSize,
         maxWidth,
@@ -395,6 +395,7 @@ export async function generateReportPdf(params: {
 
       for (const line of lines) {
         if (y < SAFE_BOTTOM_Y) newContentPage();
+
         page.drawText(line, {
           x: margin,
           y,
@@ -402,6 +403,7 @@ export async function generateReportPdf(params: {
           font,
           color: rgb(0.12, 0.12, 0.12),
         });
+
         y -= lineHeight;
       }
 
@@ -411,9 +413,9 @@ export async function generateReportPdf(params: {
     y -= sectionGap;
   }
 
-  // Footer (all pages)
   const pages = pdfDoc.getPages();
   const totalPages = pages.length;
+
   for (let i = 0; i < totalPages; i++) {
     drawFooter({
       page: pages[i],

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { BarcodeScannerComponent } from 'react-qr-barcode-scanner';
+import  BarcodeScannerComponent  from 'react-qr-barcode-scanner';
 
 export default function QrScanLite({
   onScan,

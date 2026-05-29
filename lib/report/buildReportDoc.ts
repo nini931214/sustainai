@@ -1,7 +1,7 @@
 // lib/report/buildReportDoc.ts
 import type { ReportDoc } from "./schema";
 import { getBatchSummary } from "@/lib/summary";
-import { hashJson } from "@/app/lib/crypto/hash";
+import { hashJson } from "@/lib/crypto/hash";
 
 export function buildReportDoc(params: {
   batch: any;
