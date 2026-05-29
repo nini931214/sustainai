@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import { buildEmbeddedVc } from "@/lib/vc";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
