@@ -1,84 +1,83 @@
 // app/api/recycler/create/route.ts
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { createClient } from "@supabase/supabase-js";
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const DATA_PATH = path.join(DATA_DIR, 'chain.json');
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-async function ensureStore() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(DATA_PATH);
-  } catch {
-    await fs.writeFile(DATA_PATH, '[]', 'utf8');
+function getSupabase() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
   }
+
+  return createClient(supabaseUrl, supabaseKey);
 }
 
-async function readRows(): Promise<any[]> {
-  await ensureStore();
-  const raw = await fs.readFile(DATA_PATH, 'utf8').catch(() => '[]');
-  try {
-    const parsed = JSON.parse(raw || '[]');
-    return Array.isArray(parsed) ? parsed : [parsed];
-  } catch {
-    return [];
-  }
-}
-
-async function writeRows(rows: any[]) {
-  await fs.writeFile(DATA_PATH, JSON.stringify(rows, null, 2), 'utf8');
-}
-
-function generateBatchId(rows: any[]): string {
+function generateBatchId() {
   const year = new Date().getFullYear();
-  const prefix = `BATCH-${year}-`;
-  const nums = rows
-    .map((r) => String(r?.id ?? ''))
-    .filter((id) => id.startsWith(prefix))
-    .map((id) => parseInt(id.slice(prefix.length), 10))
-    .filter((n) => Number.isFinite(n));
-
-  const next = (nums.length ? Math.max(...nums) : 0) + 1;
-  const padded = String(next).padStart(3, '0');
-  return `${prefix}${padded}`;
+  const rand = Math.floor(Math.random() * 9000 + 1000);
+  return `BATCH-${year}-${rand}`;
 }
 
 export async function POST(req: Request) {
   try {
+    const supabase = getSupabase();
+
     const body = await req.json().catch(() => ({}));
-    const material = String(body.material || '').trim() || 'PET';
-    const kg = Number(body.kg || 0);
-    const recyclerName = String(body.recyclerName || '').trim() || 'Recycler A';
+
+    const material = String(body.material || "").trim() || "PET";
+    const kg = Number(body.kg || body.quantity || 0);
+    const recyclerName =
+      String(body.recyclerName || body.company || "").trim() || "Recycler A";
 
     if (!kg || kg <= 0) {
       return Response.json(
-        { ok: false, error: 'kg 必須大於 0' },
+        { ok: false, error: "kg 必須大於 0" },
         { status: 400 }
       );
     }
 
-    const rows = await readRows();
-    const id = generateBatchId(rows);
-    const now = Date.now();
+    const id = generateBatchId();
 
-    const newRow = {
+    const newBatch = {
       id,
+      role: "recycler",
+      company: recyclerName,
       material,
-      kg,
-      recycler: {
-        id: 'R1',
-        name: recyclerName,
-        ts: now,
-      },
-      ts: now,
+      quantity: kg,
+      carbon: Number((kg * 0.12).toFixed(2)),
+      status: "created",
     };
 
-    rows.push(newRow);
-    await writeRows(rows);
+    const { error } = await supabase.from("batches").insert(newBatch);
 
-    return Response.json({ ok: true, batch: newRow });
-  } catch (err) {
-    console.error('Error in /api/recycler/create', err);
-    return Response.json({ ok: false, error: 'internal_error' }, { status: 500 });
+    if (error) {
+      console.error("Supabase insert error:", error);
+      return Response.json({ ok: false, error: error.message }, { status: 500 });
+    }
+
+    return Response.json({
+      ok: true,
+      batch: {
+        id,
+        batchId: id,
+        material,
+        kg,
+        recycler: {
+          id: "R1",
+          name: recyclerName,
+          ts: Date.now(),
+        },
+        ts: Date.now(),
+      },
+    });
+  } catch (err: any) {
+    console.error("Error in /api/recycler/create", err);
+    return Response.json(
+      { ok: false, error: err?.message || "internal_error" },
+      { status: 500 }
+    );
   }
 }
