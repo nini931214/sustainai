@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       status: "created",
     };
 
-    const { error } = await supabase.from("batches").insert(newBatch);
+   const { error } = await supabase.from("batches").insert([newBatch]);
 
     if (error) {
       console.error("Supabase insert error:", error);
