@@ -1,7 +1,6 @@
-// app/trace/page.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import BackToFlow from "../components/BackToFlow";
 
@@ -119,11 +118,10 @@ const smallHintStyle: React.CSSProperties = {
   lineHeight: 1.6,
 };
 
-export default function TraceIndexPage() {
+function TraceIndexPageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // 支援：/trace?batchId=... 或 /trace?reportId=...
   const initialBatchId = useMemo(
     () => (sp.get("batchId") || "BATCH-2026-006").trim(),
     [sp]
@@ -151,7 +149,6 @@ export default function TraceIndexPage() {
   return (
     <main style={pageStyle}>
       <div style={containerStyle}>
-        {/* Header */}
         <div style={headerRowStyle}>
           <div>
             <h1 style={titleStyle}>追蹤／查詢</h1>
@@ -162,9 +159,7 @@ export default function TraceIndexPage() {
           <BackToFlow />
         </div>
 
-        {/* Cards */}
         <div style={gridStyle}>
-          {/* A: Batch Trace */}
           <section style={cardStyle}>
             <div style={cardTitleStyle}>🔍 批次履歷查詢</div>
             <div style={cardDescStyle}>
@@ -200,7 +195,6 @@ export default function TraceIndexPage() {
             </div>
           </section>
 
-          {/* B: Report Verify */}
           <section style={cardStyle}>
             <div style={cardTitleStyle}>🔐 報告驗證</div>
             <div style={cardDescStyle}>
@@ -236,7 +230,6 @@ export default function TraceIndexPage() {
             </div>
           </section>
 
-          {/* Trust block */}
           <section
             style={{
               borderRadius: 18,
@@ -263,5 +256,13 @@ export default function TraceIndexPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function TraceIndexPage() {
+  return (
+    <Suspense fallback={<main style={{ padding: 24 }}>Loading...</main>}>
+      <TraceIndexPageInner />
+    </Suspense>
   );
 }

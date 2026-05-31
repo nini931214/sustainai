@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import BackToFlow from "../components/BackToFlow";
 
@@ -158,7 +158,7 @@ function roleLabel(r?: string) {
  * Page
  * ======================= */
 
-export default function VerifyPage() {
+function VerifyPageInner() {
   const sp = useSearchParams();
   const router = useRouter();
 
@@ -308,5 +308,13 @@ export default function VerifyPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<main style={{ padding: 24 }}>Loading...</main>}>
+      <VerifyPageInner />
+    </Suspense>
   );
 }
