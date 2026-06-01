@@ -1,39 +1,64 @@
 // app/api/recent/route.ts
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { createClient } from "@supabase/supabase-js";
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const DATA_PATH = path.join(DATA_DIR, 'chain.json');
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-async function ensureStore() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(DATA_PATH);
-  } catch {
-    await fs.writeFile(DATA_PATH, '[]');
+function getSupabase() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
   }
+
+  return createClient(supabaseUrl, supabaseKey);
 }
 
 export async function GET(req: Request) {
-  await ensureStore();
-
-  const { searchParams } = new URL(req.url);
-  const limit = Math.max(
-    1,
-    Math.min(50, Number(searchParams.get('limit') || 3))
-  );
-
-  const raw = await fs.readFile(DATA_PATH, 'utf8').catch(() => '[]');
-  let rows: any[] = [];
   try {
-    const parsed = JSON.parse(raw || '[]');
-    rows = Array.isArray(parsed) ? parsed : [parsed];
-  } catch {
-    rows = [];
+    const supabase = getSupabase();
+
+    const { searchParams } = new URL(req.url);
+
+    const limit = Math.max(
+      1,
+      Math.min(50, Number(searchParams.get("limit") || 50))
+    );
+
+    const { data, error } = await supabase
+      .from("batches")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error("Supabase recent error:", error);
+
+      return Response.json(
+        {
+          ok: false,
+          error: error.message,
+          items: [],
+        },
+        { status: 500 }
+      );
+    }
+
+    return Response.json({
+      ok: true,
+      items: data ?? [],
+    });
+  } catch (err: any) {
+    console.error("Error in /api/recent", err);
+
+    return Response.json(
+      {
+        ok: false,
+        error: err?.message || "internal_error",
+        items: [],
+      },
+      { status: 500 }
+    );
   }
-
-  // 依時間倒序（ts 越新的在前面）
-  rows.sort((a, b) => String(b?.ts).localeCompare(String(a?.ts)));
-
-  return Response.json({ ok: true, items: rows.slice(0, limit) });
 }
