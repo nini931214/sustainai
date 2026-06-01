@@ -1,80 +1,95 @@
 // app/api/manufacturer/update/route.ts
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { createClient } from "@supabase/supabase-js";
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const DATA_PATH = path.join(DATA_DIR, 'chain.json');
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-async function ensureStore() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(DATA_PATH);
-  } catch {
-    await fs.writeFile(DATA_PATH, '[]', 'utf8');
+function getSupabase() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
   }
-}
 
-async function readRows(): Promise<any[]> {
-  await ensureStore();
-  const raw = await fs.readFile(DATA_PATH, 'utf8').catch(() => '[]');
-  try {
-    const parsed = JSON.parse(raw || '[]');
-    return Array.isArray(parsed) ? parsed : [parsed];
-  } catch {
-    return [];
-  }
-}
-
-async function writeRows(rows: any[]) {
-  await fs.writeFile(DATA_PATH, JSON.stringify(rows, null, 2), 'utf8');
+  return createClient(supabaseUrl, supabaseKey);
 }
 
 export async function POST(req: Request) {
   try {
+    const supabase = getSupabase();
     const body = await req.json().catch(() => ({}));
-    const id = String(body.id || '').trim();
-    const manufacturerName =
-      String(body.manufacturerName || '').trim() || 'Manufacturer A';
 
-    const product_name = String(body.product_name || '').trim() || 'Demo Product';
-    const sku = String(body.sku || '').trim() || 'SKU-001';
-    const qty = Number(body.qty || 0);
+    const id = String(body.id || body.batchId || "").trim();
+    const manufacturerName =
+      String(body.manufacturerName || body.company || "").trim() ||
+      "Manufacturer A";
+
+    const product_name =
+      String(body.product_name || body.productName || "").trim() ||
+      "Demo Product";
+
+    const sku = String(body.sku || "").trim() || "SKU-001";
+    const qty = Number(body.qty || body.quantity || 0);
 
     if (!id) {
       return Response.json(
-        { ok: false, error: '缺少批次 ID' },
+        { ok: false, error: "缺少批次 ID" },
         { status: 400 }
       );
     }
 
-    const rows = await readRows();
-    const idx = rows.findIndex((r) => String(r.id) === id);
+    const { data, error } = await supabase
+      .from("batches")
+      .update({
+        role: "manufacturer",
+        company: manufacturerName,
+        quantity: qty,
+        status: "manufactured",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
 
-    if (idx === -1) {
+    if (error) {
+      console.error("Supabase manufacturer update error:", error);
       return Response.json(
-        { ok: false, error: '批次不存在' },
+        { ok: false, error: error.message },
+        { status: 500 }
+      );
+    }
+
+    if (!data) {
+      return Response.json(
+        { ok: false, error: "批次不存在" },
         { status: 404 }
       );
     }
 
-    const now = Date.now();
-    const row = rows[idx];
-
-    row.manufacturer = {
-      id: row.manufacturer?.id || 'M1',
-      name: manufacturerName,
-      ts: now,
-      product_name,
-      sku,
-      qty,
-    };
-
-    rows[idx] = row;
-    await writeRows(rows);
-
-    return Response.json({ ok: true, batch: row });
-  } catch (err) {
-    console.error('Error in /api/manufacturer/update', err);
-    return Response.json({ ok: false, error: 'internal_error' }, { status: 500 });
+    return Response.json({
+      ok: true,
+      batch: {
+        id: data.id,
+        batchId: data.id,
+        material: data.material,
+        kg: data.quantity,
+        manufacturer: {
+          id: "M1",
+          name: manufacturerName,
+          ts: Date.now(),
+          product_name,
+          sku,
+          qty,
+        },
+        raw: data,
+      },
+    });
+  } catch (err: any) {
+    console.error("Error in /api/manufacturer/update", err);
+    return Response.json(
+      { ok: false, error: err?.message || "internal_error" },
+      { status: 500 }
+    );
   }
 }
