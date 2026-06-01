@@ -6,7 +6,10 @@ export const dynamic = "force-dynamic";
 
 function getSupabase() {
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+console.log("SUPABASE_URL =", supabaseUrl);
+console.log("SUPABASE_KEY_EXISTS =", !!supabaseKey);
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
