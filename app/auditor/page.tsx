@@ -127,20 +127,23 @@ const kpiBar: React.CSSProperties = {
     "linear-gradient(90deg, rgba(34,197,94,1) 0%, rgba(59,130,246,1) 50%, rgba(249,115,22,1) 100%)",
 };
 
-function mockLoadBatch(batchId: string): BatchData | null {
-  if (!batchId) return null;
+function normalizeBatch(row: any): BatchData {
   return {
-    batchId,
-    recyclerName: "GreenCycle",
-    recyclerKm: 20,
-    recyclerWeightKg: 20,
-    recyclerEnergyKwh: 0.4,
-    processorName: "EcoFactory",
+    batchId: row.id,
+    recyclerName: row.company || "Recycler",
+    recyclerKm: 0,
+    recyclerWeightKg: Number(row.quantity || 0),
+    recyclerEnergyKwh: 0,
+    processorName:
+      row.status === "processed" || row.status === "manufactured"
+        ? row.company || "Processor"
+        : undefined,
     yieldRate: 0.9,
-    processorEnergyKwh: 30,
-    manufacturerName: "RenewTech",
-    sku: "RB-100",
-    lot: "L202510",
+    processorEnergyKwh: Number(row.carbon || 0),
+    manufacturerName:
+      row.status === "manufactured" ? row.company || "Manufacturer" : undefined,
+    sku: row.sku || "",
+    lot: row.lot || "",
   };
 }
 
@@ -157,18 +160,18 @@ function generateAuditSummary(data: BatchData | null, score: number): string {
   if (!data) return "尚未載入任何批次資料。";
 
   if (score >= 85) {
-    return `本批次（${data.batchId}）供應鏈資料完整，回收、處理、製造三階段皆有紀錄，ESG 指標表現良好，建議審核通過。`;
+    return `本批次（${data.batchId}）供應鏈資料完整，已成功從 Supabase 載入批次資料，ESG 指標表現良好，建議審核通過。`;
   }
   if (score >= 70) {
     return `本批次（${data.batchId}）整體表現中等，建議追蹤運輸距離與能源使用，仍可視為合格批次。`;
   }
-  return `本批次（${data.batchId}）在 ESG 指標上存在明顯風險，包含運輸里程或能源使用偏高，建議暫緩通過並要求補件。`;
+  return `本批次（${data.batchId}）在 ESG 指標上存在明顯風險，建議暫緩通過並要求補件。`;
 }
 
 function AuditorPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialBatchId = searchParams.get("batchId") || "BATCH-2025-001";
+  const initialBatchId = searchParams.get("batchId") || "";
 
   const [inputBatchId, setInputBatchId] = useState(initialBatchId);
   const [batch, setBatch] = useState<BatchData | null>(null);
@@ -182,16 +185,40 @@ function AuditorPageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleLoad(bid?: string) {
+  async function handleLoad(bid?: string) {
     const targetId = (bid ?? inputBatchId).trim();
     if (!targetId) return;
 
     setLoading(true);
-    const data = mockLoadBatch(targetId);
-    setBatch(data);
-    setAuditStatus("pending");
-    setLoading(false);
-    router.replace(`/auditor?batchId=${encodeURIComponent(targetId)}`);
+
+    try {
+      const res = await fetch(`/api/recent?limit=100`, {
+        cache: "no-store",
+      });
+
+      const json = await res.json();
+      const rows = json.items || json.batches || [];
+
+      const found = rows.find(
+        (r: any) => String(r.id) === targetId || String(r.batchId) === targetId
+      );
+
+      if (!found) {
+        alert("找不到批次，請確認批次 ID 是否正確。");
+        setBatch(null);
+        return;
+      }
+
+      setBatch(normalizeBatch(found));
+      setAuditStatus("pending");
+
+      router.replace(`/auditor?batchId=${encodeURIComponent(targetId)}`);
+    } catch (err) {
+      console.error("Auditor load error:", err);
+      alert("載入失敗，請稍後再試。");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleApprove() {
@@ -224,7 +251,7 @@ function AuditorPageInner() {
               稽核方（Auditor）— ESG 專業審核台
             </h1>
             <p style={{ ...smallTextStyle, marginTop: 4 }}>
-              可由 QR 連結或手動輸入批次 ID，檢視完整供應鏈與 ESG 指標，再決定是否通過。
+              可由 QR 連結或手動輸入批次 ID，從 Supabase 載入批次資料，再決定是否通過。
             </p>
           </div>
           <BackToFlow />
@@ -238,21 +265,29 @@ function AuditorPageInner() {
             <span style={badgeStyle}>Step 1 · 載入批次資料</span>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 12,
+              alignItems: "center",
+            }}
+          >
             <div style={{ flex: "1 1 220px" }}>
               <div style={labelStyle}>批次 ID（Batch ID）</div>
               <input
                 style={inputStyle}
                 value={inputBatchId}
                 onChange={(e) => setInputBatchId(e.target.value)}
-                placeholder="例如：BATCH-2025-001"
+                placeholder="例如：BATCH-2026-1234"
               />
-              <div style={{ ...smallTextStyle, marginTop: 4 }}>
-                ※ 若由手機掃描 QR 進入，本欄會自動帶入 URL 中的 batchId。
-              </div>
             </div>
 
-            <button style={buttonPrimaryStyle} onClick={() => handleLoad()} disabled={loading}>
+            <button
+              style={buttonPrimaryStyle}
+              onClick={() => handleLoad()}
+              disabled={loading}
+            >
               {loading ? "載入中…" : "載入批次"}
             </button>
           </div>
@@ -265,7 +300,7 @@ function AuditorPageInner() {
             </div>
             {batch ? (
               <>
-                <div style={labelStyle}>回收商名稱</div>
+                <div style={labelStyle}>回收商 / 公司名稱</div>
                 <div style={valueStyle}>{batch.recyclerName}</div>
 
                 <div style={{ marginTop: 8 }}>
@@ -276,11 +311,6 @@ function AuditorPageInner() {
                 <div style={{ marginTop: 8 }}>
                   <div style={labelStyle}>重量（kg）</div>
                   <div style={valueStyle}>{batch.recyclerWeightKg} kg</div>
-                </div>
-
-                <div style={{ marginTop: 8 }}>
-                  <div style={labelStyle}>用電（kWh）</div>
-                  <div style={valueStyle}>{batch.recyclerEnergyKwh} kWh</div>
                 </div>
               </>
             ) : (
@@ -295,20 +325,22 @@ function AuditorPageInner() {
             {batch ? (
               <>
                 <div style={labelStyle}>處理廠名稱</div>
-                <div style={valueStyle}>{batch.processorName ?? "—"}</div>
+                <div style={valueStyle}>{batch.processorName ?? "尚未處理"}</div>
 
                 <div style={{ marginTop: 8 }}>
                   <div style={labelStyle}>材料利用率（yield）</div>
                   <div style={valueStyle}>
-                    {batch.yieldRate != null ? `${batch.yieldRate * 100}%` : "—"}
+                    {batch.yieldRate != null
+                      ? `${(batch.yieldRate * 100).toFixed(1)}%`
+                      : "—"}
                   </div>
                 </div>
 
                 <div style={{ marginTop: 8 }}>
-                  <div style={labelStyle}>處理用電（kWh）</div>
+                  <div style={labelStyle}>估計處理碳排</div>
                   <div style={valueStyle}>
                     {batch.processorEnergyKwh != null
-                      ? `${batch.processorEnergyKwh} kWh`
+                      ? `${batch.processorEnergyKwh} kg CO₂e`
                       : "—"}
                   </div>
                 </div>
@@ -325,16 +357,18 @@ function AuditorPageInner() {
             {batch ? (
               <>
                 <div style={labelStyle}>製造商名稱</div>
-                <div style={valueStyle}>{batch.manufacturerName ?? "—"}</div>
+                <div style={valueStyle}>
+                  {batch.manufacturerName ?? "尚未製造"}
+                </div>
 
                 <div style={{ marginTop: 8 }}>
                   <div style={labelStyle}>SKU</div>
-                  <div style={valueStyle}>{batch.sku ?? "—"}</div>
+                  <div style={valueStyle}>{batch.sku || "—"}</div>
                 </div>
 
                 <div style={{ marginTop: 8 }}>
                   <div style={labelStyle}>LOT</div>
-                  <div style={valueStyle}>{batch.lot ?? "—"}</div>
+                  <div style={valueStyle}>{batch.lot || "—"}</div>
                 </div>
               </>
             ) : (
@@ -354,7 +388,13 @@ function AuditorPageInner() {
               <>
                 <div style={{ marginBottom: 8 }}>
                   <div style={labelStyle}>綜合 ESG 評分</div>
-                  <div style={{ ...valueStyle, fontSize: 26, marginBottom: 6 }}>
+                  <div
+                    style={{
+                      ...valueStyle,
+                      fontSize: 26,
+                      marginBottom: 6,
+                    }}
+                  >
                     {esgScore} / 100
                   </div>
                   <div style={kpiBarWrapper}>
@@ -362,14 +402,22 @@ function AuditorPageInner() {
                   </div>
                 </div>
 
-                <ul style={{ marginTop: 10, paddingLeft: 18, fontSize: 13, color: "#4b5563" }}>
-                  <li>運輸里程：{batch.recyclerKm} km</li>
+                <ul
+                  style={{
+                    marginTop: 10,
+                    paddingLeft: 18,
+                    fontSize: 13,
+                    color: "#4b5563",
+                  }}
+                >
                   <li>材料重量：{batch.recyclerWeightKg} kg</li>
                   <li>
                     材料利用率：
-                    {batch.yieldRate != null ? `${batch.yieldRate * 100}%` : "—"}
+                    {batch.yieldRate != null
+                      ? `${(batch.yieldRate * 100).toFixed(1)}%`
+                      : "—"}
                   </li>
-                  <li>加工能源：{batch.processorEnergyKwh ?? "—"} kWh</li>
+                  <li>估計碳排：{batch.processorEnergyKwh ?? 0} kg CO₂e</li>
                 </ul>
               </>
             ) : (
@@ -382,15 +430,31 @@ function AuditorPageInner() {
               <div style={sectionTitleStyle}>🧠 AI ESG 審核摘要</div>
             </div>
 
-            <p style={{ fontSize: 14, color: "#111827", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            <p
+              style={{
+                fontSize: 14,
+                color: "#111827",
+                lineHeight: 1.6,
+                whiteSpace: "pre-line",
+              }}
+            >
               {summary}
             </p>
 
-            <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+            <div
+              style={{
+                marginTop: 16,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+                alignItems: "center",
+              }}
+            >
               <button
                 style={{
                   ...buttonPrimaryStyle,
-                  backgroundColor: auditStatus === "approved" ? "#16a34a" : "#111827",
+                  backgroundColor:
+                    auditStatus === "approved" ? "#16a34a" : "#111827",
                 }}
                 onClick={handleApprove}
               >
