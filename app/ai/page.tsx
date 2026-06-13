@@ -1,19 +1,11 @@
 // app/ai/page.tsx
 import BackToFlow from "@/app/components/BackToFlow";
-
-// 在 return 的 header 區塊裡
-<div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-  <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
-    AI 永續報告 Demo
-  </h1>
-  <BackToFlow />
-</div>
 import BatchSwitcher from "./components/BatchSwitcher";
 import Link from "next/link";
 import ReportWatermarkedShell from "../components/ReportWatermarkedShell";
+import { createClient } from "@supabase/supabase-js";
 
-import { listBatches, getBatchById } from "@/lib/chain";
-import { getBatchSummary } from "@/lib/summary";
+export const dynamic = "force-dynamic";
 
 type Props = {
   searchParams?: {
@@ -21,15 +13,56 @@ type Props = {
   };
 };
 
-export default function AiReportPage({ searchParams }: Props) {
-  const batches = listBatches();
+function getSupabase() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
+  }
+
+  return createClient(supabaseUrl, supabaseKey);
+}
+
+function normalizeBatch(row: any) {
+  const kg = Number(row.quantity || 0);
+  const carbon = Number(row.carbon || kg * 0.12);
+
+  return {
+    id: row.id,
+    material: row.material || "Unknown",
+    kg,
+    carbon,
+    company: row.company || "未登錄",
+    role: row.role || "-",
+    status: row.status || "pending",
+    processor: {
+      name:
+        row.status === "processed" || row.status === "manufactured"
+          ? row.company || "處理廠"
+          : "尚未處理",
+      output_kg: kg * 0.85,
+      waste_kg: kg * 0.15,
+    },
+  };
+}
+
+export default async function AiReportPage({ searchParams }: Props) {
+  const supabase = getSupabase();
   const queryId = searchParams?.batch;
 
+  const { data, error } = await supabase
+    .from("batches")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const batches = (data ?? []).map(normalizeBatch);
+
   const batch =
-    (queryId && getBatchById(queryId)) ||
+    (queryId && batches.find((b) => b.id === queryId)) ||
     (batches.length > 0 ? batches[0] : undefined);
 
-  if (!batch) {
+  if (error || !batch) {
     return (
       <main
         style={{
@@ -40,12 +73,26 @@ export default function AiReportPage({ searchParams }: Props) {
         }}
       >
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
-            AI 永續報告 Demo
-          </h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 12,
+              alignItems: "center",
+            }}
+          >
+            <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>
+              AI 永續報告 Demo
+            </h1>
+            <BackToFlow />
+          </div>
+
           <p style={{ fontSize: 14, color: "#6b7280", marginBottom: 16 }}>
-            目前系統中尚無任何批次資料，請先建立至少一筆示範批次。
+            {error
+              ? `讀取失敗：${error.message}`
+              : "目前 Supabase 中尚無任何批次資料，請先建立至少一筆示範批次。"}
           </p>
+
           <Link href="/home">
             <span style={{ fontSize: 13, color: "#2563eb", cursor: "pointer" }}>
               ← 返回首頁
@@ -56,24 +103,23 @@ export default function AiReportPage({ searchParams }: Props) {
     );
   }
 
-  const summary = getBatchSummary(batch);
-  const fp = summary.footprint;
+  const totalCo2 = Number(batch.carbon || 0);
+  const transportCo2 = totalCo2 * 0.35;
+  const processCo2 = totalCo2 * 0.65;
 
-  const totalCo2 = fp.total_co2e ?? 0; // kg CO2e
   const transportShare =
-    totalCo2 > 0 ? Math.round(((fp.transport_co2e ?? 0) / totalCo2) * 100) : 0;
+    totalCo2 > 0 ? Math.round((transportCo2 / totalCo2) * 100) : 0;
   const processShare =
-    totalCo2 > 0 ? Math.round(((fp.process_co2e ?? 0) / totalCo2) * 100) : 0;
-  const recycleRate = fp.reuse_ratio != null ? fp.reuse_ratio * 100 : undefined;
+    totalCo2 > 0 ? Math.round((processCo2 / totalCo2) * 100) : 0;
+
+  const recycleRate = 85;
   const savedCo2 = totalCo2 * 0.3;
-  const mainSource =
-    (fp.transport_co2e ?? 0) >= (fp.process_co2e ?? 0) ? "運輸" : "再生加工(處理廠)";
+  const mainSource = processCo2 >= transportCo2 ? "再生加工(處理廠)" : "運輸";
 
   const inputKg = Number(batch.kg || 0);
-  const outputKg = Number(batch.processor?.output_kg || 0);
-  const wasteKg = Number(batch.processor?.waste_kg || 0);
-  const lossRate =
-    inputKg > 0 ? Math.round((wasteKg / inputKg) * 100) : undefined;
+  const outputKg = Number(batch.processor?.output_kg || inputKg * 0.85);
+  const wasteKg = Number(batch.processor?.waste_kg || inputKg * 0.15);
+  const lossRate = inputKg > 0 ? Math.round((wasteKg / inputKg) * 100) : 0;
 
   return (
     <main
@@ -86,7 +132,6 @@ export default function AiReportPage({ searchParams }: Props) {
       }}
     >
       <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        {/* ✅ 網頁版浮水印（跟 PDF 無關） */}
         <ReportWatermarkedShell
           demo={true}
           logoSrc="/brand/logo.png"
@@ -94,18 +139,26 @@ export default function AiReportPage({ searchParams }: Props) {
           rotateDeg={-18}
           maxWidthPercent={65}
         >
-          {/* Header */}
           <header style={{ marginBottom: 18 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 6 }}>
-              🤖 SustainAI – 循環經濟永續報告 Demo
-            </h1>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                alignItems: "center",
+              }}
+            >
+              <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 6 }}>
+                🤖 SustainAI – 循環經濟永續報告 Demo
+              </h1>
+              <BackToFlow />
+            </div>
 
             <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>
-              此頁示範：如何根據「回收站、處理廠、製造商」的批次數據，自動生成
+              此頁示範：如何根據 Supabase 批次數據，自動生成
               <b> ESG / GRI / ISSB 風格</b> 的報告文字。
             </p>
 
-            {/* ✅ 批次切換（選了就自動切） */}
             <div
               style={{
                 marginTop: 12,
@@ -117,9 +170,10 @@ export default function AiReportPage({ searchParams }: Props) {
             >
               <BatchSwitcher batches={batches} currentId={batch.id} />
 
-              {/* ✅ 下載 PDF（API 產生 + Logo 水印） */}
               <Link
-                href={`/api/report/pdf-text?batch=${encodeURIComponent(batch.id)}`}
+                href={`/api/report/pdf-text?batch=${encodeURIComponent(
+                  batch.id
+                )}`}
               >
                 <span
                   style={{
@@ -156,7 +210,6 @@ export default function AiReportPage({ searchParams }: Props) {
             </p>
           </header>
 
-          {/* 一句話摘要 */}
           <section
             style={{
               marginBottom: 20,
@@ -173,20 +226,13 @@ export default function AiReportPage({ searchParams }: Props) {
               本批次「{batch.material}」回收材料的估算總碳排約
               <b> {totalCo2.toFixed(2)} kg CO₂e</b>，
               其中<b> {mainSource} 環節為主要排放來源</b>
-              （運輸約 {transportShare}%、再生加工約 {processShare}%）。在回收投入{" "}
-              {inputKg.toFixed(1)} kg 的前提下，保守估計相較原生塑膠流程可
-              <b> 減少約 {savedCo2.toFixed(2)} kg CO₂e</b>。
-              {recycleRate != null && (
-                <>
-                  {" "}
-                  整體<b> 再利用率約 {recycleRate.toFixed(1)}%</b>
-                  ，顯示大部分回收料已成功導入再製與產品應用。
-                </>
-              )}
+              （運輸約 {transportShare}%、再生加工約 {processShare}%）。
+              在回收投入 {inputKg.toFixed(1)} kg 的前提下，保守估計相較原生塑膠流程可
+              <b> 減少約 {savedCo2.toFixed(2)} kg CO₂e</b>。整體
+              <b> 再利用率約 {recycleRate.toFixed(1)}%</b>。
             </p>
           </section>
 
-          {/* GRI / ISSB 報告段落 */}
           <section
             style={{
               marginBottom: 20,
@@ -212,18 +258,10 @@ export default function AiReportPage({ searchParams }: Props) {
                 【GRI 301 – 材料使用與循環】
               </p>
               <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.8 }}>
-                本批次共投入回收塑膠材料 <b>{inputKg.toFixed(1)} kg</b>，材質類型為「
-                {batch.material}」。經處理廠 {batch.processor?.name || "處理廠"} 再生處理後，
-                輸出可再利用材料約 <b>{outputKg.toFixed(1)} kg</b>
-                {lossRate != null && (
-                  <>
-                    ，再生過程中產生報廢損耗約 <b>{wasteKg.toFixed(1)} kg</b>
-                    （約占投入量的 {lossRate}%）。
-                  </>
-                )}{" "}
-                依據再利用率約{" "}
-                {recycleRate != null ? recycleRate.toFixed(1) : "0.0"}% 推估，
-                本批次成功將多數回收料導入後續製造流程，降低對原生塑膠的依賴。
+                本批次共投入回收塑膠材料 <b>{inputKg.toFixed(1)} kg</b>
+                ，材質類型為「{batch.material}」。經處理後，輸出可再利用材料約
+                <b> {outputKg.toFixed(1)} kg</b>，再生過程中產生報廢損耗約
+                <b> {wasteKg.toFixed(1)} kg</b>（約占投入量的 {lossRate}%）。
               </p>
             </div>
 
@@ -239,9 +277,8 @@ export default function AiReportPage({ searchParams }: Props) {
                 【GRI 306 – 廢棄物產生與處理】
               </p>
               <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.8 }}>
-                在本批次的再生處理過程中，回收材料經分類、清洗與再生造粒等程序，合計產生廢棄物約{" "}
-                <b>{wasteKg.toFixed(1)} kg</b>。企業後續可進一步說明報廢部分的處理方式（例如：
-                能源回收、委外處理或再次分級使用），以提升整體材料循環效率並降低廢棄物最終處置比例。
+                在本批次的再生處理過程中，回收材料經分類、清洗與再生造粒等程序，
+                合計產生廢棄物約 <b>{wasteKg.toFixed(1)} kg</b>。
               </p>
             </div>
 
@@ -257,16 +294,14 @@ export default function AiReportPage({ searchParams }: Props) {
                 【ISSB S2 – 氣候相關風險與機會】
               </p>
               <p style={{ fontSize: 13, color: "#111827", lineHeight: 1.8 }}>
-                本批次回收與再生活動的估算碳排放量為{" "}
-                <b>{totalCo2.toFixed(2)} kg CO₂e</b>，包含運輸與再生加工能源使用。依據內部假設基準，
-                若改採原生塑膠生產，相同產品批次之排放量預估將增加約{" "}
-                <b>{savedCo2.toFixed(2)} kg CO₂e</b>。此結果顯示導入回收材料具有實質減碳效益，
-                並有助於公司在中長期氣候目標與淨零路徑中的落實。
+                本批次回收與再生活動的估算碳排放量為
+                <b> {totalCo2.toFixed(2)} kg CO₂e</b>。若改採原生塑膠生產，
+                相同產品批次之排放量預估將增加約
+                <b> {savedCo2.toFixed(2)} kg CO₂e</b>。
               </p>
             </div>
           </section>
 
-          {/* 結論與後續行動建議 */}
           <section
             style={{
               marginBottom: 24,
@@ -289,21 +324,17 @@ export default function AiReportPage({ searchParams }: Props) {
               }}
             >
               <li>
-                就單一批次而言，本案已展現出具體的循環材料使用與減碳潛力，未來可擴大至更多材料與產品線。
+                本批次已展現具體循環材料使用與減碳潛力，可擴大至更多材料與產品線。
               </li>
               <li>
-                建議持續蒐集「運輸里程、用電來源、廢棄物實際去向」等數據，以提升排放估算與報告的準確性。
+                建議持續蒐集運輸里程、用電來源、廢棄物去向，以提升估算準確性。
               </li>
               <li>
-                正式導入 LLM 後，可將本頁模板擴充為完整 ESG 章節（含封面、圖表與管理方針），一鍵匯出 PDF 報告。
+                正式導入 LLM 後，可擴充為完整 ESG 章節並一鍵匯出 PDF 報告。
               </li>
             </ul>
-            <p style={{ fontSize: 11, color: "#9ca3af" }}>
-              註：本頁內容為 Demo 模式，係數與文字生成邏輯可依企業實際排放因子、報告框架與審計需求調整。
-            </p>
           </section>
 
-          {/* 底部導覽 */}
           <div
             style={{
               display: "flex",
