@@ -68,7 +68,7 @@ export default function SignaturesAdminPage() {
           <div>
             <h1 style={{ margin: 0, fontSize: 22, fontWeight: 900 }}>多角色簽章（Demo Console）</h1>
             <div style={{ marginTop: 6, fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>
-              對同一筆 batchVersionHash 追加 recycler / processor / manufacturer / auditor 的簽章。
+              Supabase
             </div>
           </div>
           <BackToFlow />
@@ -103,7 +103,7 @@ export default function SignaturesAdminPage() {
               {batches.length === 0 && (
                 <tr>
                   <td style={{ ...td, textAlign: "center", color: "#64748b" }} colSpan={4}>
-                    沒有批次。請先建立 batch（chain.json）。
+                    沒有批次。請先建立 batch（Supabase）。
                   </td>
                 </tr>
               )}
