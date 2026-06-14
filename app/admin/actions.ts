@@ -3,9 +3,8 @@
 import {
   addRecyclerBatch,
   addProcessRecord,
-  addManufactureRecord,
-} from "@/lib/chain";
-
+  addManufacturerRecord,
+} from "@/lib/adminActions";
 /**
  * 回收站：建立批次
  */
