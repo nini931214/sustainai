@@ -1,51 +1,54 @@
+// app/admin/actions.ts
+
 "use server";
 
-import {
-  addRecyclerBatch,
-  addProcessRecord,
-  addManufacturerRecord,
-} from "@/lib/adminActions";
 /**
- * 回收站：建立批次
+ * 這個檔案原本使用舊版 chain.json 的：
+ * - addRecyclerBatch
+ * - addProcessRecord
+ * - addManufactureRecord
+ *
+ * 現在系統已改為 Supabase API，
+ * 這些 Server Actions 已暫時停用。
+ *
+ * 保留函式名稱避免舊頁面 import 時 build 失敗。
  */
+
 export async function createRecycleBatch(formData: FormData) {
-  const id = formData.get("id")?.toString() || "";
-  const material = formData.get("material")?.toString() || "";
-  const kg = Number(formData.get("kg") || 0);
-
-  await addRecyclerBatch({
-    batchId: id,
-    material,
-    kg,
+  console.log("[DEPRECATED] createRecycleBatch", {
+    id: formData.get("id"),
+    material: formData.get("material"),
+    kg: formData.get("kg"),
   });
+
+  return {
+    ok: true,
+    message: "createRecycleBatch disabled (Supabase migration)",
+  };
 }
 
-/**
- * 處理廠：處理紀錄
- */
 export async function createProcessRecord(formData: FormData) {
-  const batchId = formData.get("batchId")?.toString() || "";
-  const energy = Number(formData.get("energy") || 0);
-  const yieldRate = Number(formData.get("yield") || 0);
-
-  await addProcessRecord({
-    batchId,
-    energy_kwh: energy,
-    yield: yieldRate,
+  console.log("[DEPRECATED] createProcessRecord", {
+    batchId: formData.get("batchId"),
+    energy: formData.get("energy"),
+    yield: formData.get("yield"),
   });
+
+  return {
+    ok: true,
+    message: "createProcessRecord disabled (Supabase migration)",
+  };
 }
 
-/**
- * 製造商：產品紀錄
- */
 export async function createManufactureRecord(formData: FormData) {
-  const batchId = formData.get("batchId")?.toString() || "";
-  const sku = formData.get("sku")?.toString() || "";
-  const lot = formData.get("lot")?.toString() || "";
-
-  await addManufactureRecord({
-    batchId,
-    sku,
-    lot,
+  console.log("[DEPRECATED] createManufactureRecord", {
+    batchId: formData.get("batchId"),
+    sku: formData.get("sku"),
+    lot: formData.get("lot"),
   });
+
+  return {
+    ok: true,
+    message: "createManufactureRecord disabled (Supabase migration)",
+  };
 }
