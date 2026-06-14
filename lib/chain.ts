@@ -1,78 +1,26 @@
 // lib/chain.ts
-import raw from "@/data/chain.json";
 
-export type ActorRef = {
-  id: string;
-  name: string;
-};
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-export type BatchAudit = {
-  status: "pending" | "approved" | "rejected";
-  note?: string;
-  ts?: number;
-  by?: string;
-};
+export async function listBatches() {
+  const { data, error } = await supabaseAdmin
+    .from("batches")
+    .select("*")
+    .order("updated_at", { ascending: false });
 
-export type BatchRecord = {
-  id: string;
-  material: string;
-  kg: number;
-  recycler?: ActorRef;
-  processor?: ActorRef & {
-    energy_kwh?: number;
-    input_kg?: number;
-    output_kg?: number;
-    waste_kg?: number; // 
-  };
-  manufacturer?: ActorRef & {
-    product_sku?: string;
-    product_lot?: string;
-  };
-  transport?: {
-    distance_km?: number;
-    mode?: string;
-  };
-  audit?: BatchAudit;
-  created_at?: string;
-  ts?: number;
-};
+  if (error) throw error;
 
-const BATCHES: BatchRecord[] = Array.isArray(raw)
-  ? raw.map((r: any) => ({
-      ...r,
-      kg: Number(r.kg ?? 0),
-    }))
-  : [];
-
-/** 列出所有批次（recent / dashboard 用） */
-export function listBatches(): BatchRecord[] {
-  return BATCHES;
+  return data || [];
 }
 
-/** 依照批次 ID 取得單一批次（trace / auditor 用） */
-export function getBatchById(id: string): BatchRecord | undefined {
-  return BATCHES.find((b) => b.id === id);
-}
+export async function getBatchById(batchId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("batches")
+    .select("*")
+    .eq("id", batchId)
+    .maybeSingle();
 
-export async function addRecyclerBatch(data: any) {
-  console.log("addRecyclerBatch", data);
-  return { success: true };
-}
+  if (error) throw error;
 
-export async function addProcessRecord(data: any) {
-  console.log("addProcessRecord", data);
-  return { success: true };
-}
-
-export async function addManufactureRecord(data: any) {
-  console.log("addManufactureRecord", data);
-  return { success: true };
-}
-
-export async function saveBatch(batch: BatchRecord) {
-  console.log("saveBatch", batch);
-  return {
-    success: true,
-    batch,
-  };
+  return data;
 }

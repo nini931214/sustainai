@@ -1,28 +1,10 @@
+// app/api/recycler/upload/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 import crypto from "crypto";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const CHAIN_FILE = path.join(DATA_DIR, "chain.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
-
-async function readJson(file: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(file: string, data: any) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf8");
-}
 
 function stableJson(obj: any) {
   const sortKeys = (x: any): any => {
@@ -37,6 +19,7 @@ function stableJson(obj: any) {
     }
     return x;
   };
+
   return JSON.stringify(sortKeys(obj));
 }
 
@@ -48,35 +31,15 @@ function computeVersionHash(prevHash: string, payloadHash: string, tsIso: string
   return sha256Hex(`${prevHash}|${payloadHash}|${tsIso}`);
 }
 
-function stripVersionMeta(versionLike: any) {
-  const cloned = JSON.parse(JSON.stringify(versionLike || {}));
-
-  delete cloned.hash;
-  delete cloned.prevHash;
-  delete cloned.payloadHash;
-  delete cloned.batchVersionId;
-  delete cloned.ts;
-  delete cloned.signatures;
-  delete cloned.signature;
-  delete cloned.signer;
-  delete cloned.signerName;
-  delete cloned.alg;
-  delete cloned.kid;
-  delete cloned.ots;
-  delete cloned.onChain;
-  delete cloned.event;
-  delete cloned.events;
-
-  return cloned;
-}
-
-function latestByBatch(records: any[], batchId: string) {
-  const same = records.filter((r) => String(r?.batchId) === batchId);
-  same.sort(
-    (a, b) =>
-      Number(new Date(b?.ts || 0)) - Number(new Date(a?.ts || 0))
-  );
-  return same[0] || null;
+function toCamelBatch(row: any) {
+  return {
+    ...row,
+    batchId: row?.batch_id ?? row?.batchId ?? row?.id,
+    reportId: row?.report_id ?? row?.reportId,
+    batchVersionId: row?.batch_version_id ?? row?.batchVersionId,
+    batchVersionHash: row?.batch_version_hash ?? row?.batchVersionHash,
+    reportPayloadHash: row?.report_payload_hash ?? row?.reportPayloadHash,
+  };
 }
 
 function signBase64(message: string) {
@@ -89,6 +52,7 @@ function signBase64(message: string) {
 
   const pem = pemRaw.replace(/\\n/g, "\n");
   const sig = crypto.sign("RSA-SHA256", Buffer.from(message, "utf8"), pem);
+
   return sig.toString("base64");
 }
 
@@ -144,58 +108,68 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!recycler || typeof recycler !== "object") {
-      return NextResponse.json(
-        { ok: false, error: "MISSING_RECYCLER_PAYLOAD" },
-        { status: 400 }
-      );
-    }
-
-    const chain = await readJson(CHAIN_FILE, []);
-    const versionsDb = await readJson(BATCH_VERSIONS_FILE, { records: [] });
-
-    const rows: any[] = Array.isArray(chain) ? chain : [];
-    const records: any[] = Array.isArray(versionsDb?.records)
-      ? versionsDb.records
-      : [];
-
-    let chainIdx = rows.findIndex((r: any) => String(r?.id) === batchId);
-
     const nowIso = new Date().toISOString();
 
-    // ✅ 如果 chain.json 還沒有這個 batch，就建立新批次快照
-    if (chainIdx < 0) {
-      rows.push({
-        id: batchId,
-        batchId,
-        material,
-        kg,
-        recycler: {
-          ...recycler,
-          ts: nowIso,
-        },
-        ts: nowIso,
-        created_at: nowIso,
-        audit: {
-          status: "pending",
-        },
-      });
+    const { data: batchRow, error: batchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
 
-      chainIdx = rows.length - 1;
+    if (batchError) throw batchError;
+
+    if (!batchRow) {
+      const { error: insertBatchError } = await supabaseAdmin
+        .from("batches")
+        .insert({
+          id: batchId,
+          batch_id: batchId,
+          material,
+          kg,
+          weight: kg,
+          recycler: {
+            ...recycler,
+            ts: nowIso,
+          },
+          audit: {
+            status: "pending",
+          },
+          status: "pending",
+          ts: nowIso,
+          created_at: nowIso,
+          updated_at: nowIso,
+        });
+
+      if (insertBatchError) throw insertBatchError;
     }
 
-    const previousVersion = latestByBatch(records, batchId);
+    const { data: latestBatchRow, error: latestBatchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
 
-    const base = previousVersion
-      ? stripVersionMeta(previousVersion)
-      : JSON.parse(JSON.stringify(rows[chainIdx]));
+    if (latestBatchError) throw latestBatchError;
+
+    const { data: previousVersion, error: versionError } = await supabaseAdmin
+      .from("batch_versions")
+      .select("*")
+      .eq("batch_id", batchId)
+      .order("ts", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (versionError) throw versionError;
+
+    const base = previousVersion?.payload
+      ? JSON.parse(JSON.stringify(previousVersion.payload))
+      : JSON.parse(JSON.stringify(toCamelBatch(latestBatchRow)));
 
     base.id = batchId;
     base.batchId = batchId;
     base.material = base.material || material;
     base.kg = base.kg ?? kg;
 
-    // ✅ recycler API 只更新 recycler 欄位
     base.recycler = {
       ...(base.recycler || {}),
       ...recycler,
@@ -206,7 +180,7 @@ export async function POST(req: Request) {
     const prevHash = String(previousVersion?.hash || "");
     const hash = computeVersionHash(prevHash, payloadHash, nowIso);
     const batchVersionId = `${batchId}@${nowIso}`;
-
+    const signerName = String(recycler?.name || "Recycler");
     const signature = signBase64(hash);
 
     const event = {
@@ -214,7 +188,7 @@ export async function POST(req: Request) {
       action: "recycler_updated",
       ts: nowIso,
       role: "recycler",
-      by: String(recycler?.name || "Recycler"),
+      by: signerName,
       note: body?.note || null,
       data: {
         recycler,
@@ -225,54 +199,75 @@ export async function POST(req: Request) {
       ? previousVersion.events
       : [];
 
-    const newVersion = {
-      ...base,
-      batchId,
-      batchVersionId,
-      ts: nowIso,
-      prevHash: prevHash || null,
-      payloadHash,
-      hash,
+    const signatures = [
+      {
+        role: "recycler",
+        signer: String(process.env.RECYCLER_DID || "did:web:recycler.local"),
+        signerName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.RECYCLER_KID || "recycler-key-1"),
+        ts: nowIso,
+        signature,
+      },
+    ];
 
-      signatures: [
-        {
-          role: "recycler",
-          signer: String(process.env.RECYCLER_DID || "did:web:recycler.local"),
-          signerName: String(recycler?.name || "Recycler"),
-          alg: "RSA-SHA256",
-          kid: String(process.env.RECYCLER_KID || "recycler-key-1"),
-          ts: nowIso,
-          signature,
-        },
-      ],
+    const { error: insertVersionError } = await supabaseAdmin
+      .from("batch_versions")
+      .insert({
+        batch_id: batchId,
+        batch_version_id: batchVersionId,
+        ts: nowIso,
+        prev_hash: prevHash || null,
+        payload_hash: payloadHash,
+        hash,
+        payload: base,
+        signatures,
+        signature,
+        signer: "recycler",
+        signer_name: signerName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.RECYCLER_KID || "recycler-key-1"),
+        events: [...prevEvents, event],
+        event,
+        ots: null,
+        on_chain: null,
+      });
 
-      signature,
-      signer: "recycler",
-      signerName: String(recycler?.name || "Recycler"),
-      alg: "RSA-SHA256",
+    if (insertVersionError) throw insertVersionError;
 
-      events: [...prevEvents, event],
-      event,
+    const { error: updateBatchError } = await supabaseAdmin
+      .from("batches")
+      .update({
+        material: base.material,
+        kg: base.kg,
+        weight: base.kg,
+        recycler: base.recycler,
+        batch_version_id: batchVersionId,
+        batch_version_hash: hash,
+        report_payload_hash: payloadHash,
+        updated_at: nowIso,
+      })
+      .eq("id", batchId);
 
-      ots: null,
-      onChain: null,
-    };
+    if (updateBatchError) throw updateBatchError;
 
-    records.push(newVersion);
-    await writeJson(BATCH_VERSIONS_FILE, { records });
+    const { error: logError } = await supabaseAdmin.from("audit_logs").insert({
+      batch_id: batchId,
+      action: "recycler_updated",
+      actor_role: "recycler",
+      payload: {
+        batchId,
+        recycler: base.recycler,
+        batchVersionId,
+        batchVersionHash: hash,
+        event,
+      },
+    });
 
-    // ✅ chain.json 只當最新快照
-    rows[chainIdx] = {
-      ...rows[chainIdx],
-      ...stripVersionMeta(newVersion),
-      id: batchId,
-      batchId,
-      recycler: newVersion.recycler,
-    };
+    if (logError) {
+      console.warn("audit_logs insert failed:", logError.message);
+    }
 
-    await writeJson(CHAIN_FILE, rows);
-
-    // ✅ 新增 / 上傳回收資料後，自動跑完整 pipeline
     const autoPipeline = await triggerAutoPipeline(batchId);
 
     return NextResponse.json({
@@ -280,8 +275,9 @@ export async function POST(req: Request) {
       batchId,
       batchVersionId,
       batchVersionHash: hash,
-      recycler: newVersion.recycler,
+      recycler: base.recycler,
       autoPipeline,
+      wrote: "supabase:batches,batch_versions,audit_logs",
     });
   } catch (err: any) {
     return NextResponse.json(

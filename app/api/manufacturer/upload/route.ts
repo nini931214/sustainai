@@ -1,28 +1,10 @@
+// app/api/manufacturer/upload/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 import crypto from "crypto";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const CHAIN_FILE = path.join(DATA_DIR, "chain.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
-
-async function readJson(file: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(file: string, data: any) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf8");
-}
 
 function stableJson(obj: any) {
   const sortKeys = (x: any): any => {
@@ -37,6 +19,7 @@ function stableJson(obj: any) {
     }
     return x;
   };
+
   return JSON.stringify(sortKeys(obj));
 }
 
@@ -50,6 +33,7 @@ function computeVersionHash(prevHash: string, payloadHash: string, tsIso: string
 
 function stripVersionMeta(versionLike: any) {
   const cloned = JSON.parse(JSON.stringify(versionLike || {}));
+
   delete cloned.hash;
   delete cloned.prevHash;
   delete cloned.payloadHash;
@@ -63,15 +47,22 @@ function stripVersionMeta(versionLike: any) {
   delete cloned.kid;
   delete cloned.ots;
   delete cloned.onChain;
+  delete cloned.on_chain;
   delete cloned.event;
   delete cloned.events;
+
   return cloned;
 }
 
-function latestByBatch(records: any[], batchId: string) {
-  const same = records.filter((r) => String(r?.batchId) === batchId);
-  same.sort((a, b) => Number(new Date(b?.ts || 0)) - Number(new Date(a?.ts || 0)));
-  return same[0] || null;
+function toCamelBatch(row: any) {
+  return {
+    ...row,
+    batchId: row?.batch_id ?? row?.batchId ?? row?.id,
+    reportId: row?.report_id ?? row?.reportId,
+    batchVersionId: row?.batch_version_id ?? row?.batchVersionId,
+    batchVersionHash: row?.batch_version_hash ?? row?.batchVersionHash,
+    reportPayloadHash: row?.report_payload_hash ?? row?.reportPayloadHash,
+  };
 }
 
 function signBase64(message: string) {
@@ -84,6 +75,7 @@ function signBase64(message: string) {
 
   const pem = pemRaw.replace(/\\n/g, "\n");
   const sig = crypto.sign("RSA-SHA256", Buffer.from(message, "utf8"), pem);
+
   return sig.toString("base64");
 }
 
@@ -108,32 +100,40 @@ export async function POST(req: Request) {
       );
     }
 
-    const chain = await readJson(CHAIN_FILE, []);
-    const versionsDb = await readJson(BATCH_VERSIONS_FILE, { records: [] });
+    const { data: batchRow, error: batchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
 
-    const rows: any[] = Array.isArray(chain) ? chain : [];
-    const records: any[] = Array.isArray(versionsDb?.records) ? versionsDb.records : [];
+    if (batchError) throw batchError;
 
-    const chainIdx = rows.findIndex((r: any) => String(r?.id) === batchId);
-    if (chainIdx < 0) {
+    if (!batchRow) {
       return NextResponse.json(
         { ok: false, error: "BATCH_NOT_FOUND", batchId },
         { status: 404 }
       );
     }
 
-    const nowIso = new Date().toISOString();
-    const previousVersion = latestByBatch(records, batchId);
+    const { data: previousVersion, error: versionError } = await supabaseAdmin
+      .from("batch_versions")
+      .select("*")
+      .eq("batch_id", batchId)
+      .order("ts", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    const base =
-      previousVersion
-        ? stripVersionMeta(previousVersion)
-        : JSON.parse(JSON.stringify(rows[chainIdx]));
+    if (versionError) throw versionError;
+
+    const nowIso = new Date().toISOString();
+
+    const base = previousVersion?.payload
+      ? JSON.parse(JSON.stringify(previousVersion.payload))
+      : JSON.parse(JSON.stringify(toCamelBatch(batchRow)));
 
     base.id = batchId;
     base.batchId = batchId;
 
-    // ✅ 只更新 manufacturer 區塊
     base.manufacturer = {
       ...(base.manufacturer || {}),
       ...manufacturer,
@@ -145,65 +145,96 @@ export async function POST(req: Request) {
     const hash = computeVersionHash(prevHash, payloadHash, nowIso);
     const batchVersionId = `${batchId}@${nowIso}`;
 
+    const signerName = String(manufacturer?.name || "Manufacturer");
     const signature = signBase64(hash);
+
     const event = {
       type: "manufacturer.upload",
       action: "manufacturer_updated",
       ts: nowIso,
       role: "manufacturer",
-      by: String(manufacturer?.name || "Manufacturer"),
+      by: signerName,
       note: body?.note || null,
       data: { manufacturer },
     };
 
-    const prevEvents = Array.isArray(previousVersion?.events) ? previousVersion.events : [];
+    const prevEvents = Array.isArray(previousVersion?.events)
+      ? previousVersion.events
+      : [];
 
-    const newVersion = {
-      ...base,
-      batchId,
-      batchVersionId,
-      ts: nowIso,
-      prevHash: prevHash || null,
-      payloadHash,
-      hash,
-      signatures: [
-        {
-          role: "manufacturer",
-          signer: String(process.env.MANUFACTURER_DID || "did:web:manufacturer.local"),
-          signerName: String(manufacturer?.name || "Manufacturer"),
-          alg: "RSA-SHA256",
-          kid: String(process.env.MANUFACTURER_KID || "manufacturer-key-1"),
-          ts: nowIso,
-          signature,
-        },
-      ],
-      signature,
-      signer: "manufacturer",
-      signerName: String(manufacturer?.name || "Manufacturer"),
-      alg: "RSA-SHA256",
-      events: [...prevEvents, event],
-      event,
-      ots: null,
-      onChain: null,
-    };
+    const signatures = [
+      {
+        role: "manufacturer",
+        signer: String(process.env.MANUFACTURER_DID || "did:web:manufacturer.local"),
+        signerName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.MANUFACTURER_KID || "manufacturer-key-1"),
+        ts: nowIso,
+        signature,
+      },
+    ];
 
-    records.push(newVersion);
-    await writeJson(BATCH_VERSIONS_FILE, { records });
+    const { error: insertVersionError } = await supabaseAdmin
+      .from("batch_versions")
+      .insert({
+        batch_id: batchId,
+        batch_version_id: batchVersionId,
+        ts: nowIso,
+        prev_hash: prevHash || null,
+        payload_hash: payloadHash,
+        hash,
+        payload: base,
+        signatures,
+        signature,
+        signer: "manufacturer",
+        signer_name: signerName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.MANUFACTURER_KID || "manufacturer-key-1"),
+        events: [...prevEvents, event],
+        event,
+        ots: null,
+        on_chain: null,
+      });
 
-    rows[chainIdx] = {
-      ...rows[chainIdx],
-      ...stripVersionMeta(newVersion),
-      id: batchId,
-      manufacturer: newVersion.manufacturer,
-    };
-    await writeJson(CHAIN_FILE, rows);
+    if (insertVersionError) throw insertVersionError;
+
+    const { error: updateBatchError } = await supabaseAdmin
+      .from("batches")
+      .update({
+        manufacturer: base.manufacturer,
+        batch_version_id: batchVersionId,
+        batch_version_hash: hash,
+        report_payload_hash: payloadHash,
+        updated_at: nowIso,
+      })
+      .eq("id", batchId);
+
+    if (updateBatchError) throw updateBatchError;
+
+    const { error: logError } = await supabaseAdmin.from("audit_logs").insert({
+      batch_id: batchId,
+      action: "manufacturer_updated",
+      actor_role: "manufacturer",
+      payload: {
+        batchId,
+        manufacturer: base.manufacturer,
+        batchVersionId,
+        batchVersionHash: hash,
+        event,
+      },
+    });
+
+    if (logError) {
+      console.warn("audit_logs insert failed:", logError.message);
+    }
 
     return NextResponse.json({
       ok: true,
       batchId,
       batchVersionId,
       batchVersionHash: hash,
-      manufacturer: newVersion.manufacturer,
+      manufacturer: base.manufacturer,
+      wrote: "supabase:batches,batch_versions,audit_logs",
     });
   } catch (err: any) {
     return NextResponse.json(

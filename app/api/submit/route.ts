@@ -1,17 +1,11 @@
 // app/api/report/submit/route.ts
 import { NextResponse } from "next/server";
-import fs from "node:fs/promises";
-import path from "node:path";
 import crypto from "node:crypto";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const CHAIN_PATH = path.join(DATA_DIR, "chain.json");
-const REPORTS_PATH = path.join(DATA_DIR, "reports.json");
-
-/** --- stable stringify（確保 hash 可重現）--- */
 function stableStringify(input: any): string {
   const seen = new WeakSet();
 
@@ -19,10 +13,7 @@ function stableStringify(input: any): string {
     if (value === null || value === undefined) return value;
     if (typeof value !== "object") return value;
 
-    if (seen.has(value)) {
-      // 避免循環引用炸掉
-      return "[Circular]";
-    }
+    if (seen.has(value)) return "[Circular]";
     seen.add(value);
 
     if (Array.isArray(value)) return value.map(sorter);
@@ -40,118 +31,160 @@ function sha256Hex(text: string) {
   return crypto.createHash("sha256").update(text, "utf8").digest("hex");
 }
 
-async function ensureStore() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  // chain.json 若不存在就補空陣列
-  try {
-    await fs.access(CHAIN_PATH);
-  } catch {
-    await fs.writeFile(CHAIN_PATH, "[]", "utf8");
-  }
-  // reports.json 若不存在就補 { reports: [] }
-  try {
-    await fs.access(REPORTS_PATH);
-  } catch {
-    await fs.writeFile(REPORTS_PATH, JSON.stringify({ reports: [] }, null, 2), "utf8");
-  }
+function makeReportId() {
+  return `RPT-${Date.now()}`;
 }
 
-async function readJsonSafe(p: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(p, "utf8");
-    return raw?.trim() ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
+async function getLatestBatchVersion(batchId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("batch_versions")
+    .select("*")
+    .eq("batch_id", batchId)
+    .order("ts", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
 }
 
-async function readChainRows(): Promise<any[]> {
-  await ensureStore();
-  const rows = await readJsonSafe(CHAIN_PATH, []);
-  return Array.isArray(rows) ? rows : [];
-}
-
-type ReportsStore = { reports: any[] };
-
-async function readReportsStore(): Promise<ReportsStore> {
-  await ensureStore();
-  const store = await readJsonSafe(REPORTS_PATH, { reports: [] });
-  return store && Array.isArray(store.reports) ? store : { reports: [] };
-}
-
-async function writeReportsStore(store: ReportsStore) {
-  await ensureStore();
-  await fs.writeFile(REPORTS_PATH, JSON.stringify(store, null, 2), "utf8");
-}
-
-/** 用 chain.json 的批次資料推 batchVersionId（最不破壞你的資料結構） */
-function deriveBatchVersionId(batch: any): string {
-  const batchId = String(batch?.id || "BATCH-UNKNOWN");
-  const ts =
-    batch?.audit?.ts ??
-    batch?.ts ??
-    batch?.created_at ??
-    Date.now();
-
-  return `${batchId}@ts:${ts}`;
-}
-
-/**
- * POST body（最少需求）：
- * {
- *   "batchId": "BATCH-2026-002",
- *   "report_payload": { ... }   // 你要放進報告的 payload
- * }
- */
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const batchId = String(body.batchId || "").trim();
+
+    const batchId = String(body.batchId || body.batch_id || "").trim();
     const reportPayload = body.report_payload ?? body.reportPayload;
 
     if (!batchId) {
-      return NextResponse.json({ ok: false, error: "MISSING_BATCH_ID" }, { status: 400 });
-    }
-    if (!reportPayload || typeof reportPayload !== "object") {
-      return NextResponse.json({ ok: false, error: "MISSING_REPORT_PAYLOAD" }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "MISSING_BATCH_ID" },
+        { status: 400 }
+      );
     }
 
-    const chain = await readChainRows();
-    const batch = chain.find((b: any) => String(b?.id) === batchId);
+    if (!reportPayload || typeof reportPayload !== "object") {
+      return NextResponse.json(
+        { ok: false, error: "MISSING_REPORT_PAYLOAD" },
+        { status: 400 }
+      );
+    }
+
+    const { data: batch, error: batchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
+
+    if (batchError) throw batchError;
 
     if (!batch) {
-      return NextResponse.json({ ok: false, error: "BATCH_NOT_FOUND", batchId }, { status: 404 });
+      return NextResponse.json(
+        { ok: false, error: "BATCH_NOT_FOUND", batchId },
+        { status: 404 }
+      );
     }
 
-    const batchVersionId = deriveBatchVersionId(batch);
+    const latestVersion = await getLatestBatchVersion(batchId);
 
-    // ✅ (2) 真正算出 report_payload_hash
-    const report_payload_hash = sha256Hex(stableStringify(reportPayload));
+    const batchVersionId =
+      String(
+        body.batchVersionId ||
+          body.batch_version_id ||
+          latestVersion?.batch_version_id ||
+          batch?.batch_version_id ||
+          `${batchId}@ts:${batch?.audit?.ts || batch?.ts || batch?.created_at || Date.now()}`
+      ).trim();
 
-    // reportId：若你有自己的規則可以替換；這裡用時間戳最不會撞
-    const reportId = String(body.reportId || "").trim() || `RPT-${Date.now()}`;
+    const batchVersionHash =
+      String(
+        body.batchVersionHash ||
+          body.batch_version_hash ||
+          latestVersion?.hash ||
+          batch?.batch_version_hash ||
+          ""
+      ).trim();
 
-    const store = await readReportsStore();
-    const next = {
+    const reportPayloadHash = sha256Hex(stableStringify(reportPayload));
+
+    const reportId = String(
+      body.reportId || body.report_id || makeReportId()
+    ).trim();
+
+    const nowIso = new Date().toISOString();
+
+    const reportRecord = {
       id: reportId,
-      batchId,
-      batchVersionId,               // ✅ (3) 綁定版本
+      report_id: reportId,
+      batch_id: batchId,
+      batch_version_id: batchVersionId,
+      batch_version_hash: batchVersionHash || null,
       report_payload: reportPayload,
-      report_payload_hash,          // ✅ (2) 不再 PLACEHOLDER
-      created_at: new Date().toISOString(),
+      report_payload_hash: reportPayloadHash,
+      audit_time_iso: nowIso,
+      time_source: "api/report/submit",
+      status: String(body.status || "submitted"),
+      created_at: nowIso,
     };
 
-    // 同 id 覆蓋，沒有就 push
-    const idx = store.reports.findIndex((r: any) => String(r?.id) === reportId);
-    if (idx >= 0) store.reports[idx] = next;
-    else store.reports.unshift(next);
+    const { data: report, error: reportError } = await supabaseAdmin
+      .from("reports")
+      .upsert(reportRecord, { onConflict: "id" })
+      .select()
+      .single();
 
-    await writeReportsStore(store);
+    if (reportError) throw reportError;
 
-    return NextResponse.json({ ok: true, report: next });
+    const { error: batchUpdateError } = await supabaseAdmin
+      .from("batches")
+      .update({
+        report_id: reportId,
+        batch_version_id: batchVersionId,
+        batch_version_hash: batchVersionHash || batch?.batch_version_hash || null,
+        report_payload_hash: reportPayloadHash,
+        updated_at: nowIso,
+      })
+      .eq("id", batchId);
+
+    if (batchUpdateError) throw batchUpdateError;
+
+    const { error: logError } = await supabaseAdmin.from("audit_logs").insert({
+      batch_id: batchId,
+      action: "report_submitted",
+      actor_role: "system",
+      payload: {
+        reportId,
+        batchId,
+        batchVersionId,
+        batchVersionHash,
+        reportPayloadHash,
+      },
+    });
+
+    if (logError) {
+      console.warn("audit_logs insert failed:", logError.message);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      report,
+      verifyUrl: `/verify?reportId=${encodeURIComponent(reportId)}&batchId=${encodeURIComponent(
+        batchId
+      )}${
+        batchVersionHash
+          ? `&batchVersionHash=${encodeURIComponent(batchVersionHash)}`
+          : ""
+      }&batchVersionId=${encodeURIComponent(
+        batchVersionId
+      )}&reportPayloadHash=${encodeURIComponent(reportPayloadHash)}`,
+      wrote: "supabase:reports,batches,audit_logs",
+    });
   } catch (err: any) {
     return NextResponse.json(
-      { ok: false, error: "REPORT_SUBMIT_FAILED", message: String(err?.message || err) },
+      {
+        ok: false,
+        error: "REPORT_SUBMIT_FAILED",
+        message: String(err?.message || err),
+      },
       { status: 500 }
     );
   }

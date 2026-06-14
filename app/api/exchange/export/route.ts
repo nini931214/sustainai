@@ -1,27 +1,9 @@
+// app/api/exchange/export/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const REPORTS_FILE = path.join(DATA_DIR, "reports.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
-const CHAIN_FILE = path.join(DATA_DIR, "chain.json");
-
-async function readJsonAny(filePath: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(filePath, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function resolveReportId(r: any) {
-  return String(r?.id || r?.reportId || r?.report_id || "");
-}
 
 export async function GET(req: Request) {
   try {
@@ -35,15 +17,14 @@ export async function GET(req: Request) {
       );
     }
 
-    const reportsDb = await readJsonAny(REPORTS_FILE, { reports: [] });
-    const versionsDb = await readJsonAny(BATCH_VERSIONS_FILE, { records: [] });
-    const chainDb = await readJsonAny(CHAIN_FILE, []);
+    const { data: report, error: reportError } = await supabaseAdmin
+      .from("reports")
+      .select("*")
+      .or(`id.eq.${reportId},report_id.eq.${reportId}`)
+      .maybeSingle();
 
-    const reports: any[] = Array.isArray(reportsDb?.reports) ? reportsDb.reports : [];
-    const versions: any[] = Array.isArray(versionsDb?.records) ? versionsDb.records : [];
-    const chain: any[] = Array.isArray(chainDb) ? chainDb : [];
+    if (reportError) throw reportError;
 
-    const report = reports.find((r) => resolveReportId(r) === reportId);
     if (!report) {
       return NextResponse.json(
         { ok: false, error: "REPORT_NOT_FOUND", reportId },
@@ -51,31 +32,58 @@ export async function GET(req: Request) {
       );
     }
 
-    const batchId = String(report?.batchId || "").trim();
-    const batchVersionHash = String(report?.batchVersionHash || report?.batchVersionHash || "").trim();
-    const batchVersionId = String(report?.batchVersionId || "").trim();
+    const batchId = String(report?.batch_id || report?.batchId || "").trim();
 
-    const batch = chain.find((r) => String(r?.id) === batchId) || null;
+    const batchVersionHash = String(
+      report?.batch_version_hash || report?.batchVersionHash || ""
+    ).trim();
 
-    let version =
-      versions.find(
-        (v) =>
-          String(v?.batchId) === batchId &&
-          String(v?.hash || "") === batchVersionHash
-      ) || null;
+    const batchVersionId = String(
+      report?.batch_version_id || report?.batchVersionId || ""
+    ).trim();
+
+    const { data: batch, error: batchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
+
+    if (batchError) throw batchError;
+
+    let version = null;
+
+    if (batchVersionHash) {
+      const { data, error } = await supabaseAdmin
+        .from("batch_versions")
+        .select("*")
+        .eq("batch_id", batchId)
+        .eq("hash", batchVersionHash)
+        .maybeSingle();
+
+      if (error) throw error;
+      version = data;
+    }
 
     if (!version && batchVersionId) {
-      version =
-        versions.find(
-          (v) =>
-            String(v?.batchId) === batchId &&
-            String(v?.batchVersionId || "") === batchVersionId
-        ) || null;
+      const { data, error } = await supabaseAdmin
+        .from("batch_versions")
+        .select("*")
+        .eq("batch_id", batchId)
+        .eq("batch_version_id", batchVersionId)
+        .maybeSingle();
+
+      if (error) throw error;
+      version = data;
     }
 
     if (!version) {
       return NextResponse.json(
-        { ok: false, error: "BATCH_VERSION_NOT_FOUND", batchId, reportId },
+        {
+          ok: false,
+          error: "BATCH_VERSION_NOT_FOUND",
+          batchId,
+          reportId,
+        },
         { status: 404 }
       );
     }

@@ -1,51 +1,35 @@
 // app/trace/[batchId]/page.tsx
 import Link from "next/link";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { unstable_noStore as noStore } from "next/cache";
 import type { CSSProperties } from "react";
 import BackToFlow from "../../components/BackToFlow";
 import ApproveButton from "./ApproveButton";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-type TraceResponse = {
-  ok?: boolean;
-  batch?: any;
-  footprint?: {
-    total_co2e?: number;
-    transport_co2e?: number;
-    process_co2e?: number;
-  };
-  events?: any[];
-  error?: string;
-};
+export const dynamic = "force-dynamic";
 
-const CHAIN_FILE = path.join(process.cwd(), "data", "chain.json");
-
-/** ✅ 永遠讀到最新：不走 static import、不吃 cache */
-async function readChain(): Promise<any[]> {
-  try {
-    const raw = await fs.readFile(CHAIN_FILE, "utf8");
-    const parsed = JSON.parse(raw || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-/** (Demo) 碳排摘要：你原本 UI 需要 footprint，先給一個穩定可用的估算 */
 function calcFootprint(batch: any) {
-  const kg = Number(batch?.kg ?? 0);
+  const kg = Number(batch?.kg ?? batch?.weight ?? 0);
   const distance = Number(batch?.transport?.distance_km ?? 0);
   const energy = Number(batch?.processor?.energy_kwh ?? 0);
 
-  const transport_co2e = distance * 0.02; // demo
-  const process_co2e = energy * 0.5; // demo
+  const transport_co2e = distance * 0.02;
+  const process_co2e = energy * 0.5;
   const total_co2e = transport_co2e + process_co2e + kg * 0.1;
 
   return { total_co2e, transport_co2e, process_co2e };
 }
 
-export const dynamic = "force-dynamic";
+async function getBatch(batchId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("batches")
+    .select("*")
+    .eq("id", batchId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
 
 export default async function TracePublicPage({
   params,
@@ -55,34 +39,28 @@ export default async function TracePublicPage({
   noStore();
 
   const id = decodeURIComponent(params.batchId);
+  const batch = await getBatch(id);
+  const footprint = batch ? calcFootprint(batch) : null;
 
-  const rows = await readChain();
-  const found = rows.find((r) => String(r?.id) === id) || null;
-
-  const data: TraceResponse | null = found
-    ? { ok: true, batch: found, footprint: calcFootprint(found), events: [] }
-    : null;
-
-  const batch = data?.batch;
-
-  // --- 容錯取值 ---
   const material = batch?.material ?? "—";
-  const kg = batch?.kg ?? "—";
+  const kg = batch?.kg ?? batch?.weight ?? "—";
+
   const recyclerName =
     batch?.recycler?.name ??
     (typeof batch?.recycler === "string" ? batch?.recycler : "—");
+
   const processorName =
     batch?.processor?.name ??
     (typeof batch?.processor === "string" ? batch?.processor : "—");
+
   const manufacturerName =
     batch?.manufacturer?.name ??
     (typeof batch?.manufacturer === "string" ? batch?.manufacturer : "—");
 
-  const auditStatus = batch?.audit?.status ?? "pending";
+  const auditStatus = batch?.audit?.status ?? batch?.status ?? "pending";
   const auditNote = batch?.audit?.note ?? "";
   const auditBy = batch?.audit?.by ?? "—";
 
-  const footprint = data?.footprint;
   const total =
     typeof footprint?.total_co2e === "number" ? footprint.total_co2e : null;
   const transport =
@@ -128,7 +106,6 @@ export default async function TracePublicPage({
       }}
     >
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -172,14 +149,13 @@ export default async function TracePublicPage({
           >
             <div style={{ fontWeight: 900, marginBottom: 6 }}>找不到批次資料</div>
             <div style={{ fontSize: 13 }}>
-              目前 trace 頁直接讀取：<code>{CHAIN_FILE}</code>
+              目前 trace 頁讀取：<code>supabase:batches</code>
               <br />
               請到 <code>/recent</code> 確認批次 ID。
             </div>
           </div>
         ) : null}
 
-        {/* ✅ 手動核准（Client Button） */}
         {batch ? (
           <div
             style={{
@@ -206,7 +182,7 @@ export default async function TracePublicPage({
                 </div>
                 <div style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6, marginTop: 4 }}>
                   點「核准」會呼叫 <code>/api/auditor/update</code>，寫入{" "}
-                  <code>reports.json</code> 與 <code>batch_versions.json</code>，讓此批次可進入 Verify。
+                  <code>Supabase batches</code> 與 <code>batch_versions</code>，讓此批次可進入 Verify。
                 </div>
               </div>
 
@@ -215,7 +191,6 @@ export default async function TracePublicPage({
           </div>
         ) : null}
 
-        {/* Main cards */}
         <div style={{ marginTop: 18, display: "grid", gap: 16, gridTemplateColumns: "1fr" }}>
           <div style={cardStyle}>
             <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>批次基本資訊</div>
@@ -241,7 +216,9 @@ export default async function TracePublicPage({
             }}
           >
             <div style={cardStyle}>
-              <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>流程履歷（Timeline）</div>
+              <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>
+                流程履歷（Timeline）
+              </div>
               <div style={{ display: "grid", gap: 10 }}>
                 {items.map((it, idx) => (
                   <div
@@ -263,12 +240,22 @@ export default async function TracePublicPage({
             </div>
 
             <div style={cardStyle}>
-              <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>碳排摘要（Demo）</div>
+              <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>
+                碳排摘要（Demo）
+              </div>
               <div style={{ fontSize: 13, color: "#64748b", lineHeight: 1.7 }}>
                 此為示範估算欄位（正式版可替換成更細緻的計算模型或第三方盤查結果）。
               </div>
 
-              <div style={{ marginTop: 12, borderRadius: 14, border: "1px solid #e5e7eb", background: "#f8fafc", padding: 14 }}>
+              <div
+                style={{
+                  marginTop: 12,
+                  borderRadius: 14,
+                  border: "1px solid #e5e7eb",
+                  background: "#f8fafc",
+                  padding: 14,
+                }}
+              >
                 <div style={{ fontSize: 12, color: "#64748b" }}>總碳足跡</div>
                 <div style={{ marginTop: 4, fontSize: 22, fontWeight: 900, color: "#0f172a" }}>
                   {typeof total === "number" ? `${total.toFixed(2)} kg CO2e` : "—"}
@@ -289,8 +276,6 @@ export default async function TracePublicPage({
     </main>
   );
 }
-
-/* ---------------- shared styles ---------------- */
 
 const btnStyle: CSSProperties = {
   display: "inline-flex",

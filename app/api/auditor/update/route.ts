@@ -1,28 +1,10 @@
+// app/api/auditor/update/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 import crypto from "crypto";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const CHAIN_FILE = path.join(DATA_DIR, "chain.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
-
-async function readJson(file: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-async function writeJson(file: string, data: any) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf8");
-}
 
 function normalizeStatus(input: any): "approved" | "rejected" | "pending" {
   const s = String(input || "").trim().toLowerCase();
@@ -47,6 +29,7 @@ function stableJson(obj: any) {
     }
     return x;
   };
+
   return JSON.stringify(sortKeys(obj));
 }
 
@@ -68,6 +51,7 @@ function signBase64(message: string) {
 
   const pem = pemRaw.replace(/\\n/g, "\n");
   const sig = crypto.sign("RSA-SHA256", Buffer.from(message, "utf8"), pem);
+
   return sig.toString("base64");
 }
 
@@ -92,12 +76,6 @@ function buildAuditEvent(params: {
   };
 }
 
-function latestByBatch(records: any[], batchId: string) {
-  const same = records.filter((r) => String(r?.batchId) === batchId);
-  same.sort((a, b) => Number(new Date(b?.ts || 0)) - Number(new Date(a?.ts || 0)));
-  return same[0] || null;
-}
-
 function stripVersionMeta(versionLike: any) {
   const cloned = JSON.parse(JSON.stringify(versionLike || {}));
 
@@ -120,6 +98,17 @@ function stripVersionMeta(versionLike: any) {
   return cloned;
 }
 
+function toCamelBatch(row: any) {
+  return {
+    ...row,
+    batchId: row?.batch_id ?? row?.batchId ?? row?.id,
+    reportId: row?.report_id ?? row?.reportId,
+    batchVersionId: row?.batch_version_id ?? row?.batchVersionId,
+    batchVersionHash: row?.batch_version_hash ?? row?.batchVersionHash,
+    reportPayloadHash: row?.report_payload_hash ?? row?.reportPayloadHash,
+  };
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
@@ -136,14 +125,15 @@ export async function POST(req: Request) {
       );
     }
 
-    const chain = await readJson(CHAIN_FILE, []);
-    const versionsDb = await readJson(BATCH_VERSIONS_FILE, { records: [] });
+    const { data: batchRow, error: batchError } = await supabaseAdmin
+      .from("batches")
+      .select("*")
+      .eq("id", batchId)
+      .maybeSingle();
 
-    const rows: any[] = Array.isArray(chain) ? chain : [];
-    const records: any[] = Array.isArray(versionsDb?.records) ? versionsDb.records : [];
+    if (batchError) throw batchError;
 
-    const chainIdx = rows.findIndex((r: any) => String(r?.id) === batchId);
-    if (chainIdx < 0) {
+    if (!batchRow) {
       return NextResponse.json(
         {
           ok: false,
@@ -154,17 +144,24 @@ export async function POST(req: Request) {
       );
     }
 
+    const { data: previousVersion, error: versionError } = await supabaseAdmin
+      .from("batch_versions")
+      .select("*")
+      .eq("batch_id", batchId)
+      .order("ts", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (versionError) throw versionError;
+
     const nowIso = new Date().toISOString();
-    const previousVersion = latestByBatch(records, batchId);
 
-    // ✅ 以「上一版內容」或「chain 快照」為基底，建立新版本內容
-    const base =
-      previousVersion
-        ? stripVersionMeta(previousVersion)
-        : JSON.parse(JSON.stringify(rows[chainIdx]));
+    const base = previousVersion?.payload
+      ? JSON.parse(JSON.stringify(previousVersion.payload))
+      : JSON.parse(JSON.stringify(toCamelBatch(batchRow)));
 
-    // ✅ 稽核方只改 audit，不碰 recycler / processor / manufacturer
-    const prevStatus = String(base?.audit?.status || rows[chainIdx]?.audit?.status || null);
+    const prevStatus = String(base?.audit?.status || batchRow?.audit?.status || "") || null;
+
     base.id = batchId;
     base.batchId = batchId;
     base.audit = {
@@ -175,26 +172,38 @@ export async function POST(req: Request) {
       ts: nowIso,
     };
 
-    // ✅ append-only version
     const payloadHash = sha256Hex(stableJson(base));
     const prevHash = String(previousVersion?.hash || "");
     const hash = computeVersionHash(prevHash, payloadHash, nowIso);
     const batchVersionId = `${batchId}@${nowIso}`;
 
     const signature = signBase64(hash);
+
     const event = buildAuditEvent({
       ts: nowIso,
       by: auditorName,
       status,
       note,
-      prevStatus: prevStatus || null,
+      prevStatus,
     });
 
     const prevEvents = Array.isArray(previousVersion?.events)
       ? previousVersion.events
       : [];
 
-    const newVersion = {
+    const signatures = [
+      {
+        role: "auditor",
+        signer: String(process.env.AUDITOR_DID || "did:web:auditor.local"),
+        signerName: auditorName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.AUDITOR_KID || "auditor-key-1"),
+        ts: nowIso,
+        signature,
+      },
+    ];
+
+    const newVersionPayload = {
       ...base,
       batchId,
       batchVersionId,
@@ -202,51 +211,82 @@ export async function POST(req: Request) {
       prevHash: prevHash || null,
       payloadHash,
       hash,
-
-      signatures: [
-        {
-          role: "auditor",
-          signer: String(process.env.AUDITOR_DID || "did:web:auditor.local"),
-          signerName: auditorName,
-          alg: "RSA-SHA256",
-          kid: String(process.env.AUDITOR_KID || "auditor-key-1"),
-          ts: nowIso,
-          signature,
-        },
-      ],
-
-      // 相容舊欄位
+      signatures,
       signature,
       signer: "auditor",
       signerName: auditorName,
       alg: "RSA-SHA256",
-
       events: [...prevEvents, event],
       event,
-
       ots: null,
       onChain: null,
     };
 
-    records.push(newVersion);
-    await writeJson(BATCH_VERSIONS_FILE, { records });
+    const { error: insertVersionError } = await supabaseAdmin
+      .from("batch_versions")
+      .insert({
+        batch_id: batchId,
+        batch_version_id: batchVersionId,
+        ts: nowIso,
+        prev_hash: prevHash || null,
+        payload_hash: payloadHash,
+        hash,
+        payload: base,
+        signatures,
+        signature,
+        signer: "auditor",
+        signer_name: auditorName,
+        alg: "RSA-SHA256",
+        kid: String(process.env.AUDITOR_KID || "auditor-key-1"),
+        events: [...prevEvents, event],
+        event,
+        ots: null,
+        on_chain: null,
+      });
 
-    // ✅ chain.json 只更新最新快照（不是主真相）
-    rows[chainIdx] = {
-      ...rows[chainIdx],
-      ...stripVersionMeta(newVersion),
-      id: batchId,
-      audit: newVersion.audit,
-    };
-    await writeJson(CHAIN_FILE, rows);
+    if (insertVersionError) throw insertVersionError;
+
+    const { error: updateBatchError } = await supabaseAdmin
+      .from("batches")
+      .update({
+        audit: base.audit,
+        status,
+        batch_version_id: batchVersionId,
+        batch_version_hash: hash,
+        report_payload_hash: payloadHash,
+        updated_at: nowIso,
+      })
+      .eq("id", batchId);
+
+    if (updateBatchError) throw updateBatchError;
+
+    const { error: logError } = await supabaseAdmin.from("audit_logs").insert({
+      batch_id: batchId,
+      action: "audit_status_changed",
+      actor_role: "auditor",
+      payload: {
+        batchId,
+        status,
+        auditorName,
+        note,
+        prevStatus,
+        batchVersionId,
+        batchVersionHash: hash,
+        event,
+      },
+    });
+
+    if (logError) {
+      console.warn("audit_logs insert failed:", logError.message);
+    }
 
     let anchored = false;
     let anchorResult: any = null;
 
-    // ✅ 只有 approved 才自動上鏈
     if (status === "approved") {
       try {
         const origin = process.env.APP_BASE_URL || "http://localhost:3000";
+
         const resp = await fetch(`${origin}/api/onchain/anchor`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -283,8 +323,11 @@ export async function POST(req: Request) {
       auditorName,
       batchVersionId,
       batchVersionHash: hash,
+      payloadHash,
       anchored,
       anchorResult,
+      version: newVersionPayload,
+      wrote: "supabase:batches,batch_versions,audit_logs",
     });
   } catch (err: any) {
     return NextResponse.json(
@@ -300,6 +343,7 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
+
   const batchId = url.searchParams.get("batchId") || url.searchParams.get("id") || "";
   const status = url.searchParams.get("status") || "approved";
   const note = url.searchParams.get("note") || "";

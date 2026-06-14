@@ -1,48 +1,58 @@
+// app/api/auto-pipeline/route.ts
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const CHAIN_FILE = path.join(DATA_DIR, "chain.json");
-const REPORTS_FILE = path.join(DATA_DIR, "reports.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
+async function getLatestBatchId() {
+  const { data, error } = await supabaseAdmin
+    .from("batches")
+    .select("id, ts, created_at, updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-async function readJson(file: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
+  if (error) throw error;
+
+  return data?.id ? String(data.id) : "";
 }
 
-function getLatestBatch(rows: any[]) {
-  return [...rows].sort((a, b) => {
-    const at = Number(new Date(a?.ts || a?.created_at || 0));
-    const bt = Number(new Date(b?.ts || b?.created_at || 0));
-    return bt - at;
-  })[0];
+async function getLatestVersion(batchId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("batch_versions")
+    .select("*")
+    .eq("batch_id", batchId)
+    .order("ts", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
 }
 
-function getLatestVersion(records: any[], batchId: string) {
-  return [...records]
-    .filter((r) => String(r?.batchId) === batchId)
-    .sort((a, b) => Number(new Date(b?.ts || 0)) - Number(new Date(a?.ts || 0)))[0];
+async function getLatestReport(batchId: string) {
+  const { data, error } = await supabaseAdmin
+    .from("reports")
+    .select("*")
+    .eq("batch_id", batchId)
+    .order("audit_time_iso", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
 
-    const chain = await readJson(CHAIN_FILE, []);
-    const rows: any[] = Array.isArray(chain) ? chain : [];
-
     const batchId =
       String(body?.batchId || body?.id || "").trim() ||
-      String(getLatestBatch(rows)?.id || "").trim();
+      (await getLatestBatchId());
 
     if (!batchId) {
       return NextResponse.json(
@@ -53,7 +63,6 @@ export async function POST(req: Request) {
 
     const origin = process.env.APP_BASE_URL || "http://localhost:3000";
 
-    // 1. 自動稽核通過，會 append version
     const auditResp = await fetch(`${origin}/api/auditor/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -79,13 +88,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. 取得最新 version hash
-    const versionsDb = await readJson(BATCH_VERSIONS_FILE, { records: [] });
-    const records: any[] = Array.isArray(versionsDb?.records)
-      ? versionsDb.records
-      : [];
-
-    const latestVersion = getLatestVersion(records, batchId);
+    const latestVersion = await getLatestVersion(batchId);
 
     if (!latestVersion?.hash) {
       return NextResponse.json(
@@ -100,8 +103,8 @@ export async function POST(req: Request) {
 
     const batchVersionHash = String(latestVersion.hash);
 
-    // 3. 自動 OTS stamp
     let otsResult: any = null;
+
     try {
       const otsResp = await fetch(`${origin}/api/ots/stamp`, {
         method: "POST",
@@ -111,6 +114,7 @@ export async function POST(req: Request) {
           batchVersionHash,
         }),
       });
+
       otsResult = await otsResp.json().catch(() => null);
     } catch (err: any) {
       otsResult = {
@@ -120,8 +124,8 @@ export async function POST(req: Request) {
       };
     }
 
-    // 4. 自動 on-chain anchor
     let anchorResult: any = null;
+
     try {
       const anchorResp = await fetch(`${origin}/api/onchain/anchor`, {
         method: "POST",
@@ -131,6 +135,7 @@ export async function POST(req: Request) {
           batchVersionHash,
         }),
       });
+
       anchorResult = await anchorResp.json().catch(() => null);
     } catch (err: any) {
       anchorResult = {
@@ -140,23 +145,13 @@ export async function POST(req: Request) {
       };
     }
 
-    // 5. 找 reportId
-    const reportsDb = await readJson(REPORTS_FILE, { reports: [] });
-    const reports: any[] = Array.isArray(reportsDb?.reports)
-      ? reportsDb.reports
-      : [];
+    const report = await getLatestReport(batchId);
 
-    const report =
-      [...reports]
-        .filter((r) => String(r?.batchId) === batchId)
-        .sort(
-          (a, b) =>
-            Number(new Date(b?.audit_time_iso || b?.updated_at || 0)) -
-            Number(new Date(a?.audit_time_iso || a?.updated_at || 0))
-        )[0] || null;
-
-    const reportId =
-      String(report?.id || report?.reportId || `RPT-${batchId}`).trim();
+    const reportId = String(
+      report?.id ||
+        report?.report_id ||
+        `RPT-${batchId}`
+    ).trim();
 
     return NextResponse.json({
       ok: true,
@@ -168,6 +163,7 @@ export async function POST(req: Request) {
       auditResult,
       otsResult,
       anchorResult,
+      wrote: "supabase:batches,batch_versions,reports",
     });
   } catch (err: any) {
     return NextResponse.json(

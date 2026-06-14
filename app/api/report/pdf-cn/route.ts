@@ -1,3 +1,4 @@
+// app/api/report/pdf/route.ts
 import { NextResponse } from "next/server";
 import { listBatches, getBatchById } from "@/lib/chain";
 import { buildReportDoc } from "@/lib/report/buildReportDoc";
@@ -11,9 +12,10 @@ export async function GET(req: Request) {
     const { searchParams, origin } = new URL(req.url);
     const batchId = searchParams.get("batch") || undefined;
 
-    const batches = listBatches();
+    const batches = await listBatches();
+
     const batch =
-      (batchId && getBatchById(batchId)) ||
+      (batchId ? await getBatchById(batchId) : null) ||
       (batches.length > 0 ? batches[0] : undefined);
 
     if (!batch) {
@@ -23,7 +25,7 @@ export async function GET(req: Request) {
       );
     }
 
-const doc = buildReportDoc({
+    const doc = buildReportDoc({
       batch,
       origin,
       generatedAt: new Date().toISOString().slice(0, 10),
@@ -38,11 +40,11 @@ const doc = buildReportDoc({
     });
 
     const pdfArrayBuffer = pdfBytes.buffer.slice(
-  pdfBytes.byteOffset,
-  pdfBytes.byteOffset + pdfBytes.byteLength
-) as ArrayBuffer;
+      pdfBytes.byteOffset,
+      pdfBytes.byteOffset + pdfBytes.byteLength
+    ) as ArrayBuffer;
 
-return new NextResponse(pdfArrayBuffer, {
+    return new NextResponse(pdfArrayBuffer, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
