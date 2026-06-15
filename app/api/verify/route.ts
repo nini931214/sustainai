@@ -4,13 +4,12 @@ import path from "path";
 import fs from "fs/promises";
 import crypto from "crypto";
 import { getOtsInfoResult } from "@/lib/ots";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const DATA_DIR = path.join(process.cwd(), "data");
-const REPORTS_FILE = path.join(DATA_DIR, "reports.json");
-const BATCH_VERSIONS_FILE = path.join(DATA_DIR, "batch_versions.json");
 const OTS_DIR = path.join(DATA_DIR, "ots");
 
 /* ---------------- utils ---------------- */
@@ -32,16 +31,8 @@ function stableJson(obj: any) {
     }
     return x;
   };
-  return JSON.stringify(sortKeys(obj));
-}
 
-async function readJsonAny(filePath: string, fallback: any) {
-  try {
-    const raw = await fs.readFile(filePath, "utf8");
-    return JSON.parse(raw || "null") ?? fallback;
-  } catch {
-    return fallback;
-  }
+  return JSON.stringify(sortKeys(obj));
 }
 
 function readPemFromEnv(key: string) {
@@ -60,11 +51,13 @@ function verifyBase64WithRole(message: string, signatureB64: string, role: strin
       ? "RECYCLER_PUBLIC_KEY_PEM"
       : role === "processor"
       ? "PROCESSOR_PUBLIC_KEY_PEM"
+      : role === "manufacturer"
+      ? "MANUFACTURER_PUBLIC_KEY_PEM"
       : "";
 
   const pub =
     (roleKey ? readPemFromEnv(roleKey) : "") ||
-    readPemFromEnv("PUBLIC_KEY_PEM"); // fallback
+    readPemFromEnv("PUBLIC_KEY_PEM");
 
   if (!pub) throw new Error("PUBLIC_KEY_MISSING");
 
@@ -78,13 +71,109 @@ function verifyBase64WithRole(message: string, signatureB64: string, role: strin
 
 function safeVidFromVersion(version: any) {
   const raw =
-    String(version?.batchVersionId || "").trim() ||
+    String(version?.batch_version_id || version?.batchVersionId || "").trim() ||
     `hash:${String(version?.hash || "").slice(0, 16)}`;
+
   return raw.replace(/[^\w@.\-:]+/g, "_");
 }
 
-function resolveReportId(r: any) {
-  return String(r?.id || r?.reportId || r?.report_id || "");
+function normalizeVersion(v: any) {
+  if (!v) return null;
+
+  return {
+    ...v,
+    batchId: v.batch_id ?? v.batchId,
+    batchVersionId: v.batch_version_id ?? v.batchVersionId,
+    prevHash: v.prev_hash ?? v.prevHash,
+    payloadHash: v.payload_hash ?? v.payloadHash,
+    signerName: v.signer_name ?? v.signerName,
+    onChain: v.on_chain ?? v.onChain,
+  };
+}
+
+/* ---------------- Supabase resolvers ---------------- */
+
+async function getReportById(reportId: string) {
+  const { data: byId, error: byIdError } = await supabaseAdmin
+    .from("reports")
+    .select("*")
+    .eq("id", reportId)
+    .maybeSingle();
+
+  if (byIdError) throw byIdError;
+  if (byId) return byId;
+
+  const { data: byReportId, error: byReportIdError } = await supabaseAdmin
+    .from("reports")
+    .select("*")
+    .eq("report_id", reportId)
+    .maybeSingle();
+
+  if (byReportIdError) throw byReportIdError;
+  return byReportId;
+}
+
+async function resolveBatchVersionByReport({
+  report,
+  batchIdHint,
+  batchVersionHashHint,
+  batchVersionIdHint,
+}: {
+  report: any;
+  batchIdHint?: string;
+  batchVersionHashHint?: string;
+  batchVersionIdHint?: string;
+}) {
+  const batchId =
+    String(batchIdHint || "").trim() ||
+    String(report?.batch_id || report?.batchId || report?.batch || "").trim();
+
+  if (!batchId) {
+    return { batchId: "", version: null };
+  }
+
+  if (batchVersionHashHint) {
+    const { data, error } = await supabaseAdmin
+      .from("batch_versions")
+      .select("*")
+      .eq("batch_id", batchId)
+      .eq("hash", batchVersionHashHint)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (data) return { batchId, version: normalizeVersion(data) };
+  }
+
+  const batchVersionId =
+    String(batchVersionIdHint || "").trim() ||
+    String(report?.batch_version_id || report?.batchVersionId || "").trim();
+
+  if (batchVersionId) {
+    const { data, error } = await supabaseAdmin
+      .from("batch_versions")
+      .select("*")
+      .eq("batch_id", batchId)
+      .eq("batch_version_id", batchVersionId)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (data) return { batchId, version: normalizeVersion(data) };
+  }
+
+  const { data: latest, error: latestError } = await supabaseAdmin
+    .from("batch_versions")
+    .select("*")
+    .eq("batch_id", batchId)
+    .order("ts", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (latestError) throw latestError;
+
+  return {
+    batchId,
+    version: latest ? normalizeVersion(latest) : null,
+  };
 }
 
 /* ---------------- OTS ---------------- */
@@ -106,6 +195,7 @@ async function getOtsInfoByPath(otsAbsPath: string, hashAbsPath?: string) {
   }
 
   const info = await getOtsInfoResult(otsAbsPath);
+
   return {
     ...info,
     files: {
@@ -118,7 +208,7 @@ async function getOtsInfoByPath(otsAbsPath: string, hashAbsPath?: string) {
 }
 
 async function getOtsForVersion(version: any) {
-  const batchId = String(version?.batchId || "");
+  const batchId = String(version?.batch_id || version?.batchId || "");
   const safeVid = safeVidFromVersion(version);
 
   const otsPathRel = version?.ots?.otsPath ? String(version.ots.otsPath) : "";
@@ -133,76 +223,26 @@ async function getOtsForVersion(version: any) {
   const dir = path.join(OTS_DIR, batchId, safeVid);
   const hashAbs = path.join(dir, `${safeVid}.hash`);
   const otsAbs = `${hashAbs}.ots`;
+
   return await getOtsInfoByPath(otsAbs, hashAbs);
-}
-
-/* ---------------- resolver ---------------- */
-
-async function resolveBatchVersionByReport({
-  report,
-  batchIdHint,
-  batchVersionHashHint,
-  batchVersionIdHint,
-}: {
-  report: any;
-  batchIdHint?: string;
-  batchVersionHashHint?: string;
-  batchVersionIdHint?: string;
-}) {
-  const versionsDb = await readJsonAny(BATCH_VERSIONS_FILE, { records: [] });
-  const records: any[] = Array.isArray(versionsDb?.records) ? versionsDb.records : [];
-
-  const batchId =
-    String(batchIdHint || "").trim() ||
-    String(report?.batchId || report?.batch_id || report?.batch || "").trim();
-
-  if (batchId && batchVersionHashHint) {
-    const byHash =
-      records.find(
-        (r) =>
-          String(r?.batchId) === String(batchId) &&
-          String(r?.hash || "") === String(batchVersionHashHint)
-      ) || null;
-    if (byHash) return { batchId, version: byHash };
-  }
-
-  const batchVersionId =
-    String(batchVersionIdHint || "").trim() ||
-    String(report?.batchVersionId || report?.batch_version_id || "").trim();
-
-  if (batchId && batchVersionId) {
-    const byVid =
-      records.find(
-        (r) =>
-          String(r?.batchId) === String(batchId) &&
-          String(r?.batchVersionId || "") === String(batchVersionId)
-      ) || null;
-    if (byVid) return { batchId, version: byVid };
-  }
-
-  if (batchId) {
-    const same = records.filter((r) => String(r?.batchId) === String(batchId));
-    same.sort((a, b) => Number(new Date(b?.ts || 0)) - Number(new Date(a?.ts || 0)));
-    if (same[0]) return { batchId, version: same[0] };
-  }
-
-  return { batchId, version: null };
 }
 
 /* ---------------- multi-sig helpers ---------------- */
 
 function normalizeSignatures(version: any) {
-  // ✅ 新版
   if (Array.isArray(version?.signatures) && version.signatures.length > 0) {
-    return version.signatures;
+    return version.signatures.map((s: any) => ({
+      ...s,
+      signerName: s.signerName ?? s.signer_name,
+    }));
   }
-  // ✅ 舊版 fallback
+
   if (version?.signature) {
     return [
       {
         role: String(version?.signer || "auditor"),
         signer: String(version?.signerDid || "did:web:legacy.local"),
-        signerName: String(version?.signerName || "legacy"),
+        signerName: String(version?.signerName || version?.signer_name || "legacy"),
         signature: String(version.signature),
         alg: String(version?.alg || "RSA-SHA256"),
         kid: String(version?.kid || "legacy"),
@@ -210,26 +250,32 @@ function normalizeSignatures(version: any) {
       },
     ];
   }
+
   return [];
 }
 
 function checkRoleOk(sigs: any[], role: string, hash: string) {
-  const targets = sigs.filter((s) => String(s?.role) === role);
-  if (targets.length === 0) return { present: false, ok: null as null | boolean };
+  const targets = sigs.filter((s) => String(s?.role).toLowerCase() === role);
+
+  if (targets.length === 0) {
+    return { present: false, ok: null as null | boolean };
+  }
 
   for (const s of targets) {
     const b64 = String(s?.signature || "");
     try {
-      if (verifyBase64WithRole(hash, b64, role)) return { present: true, ok: true };
+      if (verifyBase64WithRole(hash, b64, role)) {
+        return { present: true, ok: true };
+      }
     } catch {
       // keep trying
     }
   }
+
   return { present: true, ok: false };
 }
 
 function buildSignatureResults(sigs: any[], hash: string) {
-  // ✅ 逐筆驗證，回給 UI 顯示（role/signerName/kid/ts/ok/error）
   const results: Array<{
     role?: string | null;
     signer?: string | null;
@@ -244,6 +290,7 @@ function buildSignatureResults(sigs: any[], hash: string) {
   for (const s of sigs) {
     const role = String(s?.role || "").toLowerCase() || "unknown";
     const signatureB64 = String(s?.signature || "");
+
     let ok = false;
     let error: string | null = null;
 
@@ -261,14 +308,19 @@ function buildSignatureResults(sigs: any[], hash: string) {
       signerName: s?.signerName != null ? String(s.signerName) : null,
       alg: s?.alg != null ? String(s.alg) : "RSA-SHA256",
       kid: s?.kid != null ? String(s.kid) : null,
-      ts: s?.ts != null ? String(s.ts) : (s?.signedAt != null ? String(s.signedAt) : null),
+      ts: s?.ts != null ? String(s.ts) : s?.signedAt != null ? String(s.signedAt) : null,
       ok,
       error,
     });
   }
 
-  // ✅ UI 友善：固定順序（auditor/recycler/processor 在前）
-  const order = { auditor: 0, recycler: 1, processor: 2 } as any;
+  const order = {
+    auditor: 0,
+    recycler: 1,
+    processor: 2,
+    manufacturer: 3,
+  } as any;
+
   results.sort((a, b) => (order[a.role || "zzz"] ?? 99) - (order[b.role || "zzz"] ?? 99));
 
   return results;
@@ -284,7 +336,9 @@ export async function GET(req: Request) {
     const batchIdHint = (url.searchParams.get("batchId") || "").trim();
     const batchVersionHashHint = (url.searchParams.get("batchVersionHash") || "").trim();
     const batchVersionIdHint = (url.searchParams.get("batchVersionId") || "").trim();
-    const expectReportPayloadHashFromQuery = (url.searchParams.get("reportPayloadHash") || "").trim();
+    const expectReportPayloadHashFromQuery = (
+      url.searchParams.get("reportPayloadHash") || ""
+    ).trim();
 
     if (!reportId) {
       return NextResponse.json(
@@ -293,14 +347,16 @@ export async function GET(req: Request) {
       );
     }
 
-    /* ---------- report ---------- */
-    const reportsDb = await readJsonAny(REPORTS_FILE, { reports: [] });
-    const reports: any[] = Array.isArray(reportsDb?.reports) ? reportsDb.reports : [];
-    const report = reports.find((r) => resolveReportId(r) === reportId) || null;
+    const report = await getReportById(reportId);
 
     if (!report) {
       return NextResponse.json(
-        { ok: false, error: "REPORT_NOT_FOUND", reportId, hint: "Check data/reports.json." },
+        {
+          ok: false,
+          error: "REPORT_NOT_FOUND",
+          reportId,
+          hint: "Check Supabase table: reports.",
+        },
         { status: 404 }
       );
     }
@@ -316,10 +372,9 @@ export async function GET(req: Request) {
 
     const expectedReportPayloadHash =
       expectReportPayloadHashFromQuery ||
-      String(report?.report_payload_hash || "").trim() ||
+      String(report?.report_payload_hash || report?.reportPayloadHash || "").trim() ||
       "";
 
-    /* ---------- batch version resolve ---------- */
     const { batchId, version } = await resolveBatchVersionByReport({
       report,
       batchIdHint,
@@ -329,50 +384,54 @@ export async function GET(req: Request) {
 
     if (!batchId || !version) {
       return NextResponse.json(
-        { ok: false, error: "BATCH_VERSION_NOT_FOUND", reportId, batchId: batchId || null },
+        {
+          ok: false,
+          error: "BATCH_VERSION_NOT_FOUND",
+          reportId,
+          batchId: batchId || null,
+          hint: "Check Supabase table: batch_versions.",
+        },
         { status: 404 }
       );
     }
 
-    /* ---------- checks ---------- */
+    const hash = String(version?.hash || "");
+
     const reportPayloadHashMatches =
       !expectedReportPayloadHash ||
       String(expectedReportPayloadHash) === String(recomputedReportPayloadHash);
 
     const batchVersionHashMatches =
-      !batchVersionHashHint || String(version.hash || "") === String(batchVersionHashHint);
+      !batchVersionHashHint || String(hash) === String(batchVersionHashHint);
 
-    // ✅ 多角色簽章（含 signatureResults 給 UI）
     const sigs = normalizeSignatures(version);
-    const hash = String(version?.hash || "");
 
     const auditor = checkRoleOk(sigs, "auditor", hash);
     const recycler = checkRoleOk(sigs, "recycler", hash);
     const processor = checkRoleOk(sigs, "processor", hash);
+    const manufacturer = checkRoleOk(sigs, "manufacturer", hash);
 
-    // auditor 必須有效
     const signatureOk = auditor.ok === true;
 
     const multiSigStatus =
       auditor.ok !== true
         ? "fail"
-        : recycler.present === false || processor.present === false
+        : recycler.present === false && processor.present === false && manufacturer.present === false
         ? "partial"
-        : recycler.ok === true && processor.ok === true
+        : [recycler, processor, manufacturer]
+            .filter((x) => x.present)
+            .every((x) => x.ok === true)
         ? "complete"
         : "partial";
 
     const signatureResults = buildSignatureResults(sigs, hash);
 
-    // ✅ OTS（附下載 link）
     const ots = await getOtsForVersion(version);
 
-    // 你已經做了 /api/ots/download：用 batchId + batchVersionHash 生成下載網址
     const otsReceiptUrl = `/api/ots/download?batchId=${encodeURIComponent(
       String(batchId)
     )}&batchVersionHash=${encodeURIComponent(String(hash))}`;
 
-    // 把 receiptUrl / downloadUrl 填進 ots（讓 UI 直接用 data.ots.receiptUrl）
     const otsWithLinks = {
       ...ots,
       batchId: String(batchId),
@@ -394,8 +453,8 @@ export async function GET(req: Request) {
       },
       resolved: {
         batchId,
-        batchVersionId: String(version.batchVersionId || ""),
-        batchVersionHash: String(version.hash || ""),
+        batchVersionId: String(version.batchVersionId || version.batch_version_id || ""),
+        batchVersionHash: String(hash || ""),
       },
       report: {
         stored_report_payload_hash: expectedReportPayloadHash || null,
@@ -404,37 +463,42 @@ export async function GET(req: Request) {
         time_source: report.time_source ?? null,
       },
       batchVersion: {
-        batchVersionId: version.batchVersionId ?? null,
-        hash: version.hash,
-        prevHash: version.prevHash ?? null,
-        payloadHash: version.payloadHash ?? null,
+        batchVersionId: version.batchVersionId ?? version.batch_version_id ?? null,
+        hash,
+        prevHash: version.prevHash ?? version.prev_hash ?? null,
+        payloadHash: version.payloadHash ?? version.payload_hash ?? null,
         ts: version.ts ?? null,
         signatures: sigs,
         events: Array.isArray(version?.events) ? version.events : [],
         ots: version.ots ?? null,
-        onChain: version.onChain ?? null,
+        onChain: version.onChain ?? version.on_chain ?? null,
         event: version.event ?? null,
       },
       ots: otsWithLinks,
       checks: {
         signatureOk,
-        signatureResults, // ✅ UI 直接吃這個
+        signatureResults,
 
         reportPayloadHashMatches,
         batchVersionHashMatches,
 
         otsFilePresent: ots?.status !== "missing",
         otsStatus: ots?.status || "unknown",
-        otsReceiptUrl, // ✅ UI 也會吃這個
+        otsReceiptUrl,
 
-        // ✅ 保留你原本的 multiSig 判斷（你要黃燈/綠燈用）
         multiSigStatus,
+
         auditorSigPresent: auditor.present,
         auditorSigOk: auditor.ok,
+
         recyclerSigPresent: recycler.present,
         recyclerSigOk: recycler.ok,
+
         processorSigPresent: processor.present,
         processorSigOk: processor.ok,
+
+        manufacturerSigPresent: manufacturer.present,
+        manufacturerSigOk: manufacturer.ok,
       },
     });
   } catch (err: any) {

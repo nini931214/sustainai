@@ -49,7 +49,7 @@ export default async function QrLabelPage({
 
   // ✅ Server Component: 用 headers 組絕對網址最穩
   const baseUrl = getBaseUrlFromHeaders();
-  const apiUrl = `${baseUrl}/api/trace/${encodeURIComponent(id)}`;
+ const apiUrl = `${baseUrl}/trace/${encodeURIComponent(id)}`;
 
   let data: TraceResponse | null = null;
   let fetchError: string | null = null;

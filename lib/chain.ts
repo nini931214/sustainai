@@ -1,5 +1,4 @@
 // lib/chain.ts
-
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function listBatches() {
@@ -9,8 +8,7 @@ export async function listBatches() {
     .order("updated_at", { ascending: false });
 
   if (error) throw error;
-
-  return data || [];
+  return data ?? [];
 }
 
 export async function getBatchById(batchId: string) {
@@ -21,6 +19,5 @@ export async function getBatchById(batchId: string) {
     .maybeSingle();
 
   if (error) throw error;
-
   return data;
 }
