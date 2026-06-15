@@ -8,12 +8,10 @@ export async function GET(
   req: Request,
   { params }: { params: { batchId: string } }
 ) {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    process.env.APP_BASE_URL ||
-    new URL(req.url).origin;
+  const id = decodeURIComponent(params.batchId);
+  const baseUrl = new URL(req.url).origin;
 
-  const url = `${baseUrl}/trace/${encodeURIComponent(params.batchId)}`;
+  const url = `${baseUrl}/trace/${encodeURIComponent(id)}`;
 
   const png = await QRCode.toBuffer(url, {
     width: 600,
@@ -28,7 +26,7 @@ export async function GET(
   return new Response(pngBody, {
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "no-store",
+      "Cache-Control": "no-store, no-cache, must-revalidate",
     },
   });
 }

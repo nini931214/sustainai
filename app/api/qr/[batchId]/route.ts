@@ -9,11 +9,7 @@ export async function GET(
   { params }: { params: { batchId: string } }
 ) {
   const id = decodeURIComponent(params.batchId);
-
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL ||
-    process.env.APP_BASE_URL ||
-    new URL(req.url).origin;
+  const baseUrl = new URL(req.url).origin;
 
   const target = `${baseUrl}/trace/${encodeURIComponent(id)}`;
 
@@ -32,7 +28,7 @@ export async function GET(
   return new Response(arrayBuffer, {
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "no-store",
+      "Cache-Control": "no-store, no-cache, must-revalidate",
     },
   });
 }
