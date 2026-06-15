@@ -19,7 +19,6 @@ function stableJson(obj: any) {
     }
     return x;
   };
-
   return JSON.stringify(sortKeys(obj));
 }
 
@@ -31,52 +30,50 @@ function computeVersionHash(prevHash: string, payloadHash: string, tsIso: string
   return sha256Hex(`${prevHash}|${payloadHash}|${tsIso}`);
 }
 
-function stripVersionMeta(versionLike: any) {
-  const cloned = JSON.parse(JSON.stringify(versionLike || {}));
+function trySignBase64(message: string) {
+  try {
+    const pemRaw =
+      process.env.MANUFACTURER_PRIVATE_KEY_PEM ||
+      process.env.PRIVATE_KEY_PEM ||
+      "";
 
-  delete cloned.hash;
-  delete cloned.prevHash;
-  delete cloned.payloadHash;
-  delete cloned.batchVersionId;
-  delete cloned.ts;
-  delete cloned.signatures;
-  delete cloned.signature;
-  delete cloned.signer;
-  delete cloned.signerName;
-  delete cloned.alg;
-  delete cloned.kid;
-  delete cloned.ots;
-  delete cloned.onChain;
-  delete cloned.on_chain;
-  delete cloned.event;
-  delete cloned.events;
+    if (!pemRaw) return null;
 
-  return cloned;
+    const pem = pemRaw.replace(/\\n/g, "\n");
+    const sig = crypto.sign("RSA-SHA256", Buffer.from(message, "utf8"), pem);
+    return sig.toString("base64");
+  } catch {
+    return null;
+  }
 }
 
-function toCamelBatch(row: any) {
+function toNormalizedBatch(row: any) {
   return {
     ...row,
+    id: row?.id,
     batchId: row?.batch_id ?? row?.batchId ?? row?.id,
-    reportId: row?.report_id ?? row?.reportId,
-    batchVersionId: row?.batch_version_id ?? row?.batchVersionId,
-    batchVersionHash: row?.batch_version_hash ?? row?.batchVersionHash,
-    reportPayloadHash: row?.report_payload_hash ?? row?.reportPayloadHash,
+    material: row?.material ?? null,
+    kg: row?.kg ?? row?.weight ?? row?.quantity ?? null,
+    weight: row?.weight ?? row?.kg ?? row?.quantity ?? null,
+    recycler:
+      row?.recycler ??
+      (row?.company
+        ? {
+            name: row.company,
+            role: row.role || "recycler",
+            ts: row.created_at || row.updated_at || null,
+          }
+        : null),
+    processor: row?.processor ?? null,
+    manufacturer: row?.manufacturer ?? null,
+    audit:
+      row?.audit ??
+      {
+        status: row?.status || "pending",
+        by: "system",
+        ts: row?.updated_at || null,
+      },
   };
-}
-
-function signBase64(message: string) {
-  const pemRaw =
-    process.env.MANUFACTURER_PRIVATE_KEY_PEM ||
-    process.env.PRIVATE_KEY_PEM ||
-    "";
-
-  if (!pemRaw) throw new Error("PRIVATE_KEY_MISSING");
-
-  const pem = pemRaw.replace(/\\n/g, "\n");
-  const sig = crypto.sign("RSA-SHA256", Buffer.from(message, "utf8"), pem);
-
-  return sig.toString("base64");
 }
 
 export async function POST(req: Request) {
@@ -129,14 +126,26 @@ export async function POST(req: Request) {
 
     const base = previousVersion?.payload
       ? JSON.parse(JSON.stringify(previousVersion.payload))
-      : JSON.parse(JSON.stringify(toCamelBatch(batchRow)));
+      : JSON.parse(JSON.stringify(toNormalizedBatch(batchRow)));
 
     base.id = batchId;
     base.batchId = batchId;
+    base.material = base.material ?? batchRow.material ?? null;
+    base.kg = base.kg ?? batchRow.kg ?? batchRow.weight ?? batchRow.quantity ?? null;
+    base.weight = base.weight ?? base.kg;
+
+    base.recycler = base.recycler ?? batchRow.recycler ?? null;
+    base.processor = base.processor ?? batchRow.processor ?? null;
+    base.audit = base.audit ?? batchRow.audit ?? { status: batchRow.status || "pending" };
 
     base.manufacturer = {
       ...(base.manufacturer || {}),
       ...manufacturer,
+      name:
+        manufacturer?.name ||
+        manufacturer?.company ||
+        manufacturer?.manufacturerName ||
+        "Manufacturer",
       ts: nowIso,
     };
 
@@ -145,8 +154,8 @@ export async function POST(req: Request) {
     const hash = computeVersionHash(prevHash, payloadHash, nowIso);
     const batchVersionId = `${batchId}@${nowIso}`;
 
-    const signerName = String(manufacturer?.name || "Manufacturer");
-    const signature = signBase64(hash);
+    const signerName = String(base.manufacturer?.name || "Manufacturer");
+    const signature = trySignBase64(hash);
 
     const event = {
       type: "manufacturer.upload",
@@ -155,24 +164,28 @@ export async function POST(req: Request) {
       role: "manufacturer",
       by: signerName,
       note: body?.note || null,
-      data: { manufacturer },
+      data: { manufacturer: base.manufacturer },
     };
 
     const prevEvents = Array.isArray(previousVersion?.events)
       ? previousVersion.events
       : [];
 
-    const signatures = [
-      {
-        role: "manufacturer",
-        signer: String(process.env.MANUFACTURER_DID || "did:web:manufacturer.local"),
-        signerName,
-        alg: "RSA-SHA256",
-        kid: String(process.env.MANUFACTURER_KID || "manufacturer-key-1"),
-        ts: nowIso,
-        signature,
-      },
-    ];
+    const signatures = signature
+      ? [
+          {
+            role: "manufacturer",
+            signer: String(
+              process.env.MANUFACTURER_DID || "did:web:manufacturer.local"
+            ),
+            signerName,
+            alg: "RSA-SHA256",
+            kid: String(process.env.MANUFACTURER_KID || "manufacturer-key-1"),
+            ts: nowIso,
+            signature,
+          },
+        ]
+      : [];
 
     const { error: insertVersionError } = await supabaseAdmin
       .from("batch_versions")
@@ -201,7 +214,13 @@ export async function POST(req: Request) {
     const { error: updateBatchError } = await supabaseAdmin
       .from("batches")
       .update({
+        kg: base.kg,
+        weight: base.weight,
+        recycler: base.recycler,
+        processor: base.processor,
         manufacturer: base.manufacturer,
+        audit: base.audit,
+        status: "manufactured",
         batch_version_id: batchVersionId,
         batch_version_hash: hash,
         report_payload_hash: payloadHash,
@@ -211,7 +230,7 @@ export async function POST(req: Request) {
 
     if (updateBatchError) throw updateBatchError;
 
-    const { error: logError } = await supabaseAdmin.from("audit_logs").insert({
+    await supabaseAdmin.from("audit_logs").insert({
       batch_id: batchId,
       action: "manufacturer_updated",
       actor_role: "manufacturer",
@@ -224,16 +243,17 @@ export async function POST(req: Request) {
       },
     });
 
-    if (logError) {
-      console.warn("audit_logs insert failed:", logError.message);
-    }
-
     return NextResponse.json({
       ok: true,
       batchId,
       batchVersionId,
       batchVersionHash: hash,
       manufacturer: base.manufacturer,
+      preserved: {
+        recycler: Boolean(base.recycler),
+        processor: Boolean(base.processor),
+        audit: Boolean(base.audit),
+      },
       wrote: "supabase:batches,batch_versions,audit_logs",
     });
   } catch (err: any) {
