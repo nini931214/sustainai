@@ -1,57 +1,77 @@
 // app/api/recent/route.ts
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function getSupabase() {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+function normalizeBatch(row: any) {
+  if (!row) return null;
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
-  }
+  const role = String(row.role || "").toLowerCase();
+  const company = row.company || "—";
 
-  return createClient(supabaseUrl, supabaseKey);
+  return {
+    ...row,
+    id: row.id,
+    batchId: row.id,
+    material: row.material ?? "—",
+    kg: Number(row.kg ?? row.quantity ?? 0),
+    weight: Number(row.weight ?? row.quantity ?? 0),
+
+    recycler:
+      row.recycler ??
+      (role === "recycler"
+        ? { name: company }
+        : row.company
+        ? { name: company }
+        : null),
+
+    processor:
+      row.processor ??
+      (role === "processor" ? { name: company, energy_kwh: Number(row.carbon ?? 0) } : null),
+
+    manufacturer:
+      row.manufacturer ??
+      (role === "manufacturer" ? { name: company } : null),
+
+    audit:
+      row.audit ??
+      {
+        status:
+          row.status === "approved" || row.status === "rejected" || row.status === "pending"
+            ? row.status
+            : "pending",
+        by: "—",
+        ts: row.updated_at ?? row.created_at ?? null,
+      },
+  };
 }
 
 export async function GET(req: Request) {
   try {
-    const supabase = getSupabase();
-
     const { searchParams } = new URL(req.url);
 
     const limit = Math.max(
       1,
-      Math.min(50, Number(searchParams.get("limit") || 50))
+      Math.min(100, Number(searchParams.get("limit") || 50))
     );
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("batches")
       .select("*")
-      .order("created_at", { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(limit);
 
-    if (error) {
-      console.error("Supabase recent error:", error);
+    if (error) throw error;
 
-      return Response.json(
-        {
-          ok: false,
-          error: error.message,
-          items: [],
-        },
-        { status: 500 }
-      );
-    }
+    const items = (data ?? []).map(normalizeBatch).filter(Boolean);
 
     return Response.json({
       ok: true,
-      items: data ?? [],
+      items,
+      batches: items,
     });
   } catch (err: any) {
-    console.error("Error in /api/recent", err);
-
     return Response.json(
       {
         ok: false,
