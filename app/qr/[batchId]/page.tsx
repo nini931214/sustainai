@@ -1,44 +1,10 @@
 // app/qr/[batchId]/page.tsx
 import Link from "next/link";
-import { headers } from "next/headers";
 import QrActions from "./QrActions";
-import BackToFlow from "../../components/BackToFlow"; // 路徑依頁面位置調整
+import BackToFlow from "../../components/BackToFlow";
+import { getBatchById } from "@/lib/chain";
 
-// 在 return 的 header 區塊裡
-<div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-  <div>{/* 原本標題 */}</div>
-  <BackToFlow />
-</div>
-
-type TraceResponse = {
-  batch?: {
-    id: string;
-    material?: string;
-    kg?: number;
-    recycler?: any;
-    processor?: any;
-    manufacturer?: any;
-    audit?: { status?: string };
-  };
-  footprint?: {
-    total_co2e?: number;
-    transport_co2e?: number;
-    process_co2e?: number;
-  };
-};
-
-function getBaseUrlFromHeaders() {
-  const h = headers();
-  const host = h.get("host");
-  const proto =
-    h.get("x-forwarded-proto") ??
-    (host?.includes("localhost") ? "http" : "https");
-
-  // fallback（理論上 dev 一定有 host）
-  if (!host) return "";
-
-  return `${proto}://${host}`;
-}
+export const dynamic = "force-dynamic";
 
 export default async function QrLabelPage({
   params,
@@ -46,48 +12,19 @@ export default async function QrLabelPage({
   params: { batchId: string };
 }) {
   const id = decodeURIComponent(params.batchId);
-
-  // ✅ Server Component: 用 headers 組絕對網址最穩
-  const baseUrl = getBaseUrlFromHeaders();
- const apiUrl = `${baseUrl}/trace/${encodeURIComponent(id)}`;
-
-  let data: TraceResponse | null = null;
-  let fetchError: string | null = null;
-
-  try {
-    const res = await fetch(apiUrl, { cache: "no-store" });
-
-    if (!res.ok) {
-      fetchError = `API 回應失敗：${res.status} ${res.statusText}`;
-    } else {
-      data = (await res.json()) as TraceResponse;
-    }
-  } catch (e: any) {
-    fetchError = `API 連線失敗：${e?.message ?? "unknown error"}`;
-  }
-
- // ✅ 容錯：兼容 /api/trace 可能回傳的不同格式
-const anyData: any = data;
-
-// 可能的回傳格式：
-// 1) { batch: {...} }
-// 2) { ok: true, record: {...} }   （record 本身就是 batch）
-// 3) { ok: true, record: { batch: {...} } }
-const batch =
-  anyData?.batch ??
-  anyData?.record?.batch ??
-  anyData?.record ??
-  null;
+  const batch = await getBatchById(id);
 
   const tracePath = `/trace/${encodeURIComponent(id)}`;
   const qrImageUrl = `/qr/${encodeURIComponent(id)}/image`;
 
   const material = batch?.material ?? "—";
-  const kg = batch?.kg ?? "—";
+  const kg = batch?.kg ?? batch?.weight ?? "—";
+
   const recyclerName =
     batch?.recycler?.name ??
-    (typeof batch?.recycler === "string" ? batch?.recycler : "—");
-  const auditStatus = batch?.audit?.status ?? "pending";
+    (typeof batch?.recycler === "string" ? batch.recycler : "—");
+
+  const auditStatus = batch?.audit?.status ?? batch?.status ?? "pending";
 
   return (
     <main
@@ -99,7 +36,6 @@ const batch =
       }}
     >
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        {/* Top header */}
         <div
           style={{
             display: "flex",
@@ -119,11 +55,12 @@ const batch =
             </div>
           </div>
 
-          {/* 右上按鈕：只保留下載 PNG */}
-          <QrActions qrImageUrl={qrImageUrl} batchId={id} />
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <BackToFlow />
+            <QrActions qrImageUrl={qrImageUrl} batchId={id} />
+          </div>
         </div>
 
-        {/* Card */}
         <div
           style={{
             borderRadius: 18,
@@ -155,7 +92,6 @@ const batch =
               alignItems: "start",
             }}
           >
-            {/* Left: QR */}
             <div
               style={{
                 borderRadius: 16,
@@ -205,11 +141,11 @@ const batch =
               </div>
             </div>
 
-            {/* Right: instructions + quick info */}
             <div style={{ paddingTop: 4 }}>
               <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 8 }}>
                 使用說明
               </div>
+
               <ul
                 style={{
                   margin: 0,
@@ -220,10 +156,8 @@ const batch =
                 }}
               >
                 <li>將此 QR 貼在產品、箱標或出貨文件上。</li>
-                <li>
-                  客戶或稽核方掃描後，會看到回收 → 處理 → 製造 → 稽核的履歷摘要。
-                </li>
-                <li>正式上線後只要維持網址規則一致即可沿用。</li>
+                <li>客戶或稽核方掃描後，會看到回收 → 處理 → 製造 → 稽核的履歷摘要。</li>
+                <li>QR Code 會導向正式網站的批次公開履歷頁。</li>
               </ul>
 
               <div
@@ -235,27 +169,13 @@ const batch =
                   padding: 14,
                 }}
               >
-                <div
-                  style={{ fontSize: 13, fontWeight: 800, marginBottom: 8 }}
-                >
+                <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8 }}>
                   批次資訊（快速核對）
                 </div>
 
                 {!batch ? (
                   <div style={{ fontSize: 13, color: "#b91c1c", lineHeight: 1.7 }}>
-                    找不到批次資料（但 QR 仍可用）。<br />
-                    <div style={{ marginTop: 6, color: "#0f172a" }}>
-                      目前 API URL：<code>{apiUrl}</code>
-                    </div>
-                    {fetchError ? (
-                      <div style={{ marginTop: 6 }}>
-                        錯誤：<code>{fetchError}</code>
-                      </div>
-                    ) : (
-                      <div style={{ marginTop: 6 }}>
-                        請確認此 API 是否能回傳 <code>{`{"batch": ...}`}</code>
-                      </div>
-                    )}
+                    找不到批次資料。請確認此批次是否已寫入 Supabase：<code>batches</code>
                   </div>
                 ) : (
                   <div style={{ fontSize: 13, color: "#0f172a", lineHeight: 1.9 }}>
@@ -277,43 +197,11 @@ const batch =
 
               <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <Link href="/qr">
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "10px 14px",
-                      borderRadius: 12,
-                      border: "1px solid #e5e7eb",
-                      background: "#fff",
-                      cursor: "pointer",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0f172a",
-                    }}
-                  >
-                    ← 回 QR 查詢
-                  </span>
+                  <span style={btnStyle}>← 回 QR 查詢</span>
                 </Link>
 
                 <Link href="/recent">
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "10px 14px",
-                      borderRadius: 12,
-                      border: "1px solid #e5e7eb",
-                      background: "#fff",
-                      cursor: "pointer",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0f172a",
-                    }}
-                  >
-                    回批次清單
-                  </span>
+                  <span style={btnStyle}>回批次清單</span>
                 </Link>
               </div>
             </div>
@@ -327,3 +215,17 @@ const batch =
     </main>
   );
 }
+
+const btnStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "10px 14px",
+  borderRadius: 12,
+  border: "1px solid #e5e7eb",
+  background: "#fff",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 700,
+  color: "#0f172a",
+};
