@@ -1,9 +1,5 @@
-// app/api/trace/[record]/route.ts
 import { NextResponse } from "next/server";
 import { getBatchById } from "@/lib/chain";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 type RouteParams = {
   params: {
@@ -11,14 +7,21 @@ type RouteParams = {
   };
 };
 
-export async function GET(_req: Request, { params }: RouteParams) {
-  const record = decodeURIComponent(params.record);
+export async function GET(
+  _req: Request,
+  { params }: RouteParams
+) {
+  const { record } = params;
 
-  const batch = await getBatchById(record);
+  const batch = getBatchById(record);
 
   if (!batch) {
     return NextResponse.json(
-      { ok: false, error: "BATCH_NOT_FOUND", record },
+      {
+        ok: false,
+        error: "BATCH_NOT_FOUND",
+        record,
+      },
       { status: 404 }
     );
   }
