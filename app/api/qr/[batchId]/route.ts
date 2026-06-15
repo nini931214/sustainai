@@ -1,17 +1,22 @@
-import { NextResponse } from "next/server";
+// app/api/qr/[batchId]/route.ts
 import QRCode from "qrcode";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: { batchId: string } }
 ) {
   const id = decodeURIComponent(params.batchId);
 
-  // QR 內容：掃到後要去的公開履歷頁（你可以改成 /trace 或 /qr 的任一種）
-  // 建議：掃 QR 進 /trace 才是「外部看履歷」
-  const target = `/trace/${encodeURIComponent(id)}`;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.APP_BASE_URL ||
+    new URL(req.url).origin;
 
-  // 這裡做成 PNG
+  const target = `${baseUrl}/trace/${encodeURIComponent(id)}`;
+
   const pngBuffer = await QRCode.toBuffer(target, {
     type: "png",
     width: 512,
@@ -19,15 +24,15 @@ export async function GET(
     errorCorrectionLevel: "M",
   });
 
-const arrayBuffer = pngBuffer.buffer.slice(
-  pngBuffer.byteOffset,
-  pngBuffer.byteOffset + pngBuffer.byteLength
-) as ArrayBuffer;
+  const arrayBuffer = pngBuffer.buffer.slice(
+    pngBuffer.byteOffset,
+    pngBuffer.byteOffset + pngBuffer.byteLength
+  ) as ArrayBuffer;
 
-return new Response(arrayBuffer, {
-  headers: {
-    "Content-Type": "image/png",
-    "Cache-Control": "no-store",
-  },
-});
+  return new Response(arrayBuffer, {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "no-store",
+    },
+  });
 }
