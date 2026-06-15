@@ -9,13 +9,12 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export const dynamic = "force-dynamic";
 
 function calcFootprint(batch: any) {
-  const kg = Number(batch?.kg ?? batch?.weight ?? 0);
-  const distance = Number(batch?.transport?.distance_km ?? 0);
-  const energy = Number(batch?.processor?.energy_kwh ?? 0);
+  const kg = Number(batch?.kg ?? batch?.weight ?? batch?.quantity ?? 0);
+  const carbon = Number(batch?.carbon ?? 0);
 
-  const transport_co2e = distance * 0.02;
-  const process_co2e = energy * 0.5;
-  const total_co2e = transport_co2e + process_co2e + kg * 0.1;
+  const transport_co2e = 0;
+  const process_co2e = carbon;
+  const total_co2e = carbon || kg * 0.1;
 
   return { total_co2e, transport_co2e, process_co2e };
 }
@@ -42,20 +41,26 @@ export default async function TracePublicPage({
   const batch = await getBatch(id);
   const footprint = batch ? calcFootprint(batch) : null;
 
+  const role = String(batch?.role || "").toLowerCase();
+  const company = String(batch?.company || "—");
+
   const material = batch?.material ?? "—";
-  const kg = batch?.kg ?? batch?.weight ?? "—";
+  const kg = batch?.kg ?? batch?.weight ?? batch?.quantity ?? "—";
 
   const recyclerName =
     batch?.recycler?.name ??
-    (typeof batch?.recycler === "string" ? batch?.recycler : "—");
+    (typeof batch?.recycler === "string" ? batch.recycler : null) ??
+    (role === "recycler" ? company : company !== "—" ? company : "—");
 
   const processorName =
     batch?.processor?.name ??
-    (typeof batch?.processor === "string" ? batch?.processor : "—");
+    (typeof batch?.processor === "string" ? batch.processor : null) ??
+    (role === "processor" ? company : "—");
 
   const manufacturerName =
     batch?.manufacturer?.name ??
-    (typeof batch?.manufacturer === "string" ? batch?.manufacturer : "—");
+    (typeof batch?.manufacturer === "string" ? batch.manufacturer : null) ??
+    (role === "manufacturer" || batch?.status === "manufactured" ? company : "—");
 
   const auditStatus = batch?.audit?.status ?? batch?.status ?? "pending";
   const auditNote = batch?.audit?.note ?? "";
@@ -87,12 +92,13 @@ export default async function TracePublicPage({
     },
     {
       title: "稽核（Audit）",
-      ok: Boolean(batch?.audit),
-      desc: batch?.audit
-        ? `狀態：${auditStatus}｜核准者：${auditBy}${
-            auditNote ? `｜備註：${auditNote}` : ""
-          }`
-        : "尚無稽核節點資料",
+      ok: Boolean(batch?.audit || batch?.status),
+      desc:
+        batch?.audit || batch?.status
+          ? `狀態：${auditStatus}｜核准者：${auditBy}${
+              auditNote ? `｜備註：${auditNote}` : ""
+            }`
+          : "尚無稽核節點資料",
     },
   ];
 
@@ -193,7 +199,9 @@ export default async function TracePublicPage({
 
         <div style={{ marginTop: 18, display: "grid", gap: 16, gridTemplateColumns: "1fr" }}>
           <div style={cardStyle}>
-            <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>批次基本資訊</div>
+            <div style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>
+              批次基本資訊
+            </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <KV k="Batch ID" v={id} />
