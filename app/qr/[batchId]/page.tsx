@@ -15,7 +15,7 @@ export default async function QrLabelPage({
   const batch = await getBatchById(id);
 
   const tracePath = `/trace/${encodeURIComponent(id)}`;
-  const qrImageUrl = `/qr/${encodeURIComponent(id)}/image`;
+ const qrImageUrl = `/qr/${encodeURIComponent(id)}/image?v=prod-fixed-1`;
 
   const material = batch?.material ?? "—";
   const kg = batch?.kg ?? batch?.weight ?? "—";
