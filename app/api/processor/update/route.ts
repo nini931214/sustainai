@@ -38,16 +38,30 @@ export async function POST(req: Request) {
     }
 
     const carbon = Number((energy_kwh * 0.509 + waste_kg * 0.2).toFixed(2));
+    const nowIso = new Date().toISOString();
+
+    const processorPayload = {
+      id: "P1",
+      name: processorName,
+      ts: nowIso,
+      input_kg,
+      output_kg,
+      waste_kg,
+      energy_kwh,
+      water_l,
+      carbon,
+    };
 
     const { data, error } = await supabase
       .from("batches")
       .update({
-        role: "processor",
-        company: processorName,
+        processor: processorPayload,
         quantity: output_kg || input_kg,
+        kg: output_kg || input_kg,
+        weight: output_kg || input_kg,
         carbon,
         status: "processed",
-        updated_at: new Date().toISOString(),
+        updated_at: nowIso,
       })
       .eq("id", id)
       .select()
@@ -74,17 +88,11 @@ export async function POST(req: Request) {
         id: data.id,
         batchId: data.id,
         material: data.material,
-        kg: data.quantity,
-        processor: {
-          id: "P1",
-          name: processorName,
-          ts: Date.now(),
-          input_kg,
-          output_kg,
-          waste_kg,
-          energy_kwh,
-          water_l,
-        },
+        kg: data.kg ?? data.weight ?? data.quantity,
+        recycler: data.recycler,
+        processor: data.processor,
+        manufacturer: data.manufacturer,
+        audit: data.audit,
         raw: data,
       },
     });

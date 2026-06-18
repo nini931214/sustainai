@@ -39,14 +39,23 @@ export async function POST(req: Request) {
       );
     }
 
+    const nowIso = new Date().toISOString();
+
+    const manufacturerPayload = {
+      id: "M1",
+      name: manufacturerName,
+      ts: nowIso,
+      product_name,
+      sku,
+      qty,
+    };
+
     const { data, error } = await supabase
       .from("batches")
       .update({
-        role: "manufacturer",
-        company: manufacturerName,
-        quantity: qty,
+        manufacturer: manufacturerPayload,
         status: "manufactured",
-        updated_at: new Date().toISOString(),
+        updated_at: nowIso,
       })
       .eq("id", id)
       .select()
@@ -73,15 +82,11 @@ export async function POST(req: Request) {
         id: data.id,
         batchId: data.id,
         material: data.material,
-        kg: data.quantity,
-        manufacturer: {
-          id: "M1",
-          name: manufacturerName,
-          ts: Date.now(),
-          product_name,
-          sku,
-          qty,
-        },
+        kg: data.kg ?? data.weight ?? data.quantity,
+        recycler: data.recycler,
+        processor: data.processor,
+        manufacturer: data.manufacturer,
+        audit: data.audit,
         raw: data,
       },
     });
