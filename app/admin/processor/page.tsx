@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
 
 type Batch = {
   id: string;
-  material: string;
-  kg: number;
+  material?: string;
+  kg?: number;
+  weight?: number;
+  quantity?: number;
 };
 
 export default function ProcessorAdminPage() {
@@ -20,18 +22,23 @@ export default function ProcessorAdminPage() {
   const [water, setWater] = useState('');
   const [status, setStatus] = useState<string | null>(null);
 
+  async function loadBatches() {
+    try {
+      const res = await fetch(`/api/recent?limit=50&t=${Date.now()}`, {
+        cache: 'no-store',
+      });
+      const data = await res.json();
+      const items = Array.isArray(data.items) ? (data.items as Batch[]) : [];
+      setBatches(items);
+      if (items.length > 0 && !batchId) setBatchId(items[0].id);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/recent?limit=50');
-        const data = await res.json();
-        const items = Array.isArray(data.items) ? (data.items as Batch[]) : [];
-        setBatches(items);
-        if (items.length > 0) setBatchId(items[0].id);
-      } catch (err) {
-        console.error(err);
-      }
-    })();
+    loadBatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -39,23 +46,31 @@ export default function ProcessorAdminPage() {
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/processor/update', {
+      const res = await fetch('/api/processor/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
         body: JSON.stringify({
-          id: batchId,
-          processorName: name,
-          input_kg: Number(inputKg || 0),
-          output_kg: Number(outputKg || 0),
-          waste_kg: Number(wasteKg || 0),
-          energy_kwh: Number(energy || 0),
-          water_l: Number(water || 0),
+          batchId,
+          processor: {
+            name,
+            input_kg: Number(inputKg || 0),
+            output_kg: Number(outputKg || 0),
+            waste_kg: Number(wasteKg || 0),
+            energy_kwh: Number(energy || 0),
+            water_l: Number(water || 0),
+          },
         }),
       });
 
       const data = await res.json();
-      if (!data.ok) setStatus(`error:${data.error || 'unknown'}`);
-      else setStatus('ok:updated');
+
+      if (!data.ok) {
+        setStatus(`error:${data.error || data.message || 'unknown'}`);
+      } else {
+        setStatus('ok:updated');
+        await loadBatches();
+      }
     } catch (err) {
       console.error(err);
       setStatus('error:network');
@@ -72,7 +87,6 @@ export default function ProcessorAdminPage() {
       }}
     >
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
-        {/* ✅ 這一行就是你要的：保留原本畫面，只在右上角加 BackToFlow */}
         <div
           style={{
             display: 'flex',
@@ -92,7 +106,6 @@ export default function ProcessorAdminPage() {
           選擇一個已建立的回收批次，填寫再生加工資訊（輸入重量、輸出重量、耗能等）。
         </p>
 
-        {/* 卡片容器（維持你截圖的白卡風格） */}
         <div
           style={{
             background: '#fff',
@@ -112,7 +125,7 @@ export default function ProcessorAdminPage() {
               >
                 {batches.map((b) => (
                   <option key={b.id} value={b.id}>
-                    {b.id} — {b.material} ({b.kg}kg)
+                    {b.id} — {b.material || '—'} ({b.kg ?? b.weight ?? b.quantity ?? '—'}kg)
                   </option>
                 ))}
               </select>
@@ -120,11 +133,7 @@ export default function ProcessorAdminPage() {
 
             <div style={{ marginBottom: 12 }}>
               <label style={labelStyle}>處理廠名稱</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={inputStyle}
-              />
+              <input value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -132,14 +141,7 @@ export default function ProcessorAdminPage() {
               <NumberInput label="輸出重量 (kg)" value={outputKg} onChange={setOutputKg} />
             </div>
 
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 12,
-                marginTop: 12,
-              }}
-            >
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
               <NumberInput label="報廢重量 (kg)" value={wasteKg} onChange={setWasteKg} />
               <NumberInput label="耗電量 (kWh)" value={energy} onChange={setEnergy} />
             </div>
@@ -210,12 +212,7 @@ function NumberInput(props: { label: string; value: string; onChange: (v: string
   return (
     <div>
       <label style={labelStyle}>{label}</label>
-      <input
-        type="number"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        style={inputStyle}
-      />
+      <input type="number" value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle} />
     </div>
   );
 }
