@@ -46,22 +46,17 @@ export default function ProcessorAdminPage() {
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/processor/upload', {
+      const res = await fetch('/api/manufacturer/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
         body: JSON.stringify({
-          batchId,
-          processor: {
-            name,
-            input_kg: Number(inputKg || 0),
-            output_kg: Number(outputKg || 0),
-            waste_kg: Number(wasteKg || 0),
-            energy_kwh: Number(energy || 0),
-            water_l: Number(water || 0),
-          },
-        }),
-      });
+  id: batchId,
+  manufacturerName: name,
+  product_name: productName,
+  sku,
+  qty: Number(qty || 0),
+}),
 
       const data = await res.json();
 

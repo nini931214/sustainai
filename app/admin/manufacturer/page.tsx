@@ -44,21 +44,19 @@ export default function ManufacturerAdminPage() {
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/manufacturer/upload', {
+      const res = await fetch('/api/processor/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
         body: JSON.stringify({
-          batchId,
-          manufacturer: {
-            name,
-            product_name: productName,
-            sku,
-            qty: Number(qty || 0),
-          },
-        }),
-      });
-
+  id: batchId,
+  processorName: name,
+  input_kg: Number(inputKg || 0),
+  output_kg: Number(outputKg || 0),
+  waste_kg: Number(wasteKg || 0),
+  energy_kwh: Number(energy || 0),
+  water_l: Number(water || 0),
+}),
       const data = await res.json();
 
       if (!data.ok) {
