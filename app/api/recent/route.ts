@@ -3,20 +3,16 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-function normalizeAudit(row: any) {
-  const status =
-    row.status === "approved" || row.status === "rejected" || row.status === "pending"
-      ? row.status
-      : row.audit?.status || "pending";
+function getAuditStatus(row: any) {
+  const auditStatus = row?.audit?.status;
+  const rowStatus = row?.status;
 
-  return {
-    ...(row.audit || {}),
-    status,
-    by: row.audit?.by || "—",
-    ts: row.audit?.ts || row.updated_at || row.created_at || null,
-    note: row.audit?.note || null,
-  };
+  if (["approved", "rejected", "pending"].includes(rowStatus)) return rowStatus;
+  if (["approved", "rejected", "pending"].includes(auditStatus)) return auditStatus;
+
+  return "pending";
 }
 
 function normalizeBatch(row: any) {
@@ -24,6 +20,7 @@ function normalizeBatch(row: any) {
 
   const role = String(row.role || "").toLowerCase();
   const company = row.company || "—";
+  const auditStatus = getAuditStatus(row);
 
   return {
     ...row,
@@ -35,19 +32,24 @@ function normalizeBatch(row: any) {
 
     recycler:
       row.recycler ??
-      (role === "recycler" || row.company ? { name: company } : null),
-
-    processor:
-      row.processor ??
-      (role === "processor"
-        ? { name: company, energy_kwh: Number(row.carbon ?? 0) }
+      (role === "recycler" || row.company
+        ? { name: company, role: role || "recycler", ts: row.created_at ?? row.updated_at }
         : null),
 
-    manufacturer:
-      row.manufacturer ??
-      (role === "manufacturer" ? { name: company } : null),
+    processor: row.processor ?? null,
+    manufacturer: row.manufacturer ?? null,
 
-    audit: normalizeAudit(row),
+    audit: {
+      ...(row.audit || {}),
+      status: auditStatus,
+      by: row.audit?.by ?? "—",
+      ts: row.audit?.ts ?? row.updated_at ?? row.created_at ?? null,
+      note: row.audit?.note ?? null,
+    },
+
+    status: auditStatus,
+    updated_at: row.updated_at,
+    created_at: row.created_at,
   };
 }
 
@@ -75,10 +77,13 @@ export async function GET(req: Request) {
         ok: true,
         items,
         batches: items,
+        ts: new Date().toISOString(),
       },
       {
         headers: {
-          "Cache-Control": "no-store",
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
       }
     );
@@ -88,6 +93,7 @@ export async function GET(req: Request) {
         ok: false,
         error: err?.message || "internal_error",
         items: [],
+        batches: [],
       },
       { status: 500 }
     );
