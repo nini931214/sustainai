@@ -21,17 +21,13 @@ export default function ManufacturerAdminPage() {
   const [status, setStatus] = useState<string | null>(null);
 
   async function loadBatches() {
-    try {
-      const res = await fetch(`/api/recent?limit=50&t=${Date.now()}`, {
-        cache: 'no-store',
-      });
-      const data = await res.json();
-      const items = Array.isArray(data.items) ? (data.items as Batch[]) : [];
-      setBatches(items);
-      if (items.length > 0 && !batchId) setBatchId(items[0].id);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await fetch(`/api/recent?limit=50&t=${Date.now()}`, {
+      cache: 'no-store',
+    });
+    const data = await res.json();
+    const items = Array.isArray(data.items) ? data.items : [];
+    setBatches(items);
+    if (items.length > 0 && !batchId) setBatchId(items[0].id);
   }
 
   useEffect(() => {
@@ -44,24 +40,22 @@ export default function ManufacturerAdminPage() {
     setStatus('loading');
 
     try {
-      const res = await fetch('/api/processor/update', {
+      const res = await fetch('/api/manufacturer/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
         body: JSON.stringify({
-  id: batchId,
-  processorName: name,
-  input_kg: Number(inputKg || 0),
-  output_kg: Number(outputKg || 0),
-  waste_kg: Number(wasteKg || 0),
-  energy_kwh: Number(energy || 0),
-  water_l: Number(water || 0),
-}),
-      const data = await res.json();
+          id: batchId,
+          manufacturerName: name,
+          product_name: productName,
+          sku,
+          qty: Number(qty || 0),
+        }),
+      });
 
-      if (!data.ok) {
-        setStatus(`error:${data.error || data.message || 'unknown'}`);
-      } else {
+      const data = await res.json();
+      if (!data.ok) setStatus(`error:${data.error || data.message || 'unknown'}`);
+      else {
         setStatus('ok:updated');
         await loadBatches();
       }
@@ -72,43 +66,20 @@ export default function ManufacturerAdminPage() {
   }
 
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#f5f7fb',
-        padding: '32px 16px',
-        fontFamily: 'system-ui',
-      }}
-    >
+    <main style={pageStyle}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 12,
-            alignItems: 'center',
-            marginBottom: 8,
-          }}
-        >
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center', marginBottom: 8 }}>
           <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>
             製造商入口（綁定產品批次）
           </h1>
           <BackToFlow />
         </div>
 
-        <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 16 }}>
+        <p style={descStyle}>
           選擇一個已經完成回收與處理的批次，綁定為具體產品，並填寫出貨數量與 SKU。
         </p>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            background: '#fff',
-            borderRadius: 16,
-            padding: 16,
-            border: '1px solid #e5e7eb',
-          }}
-        >
+        <form onSubmit={handleSubmit} style={cardStyle}>
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle}>選擇批次</label>
             <select value={batchId} onChange={(e) => setBatchId(e.target.value)} style={inputStyle}>
@@ -120,57 +91,25 @@ export default function ManufacturerAdminPage() {
             </select>
           </div>
 
-          <div style={{ marginBottom: 12 }}>
-            <label style={labelStyle}>製造商名稱</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
-          </div>
-
-          <div style={{ marginBottom: 12 }}>
-            <label style={labelStyle}>產品名稱</label>
-            <input value={productName} onChange={(e) => setProductName(e.target.value)} style={inputStyle} />
-          </div>
+          <Input label="製造商名稱" value={name} onChange={setName} />
+          <Input label="產品名稱" value={productName} onChange={setProductName} />
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div>
-              <label style={labelStyle}>SKU / Lot</label>
-              <input value={sku} onChange={(e) => setSku(e.target.value)} style={inputStyle} />
-            </div>
-
-            <div>
-              <label style={labelStyle}>出貨數量</label>
-              <input type="number" value={qty} onChange={(e) => setQty(e.target.value)} style={inputStyle} />
-            </div>
+            <Input label="SKU / Lot" value={sku} onChange={setSku} />
+            <Input label="出貨數量" value={qty} onChange={setQty} type="number" />
           </div>
 
           <button
             type="submit"
             disabled={!batchId || status === 'loading'}
-            style={{
-              marginTop: 16,
-              padding: '8px 14px',
-              borderRadius: 999,
-              border: 'none',
-              backgroundColor: '#111827',
-              color: '#fff',
-              fontSize: 13,
-              cursor: 'pointer',
-              opacity: !batchId || status === 'loading' ? 0.7 : 1,
-            }}
+            style={{ ...buttonStyle, opacity: !batchId || status === 'loading' ? 0.7 : 1 }}
           >
             {status === 'loading' ? '更新中…' : '更新產品資訊'}
           </button>
 
           {status && status !== 'loading' && (
-            <p
-              style={{
-                marginTop: 10,
-                fontSize: 12,
-                color: status.startsWith('ok') ? '#16a34a' : '#dc2626',
-              }}
-            >
-              {status.startsWith('ok')
-                ? '更新成功！'
-                : `更新失敗：${status.split(':')[1] || '請稍後再試'}`}
+            <p style={{ marginTop: 10, fontSize: 12, color: status.startsWith('ok') ? '#16a34a' : '#dc2626' }}>
+              {status.startsWith('ok') ? '更新成功！' : `更新失敗：${status.split(':')[1] || '請稍後再試'}`}
             </p>
           )}
         </form>
@@ -178,6 +117,45 @@ export default function ManufacturerAdminPage() {
     </main>
   );
 }
+
+function Input({
+  label,
+  value,
+  onChange,
+  type = 'text',
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+}) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <label style={labelStyle}>{label}</label>
+      <input type={type} value={value} onChange={(e) => onChange(e.target.value)} style={inputStyle} />
+    </div>
+  );
+}
+
+const pageStyle: React.CSSProperties = {
+  minHeight: '100vh',
+  backgroundColor: '#f5f7fb',
+  padding: '32px 16px',
+  fontFamily: 'system-ui',
+};
+
+const descStyle: React.CSSProperties = {
+  fontSize: 13,
+  color: '#6b7280',
+  marginBottom: 16,
+};
+
+const cardStyle: React.CSSProperties = {
+  background: '#fff',
+  borderRadius: 16,
+  padding: 16,
+  border: '1px solid #e5e7eb',
+};
 
 const labelStyle: React.CSSProperties = {
   fontSize: 13,
@@ -194,4 +172,15 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #d1d5db',
   fontSize: 13,
   boxSizing: 'border-box',
+};
+
+const buttonStyle: React.CSSProperties = {
+  marginTop: 16,
+  padding: '8px 14px',
+  borderRadius: 999,
+  border: 'none',
+  backgroundColor: '#111827',
+  color: '#fff',
+  fontSize: 13,
+  cursor: 'pointer',
 };
