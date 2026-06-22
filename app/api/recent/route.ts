@@ -4,6 +4,21 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function normalizeAudit(row: any) {
+  const status =
+    row.status === "approved" || row.status === "rejected" || row.status === "pending"
+      ? row.status
+      : row.audit?.status || "pending";
+
+  return {
+    ...(row.audit || {}),
+    status,
+    by: row.audit?.by || "—",
+    ts: row.audit?.ts || row.updated_at || row.created_at || null,
+    note: row.audit?.note || null,
+  };
+}
+
 function normalizeBatch(row: any) {
   if (!row) return null;
 
@@ -15,35 +30,24 @@ function normalizeBatch(row: any) {
     id: row.id,
     batchId: row.id,
     material: row.material ?? "—",
-    kg: Number(row.kg ?? row.quantity ?? 0),
-    weight: Number(row.weight ?? row.quantity ?? 0),
+    kg: Number(row.kg ?? row.weight ?? row.quantity ?? 0),
+    weight: Number(row.weight ?? row.kg ?? row.quantity ?? 0),
 
     recycler:
       row.recycler ??
-      (role === "recycler"
-        ? { name: company }
-        : row.company
-        ? { name: company }
-        : null),
+      (role === "recycler" || row.company ? { name: company } : null),
 
     processor:
       row.processor ??
-      (role === "processor" ? { name: company, energy_kwh: Number(row.carbon ?? 0) } : null),
+      (role === "processor"
+        ? { name: company, energy_kwh: Number(row.carbon ?? 0) }
+        : null),
 
     manufacturer:
       row.manufacturer ??
       (role === "manufacturer" ? { name: company } : null),
 
-    audit:
-      row.audit ??
-      {
-        status:
-          row.status === "approved" || row.status === "rejected" || row.status === "pending"
-            ? row.status
-            : "pending",
-        by: "—",
-        ts: row.updated_at ?? row.created_at ?? null,
-      },
+    audit: normalizeAudit(row),
   };
 }
 
@@ -66,11 +70,18 @@ export async function GET(req: Request) {
 
     const items = (data ?? []).map(normalizeBatch).filter(Boolean);
 
-    return Response.json({
-      ok: true,
-      items,
-      batches: items,
-    });
+    return Response.json(
+      {
+        ok: true,
+        items,
+        batches: items,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
   } catch (err: any) {
     return Response.json(
       {
