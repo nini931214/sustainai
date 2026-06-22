@@ -34,7 +34,9 @@ export default function AuditorAdminPage() {
 
   async function load() {
     try {
-      const res = await fetch("/api/recent?limit=50", { cache: "no-store" });
+      const res = await fetch(`/api/recent?limit=50&t=${Date.now()}`, {
+        cache: "no-store",
+      });
       const data = await res.json();
       const items = Array.isArray(data.items) ? data.items : [];
       setBatches(items);
@@ -51,6 +53,8 @@ export default function AuditorAdminPage() {
   async function updateStatus(id: string, status: AuditStatus) {
     setUpdatingId(id);
     setMessage(null);
+
+    const nowIso = new Date().toISOString();
 
     try {
       const res = await fetch("/api/auditor/mark", {
@@ -72,7 +76,29 @@ export default function AuditorAdminPage() {
         return;
       }
 
+      // ✅ 先直接更新畫面，不等 API 重新抓資料
+      setBatches((prev) =>
+        prev.map((b) =>
+          b.id === id
+            ? {
+                ...b,
+                status,
+                audit: {
+                  ...(b.audit || {}),
+                  status,
+                  by: auditorName,
+                  note: note || null,
+                  ts: nowIso,
+                },
+                updated_at: nowIso,
+              }
+            : b
+        )
+      );
+
       setMessage(`批次 ${id} 審核狀態已更新為 ${status}`);
+
+      // ✅ 再重新抓一次資料，避免資料庫與畫面不同步
       await load();
     } catch (err) {
       console.error(err);
