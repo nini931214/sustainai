@@ -9,59 +9,68 @@ export default function ApproveButton({ batchId }: { batchId: string }) {
   async function approve() {
     setLoading(true);
     setMsg(null);
+
     try {
-      const res = await fetch("/api/auditor/update", {
+      const res = await fetch("/api/auditor/mark", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        cache: "no-store",
         body: JSON.stringify({
-          batchId, // ✅ API 要的是 batchId，不是 id
+          batchId,
+          status: "approved",
           by: "ESG Auditor",
-          note: "樣本資料：審計方已覆核此批次。",
+          note: "手動核准：流程資料已完成。",
         }),
       });
 
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json();
 
-      if (!res.ok || !data?.ok) {
-        setMsg(`更新失敗：${data?.error || "unknown"}`);
-      } else {
-        setMsg(`✅ 已核准：${batchId}`);
-        // 直接刷新頁面，讓 trace 重新讀 chain/reports/versions
-        window.location.reload();
+      if (!data.ok) {
+        setMsg(`更新失敗：${data.error || "unknown"} ${data.message || ""}`);
+        return;
       }
-    } catch {
-      setMsg("更新失敗：network");
+
+      setMsg("核准成功，頁面即將更新");
+      window.location.reload();
+    } catch (err: any) {
+      setMsg(`更新失敗：${err?.message || "network"}`);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <button
         type="button"
-        disabled={loading}
         onClick={approve}
+        disabled={loading}
         style={{
-          padding: "10px 14px",
-          borderRadius: 12,
+          padding: "12px 22px",
+          borderRadius: 16,
           border: "none",
           background: "#0f172a",
           color: "#fff",
-          fontSize: 13,
-          fontWeight: 900,
-          cursor: "pointer",
+          fontSize: 14,
+          fontWeight: 800,
+          cursor: loading ? "not-allowed" : "pointer",
           opacity: loading ? 0.7 : 1,
         }}
       >
         {loading ? "核准中…" : "核准"}
       </button>
 
-      {msg ? (
-        <div style={{ fontSize: 12, color: msg.startsWith("✅") ? "#16a34a" : "#dc2626" }}>
+      {msg && (
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 800,
+            color: msg.startsWith("更新失敗") ? "#dc2626" : "#16a34a",
+          }}
+        >
           {msg}
-        </div>
-      ) : null}
+        </span>
+      )}
     </div>
   );
 }
