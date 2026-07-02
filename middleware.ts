@@ -1,24 +1,44 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const ROLE_PATHS = ["recycler", "processor", "manufacturer", "auditor"] as const;
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+const TERMS_COOKIE = "sustainai_terms_accepted";
+const TERMS_VERSION = "V2.0_2026_06";
 
-  // 只管角色頁路由
-  const hitRole = ROLE_PATHS.find((r) => pathname === `/${r}` || pathname.startsWith(`/${r}/`));
+export function middleware(req: NextRequest) {
+  const { pathname, search } = req.nextUrl;
+
+  const publicPaths =
+    pathname === "/welcome" ||
+    pathname === "/terms" ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname === "/favicon.ico";
+
+  if (!publicPaths) {
+    const accepted = req.cookies.get(TERMS_COOKIE)?.value;
+
+    if (accepted !== TERMS_VERSION) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/welcome";
+      url.searchParams.set("next", pathname + search);
+      return NextResponse.redirect(url);
+    }
+  }
+
+  const hitRole = ROLE_PATHS.find(
+    (r) => pathname === `/${r}` || pathname.startsWith(`/${r}/`)
+  );
+
   if (!hitRole) return NextResponse.next();
 
   const currentRole = req.cookies.get("sustainai_role")?.value;
 
-  // 沒有角色 cookie：代表沒從入口進 → 踢回流程總覽
   if (!currentRole) {
     return NextResponse.redirect(new URL("/flow", req.url));
   }
 
-  // 有 cookie 但角色不符：踢回流程總覽（或你想導回 /enter/{currentRole} 也可）
   if (currentRole !== hitRole) {
     return NextResponse.redirect(new URL("/flow", req.url));
   }
@@ -27,5 +47,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/recycler/:path*", "/processor/:path*", "/manufacturer/:path*", "/auditor/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
