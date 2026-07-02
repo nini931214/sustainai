@@ -1,11 +1,11 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
 const TERMS_VERSION = "V2.0_2026_06";
 
-export default function TermsPage() {
+function TermsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/flow";
@@ -428,5 +428,12 @@ export default function TermsPage() {
         </div>
       </div>
     </main>
+  );
+}
+export default function TermsPage() {
+  return (
+    <Suspense fallback={null}>
+      <TermsContent />
+    </Suspense>
   );
 }
