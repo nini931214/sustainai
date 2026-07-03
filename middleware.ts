@@ -9,12 +9,17 @@ const TERMS_VERSION = "V2.0_2026_06";
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
+  const isPublicAsset =
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/brand") ||
+    pathname === "/favicon.ico" ||
+    /\.(png|jpg|jpeg|gif|svg|webp|ico|pdf)$/i.test(pathname);
+
   const publicPaths =
     pathname === "/welcome" ||
     pathname === "/terms" ||
     pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico";
+    isPublicAsset;
 
   if (!publicPaths) {
     const accepted = req.cookies.get(TERMS_COOKIE)?.value;
@@ -31,7 +36,9 @@ export function middleware(req: NextRequest) {
     (r) => pathname === `/${r}` || pathname.startsWith(`/${r}/`)
   );
 
-  if (!hitRole) return NextResponse.next();
+  if (!hitRole) {
+    return NextResponse.next();
+  }
 
   const currentRole = req.cookies.get("sustainai_role")?.value;
 

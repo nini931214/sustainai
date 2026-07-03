@@ -1,19 +1,18 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const TERMS_VERSION = "V2.0_2026_06";
 
 function TermsContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/flow";
   const [checked, setChecked] = useState(false);
 
   function acceptTerms() {
     document.cookie = `sustainai_terms_accepted=${TERMS_VERSION}; path=/; max-age=31536000; SameSite=Lax`;
-    router.push(next);
+    window.location.href = next || "/flow";
   }
 
   return (
@@ -430,6 +429,7 @@ function TermsContent() {
     </main>
   );
 }
+
 export default function TermsPage() {
   return (
     <Suspense fallback={null}>
